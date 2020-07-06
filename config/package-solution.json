@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "pmo-list-forms-client-side-solution",
+    "id": "70003921-aa64-4eee-9f9b-781de3bc0612",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "isDomainIsolated": false
+  },
+  "paths": {
+    "zippedPackage": "solution/pmo-list-forms.sppkg"
+  }
+}
