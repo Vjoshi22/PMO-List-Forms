@@ -9,7 +9,9 @@ import { Form, FormGroup, Button, FormControl } from "react-bootstrap";
 import { SPComponentLoader } from "@microsoft/sp-loader";
 import { ISPList } from "../PmoListFormsWebPart";
 import * as $ from "jquery";
-import { getListEntityName } from './getListEntityName';
+import { getListEntityName, listType } from './getListEntityName';
+import { data } from 'jquery';
+
 
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
@@ -17,18 +19,18 @@ SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootst
 export interface IreactState{
   ProjectID: string,
   CRM_Id: string,
-  BusinessGroup: string;
   ProjectName: string;
   ClientName: string;
   ProjectManager: string;
   ProjectType: string;
-  ProjectRollOutStrategy: string;
+  ProjectMode: string;
   PlannedStart: string;
   PlannedCompletion: string;
   ProjectDescription: string;
   ProjectLocation: string;
   ProjectBudget: string;
   ProjectStatus: string;
+  ProjectProgress: string;
   //peoplepicker
   DeliveryManager: string;
   //date
@@ -53,17 +55,17 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       //items: []
       ProjectID : '',
       CRM_Id :'',
-      BusinessGroup: '',
       ProjectName: '',
       ClientName: '',
       ProjectManager: '',
       ProjectType: '',
-      ProjectRollOutStrategy: '',
+      ProjectMode: '',
       PlannedStart: '',
       PlannedCompletion: '',
       ProjectDescription: '',
       ProjectLocation: '',
       ProjectBudget: '',
+      ProjectProgress:'',
       ProjectStatus: '',
       DeliveryManager:'',
       startDate: '',
@@ -80,6 +82,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     //this.isOutsideRange = this.isOutsideRange.bind(this);
   }
   public componentDidMount() {
+    getListEntityName(this.props.currentContext, listGUID);
     $('.pickerText_4fe0caaf').css('border','0px');
     $('.pickerInput_4fe0caaf').addClass('form-control');
     $('.form-row').css('justify-content','center');
@@ -183,7 +186,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <Form.Label className={styles.customlabel +" " + styles.required}>RMS ID</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-            <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="_RMSID" name="RMS_Id" placeholder="RMS ID" onChange={this.handleChange} value={this.state.ProjectID}/>
+            <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="_RMSID" name="ProjectID" placeholder="RMS ID" onChange={this.handleChange} value={this.state.ProjectID}/>
           </FormGroup>
           <FormGroup className="col-1"></FormGroup>
           {/*-----------Project Type------------- */}
@@ -315,7 +318,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <Form.Label className={styles.customlabel}>Project Mode</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-              <Form.Control size="sm" id="_projectRollOut" as="select" name="ProjectRollOutStrategy" onChange={this.handleChange} value={this.state.ProjectRollOutStrategy}>
+              <Form.Control size="sm" id="_projectRollOut" as="select" name="ProjectMode" onChange={this.handleChange} value={this.state.ProjectMode}>
               <option value="">Select an Option</option>
               <option value="Fixed">Fixed</option>
               <option value="TandM">T and M</option>
@@ -384,7 +387,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <Form.Label className={styles.customlabel}>Project Progress</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-            <Form.Control size="sm" type="number" id="_location" name="ProjectLocation" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}/>
+            <Form.Control size="sm" type="number" id="_location" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress}/>
           </FormGroup>
           <FormGroup className="col-6">
           </FormGroup>
@@ -421,23 +424,21 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       let requestData = {
         __metadata:  
         {  
-            type: getListEntityName(this.props.currentContext, listGUID)  
+            type: listType
         },  
         ProjectID : this.state.ProjectID,
-        ProjectID_SalesCRM :this.state.CRM_Id,
-        BusinessGroup: this.state.BusinessGroup,
-        ProjectName: this.state.ProjectName,
-        ClientName: this.state.ClientName,
-        DeliveryManager: this.state.DeliveryManager,
-        ProjectManager: this.state.ProjectManager,
-        ProjectType: this.state.ProjectType,
-        ProjectRollOutStrategy: this.state.ProjectRollOutStrategy,
+        Project_x0020_Name: this.state.ProjectName,
+        Client_x0020_Name: this.state.ClientName,
+        Delivery_x0020_Manager: this.state.DeliveryManager,
+        Project_x0020_Manager: this.state.ProjectManager,
+        Project_x0020_Type: this.state.ProjectType,
+        Project_x0020_Mode: this.state.ProjectMode,
         PlannedStart: this.state.PlannedStart,
-        PlannedCompletion: this.state.PlannedCompletion,
-        ProjectDescription: this.state.ProjectDescription,
-        ProjectLocation: this.state.ProjectLocation,
-        ProjectBudget: this.state.ProjectBudget,
-        ProjectStatus: this.state.ProjectStatus
+        Planned_x0020_End: this.state.PlannedCompletion,
+        Project_x0020_Description: this.state.ProjectDescription,
+        Region: this.state.ProjectLocation,
+        Project_x0020_Budget: this.state.ProjectBudget,
+        Status: this.state.ProjectStatus
     
       };
       //validation
@@ -447,19 +448,13 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       }else{
         $('input[name="RMS_Id"]').css('border','1px solid #ced4da')
       }
-      if (requestData.ProjectID_SalesCRM.length < 1){
-        $('input[name="CRM_Id"]').css('border','2px solid red');
-        _validate++;
-      }else{
-        $('input[name="CRM_Id"]').css('border','1px solid #ced4da')
-      }
-      if( requestData.ProjectName.length < 1){
+      if( requestData.Project_x0020_Name.length < 1){
         $('#_projectName').css('border','2px solid red');
         _validate++;
       }else{
         $('#_projectName').css('border','1px solid #ced4da')
       }
-      if (requestData.ProjectBudget.length < 1) {
+      if (requestData.Project_x0020_Budget.length < 1) {
         $('#_budget').css('border','2px solid red');
         _validate++;
       }else{
@@ -471,7 +466,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       }else{
         $('#inpt_plannedStart').css('border','1px solid #ced4da');
       }
-      if(requestData.PlannedCompletion.length < 1){
+      if(requestData.Planned_x0020_End.length < 1){
         $('#inpt_plannedCompletion').css('border','2px solid red');
         _validate++;
       }else{
@@ -511,13 +506,12 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       this.setState({
         ProjectID: '',
         CRM_Id :'',
-        BusinessGroup: '',
         ProjectName: '',
         ClientName: '',
         DeliveryManager:'',
         ProjectManager: '',
         ProjectType: '',
-        ProjectRollOutStrategy: '',
+        ProjectMode: '',
         PlannedStart: '',
         PlannedCompletion: '',
         ProjectDescription: '',
@@ -571,23 +565,21 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         .then((item: ISPList): void => {   
           this.setState({
             ProjectID: item.ProjectID,
-            CRM_Id: item.ProjectID_SalesCRM,
-            BusinessGroup: item.BusinessGroup,
-            DeliveryManager: item.DeliveryManager,
-            ProjectName: item.ProjectName,
+            DeliveryManager: item.Delivery_x0020_Manager,
+            ProjectName: item.Project_x0020_Name,
             ClientName: item.Client_x0020_Name,
-            ProjectManager: item.ProjectManager,
-            ProjectType: item.ProjectType,
-            ProjectRollOutStrategy: item.ProjectRollOutStrategy,
+            ProjectManager: item.Project_x0020_Manager,
+            ProjectType: item.Project_x0020_Type,
+            ProjectMode: item.Project_x0020_Mode,
             PlannedStart: item.PlannedStart,
-            PlannedCompletion: item.PlannedCompletion,
-            ProjectDescription: item.ProjectDescription,
-            ProjectLocation: item.ProjectLocation,
-            ProjectBudget: item.ProjectBudget,
-            ProjectStatus: item.ProjectStatus,
+            PlannedCompletion: item.Planned_x0020_End,
+            ProjectDescription: item.Project_x0020_Description,
+            ProjectLocation: item.Region,
+            ProjectBudget: item.Project_x0020_Budget,
+            ProjectStatus: item.Status,
             disable_RMSID: true
           })  
-          console.log(this.state.ProjectID) ;
+          console.log(this.state.PlannedStart + " " + this.state.PlannedCompletion) ;
         });
       }
     }
@@ -600,23 +592,21 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     let requestData = {
         __metadata:  
         {  
-            type: getListEntityName(this.props.currentContext, listGUID) 
+            type: listType
         },  
         ProjectID : this.state.ProjectID,
-        ProjectID_SalesCRM :this.state.CRM_Id,
-        BusinessGroup: this.state.BusinessGroup,
-        ProjectName: this.state.ProjectName,
-        ClientName: this.state.ClientName,
-        DeliveryManager: this.state.DeliveryManager,
-        ProjectManager: this.state.ProjectManager,
-        ProjectType: this.state.ProjectType,
-        ProjectRollOutStrategy: this.state.ProjectRollOutStrategy,
+        Project_x0020_Name: this.state.ProjectName,
+        Client_x0020_Name: this.state.ClientName,
+        Delivery_x0020_Manager: this.state.DeliveryManager,
+        Project_x0020_Manager: this.state.ProjectManager,
+        Project_x0020_Type: this.state.ProjectType,
+        Project_x0020_Mode: this.state.ProjectMode,
         PlannedStart: this.state.PlannedStart,
-        PlannedCompletion: this.state.PlannedCompletion,
-        ProjectDescription: this.state.ProjectDescription,
-        ProjectLocation: this.state.ProjectLocation,
-        ProjectBudget: this.state.ProjectBudget,
-        ProjectStatus: this.state.ProjectStatus
+        Planned_x0020_End: this.state.PlannedCompletion,
+        Project_x0020_Description: this.state.ProjectDescription,
+        Region: this.state.ProjectLocation,
+        Project_x0020_Budget: this.state.ProjectBudget,
+        Status: this.state.ProjectStatus
       };
       
       //validation
@@ -626,13 +616,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       }else{
         $('input[name="RMS_Id"]').css('border','1px solid #ced4da')
       }
-      if (requestData.ProjectID_SalesCRM.length < 1){
-        $('input[name="CRM_Id"]').css('border','2px solid red');
-        _validate++;
-      }else{
-        $('input[name="CRM_Id"]').css('border','1px solid #ced4da')
-      }
-      if( requestData.ProjectName.length < 1){
+      if( requestData.Project_x0020_Name.length < 1){
         $('#_projectName').css('border','2px solid red');
         _validate++;
       }else{
@@ -644,13 +628,13 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       }else{
         $('#inpt_plannedStart').css('border','1px solid #ced4da');
       }
-      if(requestData.PlannedCompletion.length < 1){
+      if(requestData.Planned_x0020_End.length < 1){
         $('#inpt_plannedCompletion').css('border','2px solid red');
         _validate++;
       }else{
         $('#inpt_plannedCompletion').css('border','1px solid #ced4da');
       }
-      if (requestData.ProjectBudget.length < 1) {
+      if (requestData.Project_x0020_Budget.length < 1) {
         $('#_budget').css('border','2px solid red');
         _validate++;
       }else{
@@ -689,19 +673,19 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       this.setState({
         ProjectID : '',
         CRM_Id :'',
-        BusinessGroup: '',
         ProjectName: '',
         ClientName: '',
         DeliveryManager:'',
         ProjectManager: '',
         ProjectType: '',
-        ProjectRollOutStrategy: '',
+        ProjectMode: '',
         PlannedStart: '',
         PlannedCompletion: '',
         ProjectDescription: '',
         ProjectLocation: '',
         ProjectBudget: '',
         ProjectStatus: '',
+        ProjectProgress:'',
         startDate: '',
         endDate: '',
         focusedInput: '',
@@ -717,19 +701,19 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     this.setState({
       ProjectID : '',
       CRM_Id :'',
-      BusinessGroup: '',
       ProjectName: '',
       ClientName: '',
       DeliveryManager:'',
       ProjectManager: '',
       ProjectType: '',
-      ProjectRollOutStrategy: '',
+      ProjectMode: '',
       PlannedStart: '',
       PlannedCompletion: '',
       ProjectDescription: '',
       ProjectLocation: '',
       ProjectBudget: '',
       ProjectStatus: '',
+      ProjectProgress:'',
       startDate: '',
       endDate: '',
       focusedInput: '',
@@ -742,19 +726,19 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     this.setState({
       ProjectID : '',
       CRM_Id :'',
-      BusinessGroup: '',
       ProjectName: '',
       ClientName: '',
       DeliveryManager:'',
       ProjectManager: '',
       ProjectType: '',
-      ProjectRollOutStrategy: '',
+      ProjectMode: '',
       PlannedStart: '',
       PlannedCompletion: '',
       ProjectDescription: '',
       ProjectLocation: '',
       ProjectBudget: '',
       ProjectStatus: '',
+      ProjectProgress:'',
       startDate: '',
       endDate: '',
       focusedInput: '',

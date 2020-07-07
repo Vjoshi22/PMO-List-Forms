@@ -18,19 +18,22 @@ export interface IPmoListFormsWebPartProps {
 export interface ISPList{
   ProjectID: string;
   ProjectID_SalesCRM: string;
-  BusinessGroup: string;
-  ProjectName: string;
+  Project_x0020_Name: string;
   Client_x0020_Name: string;
-  DeliveryManager: string;
-  ProjectManager: string;
-  ProjectType: string;
-  ProjectRollOutStrategy: string;
+  Delivery_x0020_Manager: string;
+  Project_x0020_Manager: string;
+  Project_x0020_Type: string;
+  Project_x0020_Mode: string;
   PlannedStart: string;
-  PlannedCompletion: string;
-  ProjectDescription: string;
-  ProjectLocation: string;
-  ProjectBudget: string;
-  ProjectStatus: string;
+  Planned_x0020_End: string;
+  Project_x0020_Description: string;
+  Region: string;
+  Project_x0020_Budget: string;
+  Status: string;
+  Actual_x0020_Start:string;
+  Actual_x0020_End:string;
+  Revised_x0020_Budget:string;
+  Total_x0020_Cost:string
 }
 
 export default class PmoListFormsWebPart extends BaseClientSideWebPart <IPmoListFormsWebPartProps> {

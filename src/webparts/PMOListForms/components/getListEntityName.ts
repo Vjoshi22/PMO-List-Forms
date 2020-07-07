@@ -1,4 +1,5 @@
 import * as $ from 'jquery';
+export var listType: any;
 
 export function getListEntityName(context, listGUID){
     $.ajax({
@@ -9,7 +10,7 @@ export function getListEntityName(context, listGUID){
         },
         success:(data, status, xhr) => 
         {  
-            return data.d.ListItemEntityTypeFullName;
+            listType = data.d.ListItemEntityTypeFullName;
         },  
         error: (xhr, status, error)=>
         {  
