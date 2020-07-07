@@ -9,12 +9,13 @@ import { Form, FormGroup, Button, FormControl } from "react-bootstrap";
 import { SPComponentLoader } from "@microsoft/sp-loader";
 import { ISPList } from "../PmoListFormsWebPart";
 import * as $ from "jquery";
+import { getListEntityName } from './getListEntityName';
 
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
 export interface IreactState{
-  RMS_Id: string,
+  ProjectID: string,
   CRM_Id: string,
   BusinessGroup: string;
   ProjectName: string;
@@ -38,6 +39,8 @@ export interface IreactState{
   focusedInput: any;
   FormDigestValue: string;
 }
+
+var listGUID: any = "2c3ffd4e-1b73-4623-898d-8e3a1bb60b91";   //"47272d1e-57d9-447e-9cfd-4cff76241a93"; 
 var timerID;
 var newitem: boolean;
 
@@ -48,7 +51,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     this.state = {  
       //status: 'Ready',  
       //items: []
-      RMS_Id : '',
+      ProjectID : '',
       CRM_Id :'',
       BusinessGroup: '',
       ProjectName: '',
@@ -172,39 +175,54 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     
     return (
       <div id="newItemDiv" className={styles["_main-div"]} >
-        <div id="heading" className={styles.heading}><h5>Enter the Project</h5></div>
+        <div id="heading" className={styles.heading}><h4>Project Details</h4></div>
       <Form onSubmit={this.handleSubmit}>
         <Form.Row className="mt-3">
+          {/*-----------RMS ID------------------- */}
           <FormGroup className="col-2">
             <Form.Label className={styles.customlabel +" " + styles.required}>RMS ID</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-            <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="_RMSID" name="RMS_Id" placeholder="RMS ID" onChange={this.handleChange} value={this.state.RMS_Id}/>
+            <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="_RMSID" name="RMS_Id" placeholder="RMS ID" onChange={this.handleChange} value={this.state.ProjectID}/>
           </FormGroup>
           <FormGroup className="col-1"></FormGroup>
+          {/*-----------Project Type------------- */}
           <FormGroup className="col-2">
-            <Form.Label className={styles.customlabel}>CRM ID</Form.Label>
-          </FormGroup>
-          <FormGroup className="col-3">
-            <Form.Control size="sm" type="text" id="_CRMID" name="CRM_Id" placeholder="CRM ID" onChange={this.handleChange} value={this.state.CRM_Id}/>
-          </FormGroup>
+              <Form.Label className={styles.customlabel}>Project Type</Form.Label>
+            </FormGroup>
+            <FormGroup className="col-3">
+              <Form.Control size="sm" id="_projectType" as="select" name="ProjectType" onChange={this.handleChange} value={this.state.ProjectType}>
+                <option value="">Select an Option</option>
+                <option value="SAPS4-Conversion">SAPS4-Conversion  All S/4 HANA Conversions[Migrations]</option>
+                <option value="SAPS4-Con_Upg">SAPS4-Con_Upg  All S/4 HANA Conversions & Upgrades together</option>
+                <option value="SAPS4-Implementation">SAPS4-Implementation  All S/4 HANA Implementations</option>
+                <option value="SAPSOH-Mig_Upg">SAPSOH-Mig_Upg  Suite on HANA Migrations & Upgrades</option>
+                <option value="SAPSOH-Functional">SAPSOH-Functional   All other Suite on HANA Functional projects</option>
+                <option value="SAPBS-Implementation">SAPBS-Implementation  Business Suite Implementations. This Business Suite includes SAP products ERP/SCM/CRM/PLM/SRM</option>
+                <option value="SAPBS-Upgrade">SAPBS-Upgrade  Business Suite Upgrades. This Business Suite includes SAP products ERP/SCM/CRM/PLM/SRM</option>
+                <option value="SAPECC-Rollout">SAPECC-Rollout  ECC Template Rollouts</option>
+                <option value="SAP-Module-Based">SAP-Module-Based  Module Based projects like EWM</option>
+                <option value="SAP-Technical">SAP-Technical  Unicode conversions, Solman related projects or ABAP related projects</option>
+                <option value="SAP- SuccessFactors">SAP- SuccessFactors  SAP SuccessFactors projects</option>
+                <option value="SAP-Other">SAP-Other  All other projects for SAP</option>
+                <option value="Con Adv">Con Adv - Consulting Advisory…can be process work, business strategy etc</option>
+                <option value="PMO Serv">PMO Serv – PMO Services</option>
+                <option value="Train Serv">Train Serv – Training Services</option>
+                <option value="Test Serv">Test Serv – Testing Services</option>
+              </Form.Control>
+            </FormGroup>
         </Form.Row>
 
         <Form.Row>
+            {/* -----------Client Name------------- */}
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel}>Business Group</Form.Label>
+              <Form.Label className={styles.customlabel}>Client Name</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" id="_businessGroup" as="select" name="BusinessGroup" onChange={this.handleChange} value={this.state.BusinessGroup}>
-                <option value="">Select an Option</option>
-                <option value="Group 1">Group 1</option>
-                <option value="Group 2">Group 2</option>
-                <option value="Group 3">Group 3</option>
-              </Form.Control>
+              <Form.Control size="sm" type="text" id="_clientName" name="ClientName" placeholder="Client Name" onChange={this.handleChange} value={this.state.ClientName}/>
             </FormGroup>
-
             <FormGroup className="col-1"></FormGroup>
-
+            {/* -----------Project Name---------------- */}
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel +" " + styles.required}>Project Name</Form.Label>
             </FormGroup>
@@ -214,48 +232,52 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
           </Form.Row>
 
           <Form.Row>
+            {/* --------Delivery Manager------------ */}
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel}>Delivery Manager</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <PeoplePicker
-              context={this.props.currentContext}
-              personSelectionLimit={1}    
-              groupName={""} // Leave this blank in case you want to filter from all users    
-              showtooltip={true}    
-              isRequired={true}    
-              disabled={false}    
-              ensureUser={true}  
-              selectedItems={this._getDeliveryManager}   
-              defaultSelectedUsers={[this.state.DeliveryManager]} 
-              showHiddenInUI={false}    
-              principalTypes={[PrincipalType.User]}    
-              resolveDelay={1000} />  
+              <div id="deliveryManager">
+                <PeoplePicker
+                context={this.props.currentContext}
+                personSelectionLimit={1}    
+                groupName={""} // Leave this blank in case you want to filter from all users    
+                showtooltip={true}    
+                isRequired={true}    
+                disabled={false}    
+                ensureUser={true}  
+                selectedItems={this._getDeliveryManager}   
+                defaultSelectedUsers={[this.state.DeliveryManager]} 
+                showHiddenInUI={false}    
+                principalTypes={[PrincipalType.User]}    
+                resolveDelay={1000} />
+              </div>
             </FormGroup>
-
             <FormGroup className="col-1"></FormGroup>
-
+              {/*--------Project Manager-------------  */}
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel +" " + styles.required}>Project Manager</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <PeoplePicker
-              context={this.props.currentContext}   
-              personSelectionLimit={1}    
-              groupName={""} // Leave this blank in case you want to filter from all users    
-              showtooltip={true}    
-              isRequired={true}    
-              disabled={false}    
-              ensureUser={true}    
-              selectedItems={this._getProjectManager} 
-              defaultSelectedUsers={[this.state.ProjectManager]}   
-              showHiddenInUI={false}    
-              principalTypes={[PrincipalType.User]}    
-              resolveDelay={1000} />  
+              <div id="projectManager">
+                <PeoplePicker
+                context={this.props.currentContext}   
+                personSelectionLimit={1}    
+                groupName={""} // Leave this blank in case you want to filter from all users    
+                showtooltip={true}    
+                isRequired={true}    
+                disabled={false}    
+                ensureUser={true}    
+                selectedItems={this._getProjectManager} 
+                defaultSelectedUsers={[this.state.ProjectManager]}   
+                showHiddenInUI={false}    
+                principalTypes={[PrincipalType.User]}    
+                resolveDelay={1000} />
+              </div>
             </FormGroup>
            </Form.Row>
 
-          <Form.Row>
+          {/* <Form.Row>
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel}>Client Name</Form.Label>
             </FormGroup>
@@ -287,19 +309,19 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
                 <option value="Test Serv">Test Serv – Testing Services</option>
               </Form.Control>
             </FormGroup>
-          </Form.Row>
-        <Form.Row>
+          </Form.Row>*/}
+        <Form.Row> 
           <FormGroup className="col-2">
-            <Form.Label className={styles.customlabel}>Project Strategy</Form.Label>
+            <Form.Label className={styles.customlabel}>Project Mode</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
               <Form.Control size="sm" id="_projectRollOut" as="select" name="ProjectRollOutStrategy" onChange={this.handleChange} value={this.state.ProjectRollOutStrategy}>
               <option value="">Select an Option</option>
-              <option value="Phased">Phased</option>
-              <option value="Big Bang">Big Bang</option>
-              <option value="Roll Out">Roll Out</option>
-              <option value="Expansion">Expansion</option>
-              <option value="other">other</option>
+              <option value="Fixed">Fixed</option>
+              <option value="TandM">T and M</option>
+              <option value="Support">Support</option>
+              <option value="FTE">FTE</option>
+              <option value="others">others</option>
               </Form.Control>
             </FormGroup>
           <FormGroup className="col-1"></FormGroup>
@@ -318,7 +340,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         </Form.Row>
         <Form.Row>
           <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Planned Start</Form.Label>
+            <Form.Label className={styles.customlabel}>Tentative Start Date</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
             <Form.Control size="sm" type="date" id="inpt_plannedStart" name="PlannedStart" placeholder="Planned Start Date" onChange={this.handleChange} value={this.state.PlannedStart}/>
@@ -326,7 +348,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
           </FormGroup>
           <FormGroup className="col-1"></FormGroup>
           <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Planned Completion</Form.Label>
+            <Form.Label className={styles.customlabel}>Tentative End Date</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
             <Form.Control size="sm" type="date" disabled={this.state.disable_plannedCompletion} id="inpt_plannedCompletion" name="PlannedCompletion" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.PlannedCompletion}/>
@@ -344,17 +366,27 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         {/* Next Row */}
         <Form.Row className="mb-4">
           <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Project Location</Form.Label>
+            <Form.Label className={styles.customlabel}>Region</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
             <Form.Control size="sm" type="text" id="_location" name="ProjectLocation" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}/>
           </FormGroup>
           <FormGroup className="col-1"></FormGroup>
           <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel +" " + styles.required}>Project Budget</Form.Label>
+            <Form.Label className={styles.customlabel +" " + styles.required}>Budget as per SOW</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
             <Form.Control size="sm" type="text" id="_budget" name="ProjectBudget" placeholder="Project Budget" onChange={this.handleChange} value={this.state.ProjectBudget}/>
+          </FormGroup>
+        </Form.Row>
+        <Form.Row className="mb-4">
+          <FormGroup className="col-2"> 
+            <Form.Label className={styles.customlabel}>Project Progress</Form.Label>
+          </FormGroup>
+          <FormGroup className="col-3">
+            <Form.Control size="sm" type="number" id="_location" name="ProjectLocation" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}/>
+          </FormGroup>
+          <FormGroup className="col-6">
           </FormGroup>
         </Form.Row>
         <Form.Row className={styles.buttonCLass}>
@@ -384,13 +416,14 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       var itemId = GetParameterValues('id');
       let _validate=0;
       e.preventDefault();
-  
+
+
       let requestData = {
         __metadata:  
         {  
-            type: "SP.Data.Project_x0020_DetailsListItem"  
+            type: getListEntityName(this.props.currentContext, listGUID)  
         },  
-        ProjectID_RMS : this.state.RMS_Id,
+        ProjectID : this.state.ProjectID,
         ProjectID_SalesCRM :this.state.CRM_Id,
         BusinessGroup: this.state.BusinessGroup,
         ProjectName: this.state.ProjectName,
@@ -408,7 +441,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     
       };
       //validation
-      if (requestData.ProjectID_RMS.length < 1){
+      if (requestData.ProjectID.length < 1){
         $('input[name="RMS_Id"]').css('border','2px solid red');
         _validate++;
       }else{
@@ -450,7 +483,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
      
     
       $.ajax({
-        url:this.props.currentContext.pageContext.web.absoluteUrl+ "/_api/web/lists/getByTitle('Project Details')/items("+ itemId +")",  
+          url:  this.props.currentContext.pageContext.web.absoluteUrl+ "/_api/web/lists('" + listGUID + "')/items("+ itemId +")",  
           type: "POST",  
           data: JSON.stringify(requestData),  
           headers:  
@@ -476,7 +509,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       });
       
       this.setState({
-        RMS_Id : '',
+        ProjectID: '',
         CRM_Id :'',
         BusinessGroup: '',
         ProjectName: '',
@@ -518,9 +551,14 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     }
     //fucntion to load items for particular item id on edit form
     private loadItems(){
-
+    
     var itemId = GetParameterValues('id');
-    const url = this.props.currentContext.pageContext.web.absoluteUrl + `/_api/web/lists/getbytitle('Project Details')/items(`+ itemId +`)`;
+    if(itemId==""){
+      alert("Incorrect URL");
+      let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
+      window.open(winURL,'_self');
+    }else{
+    const url = this.props.currentContext.pageContext.web.absoluteUrl + `/_api/web/lists('`+ listGUID +`')/items(`+ itemId +`)`;
     return this.props.currentContext.spHttpClient.get(url,SPHttpClient.configurations.v1,  
         {  
             headers: {  
@@ -532,12 +570,12 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
           })  
         .then((item: ISPList): void => {   
           this.setState({
-            RMS_Id: item.ProjectID_RMS,
+            ProjectID: item.ProjectID,
             CRM_Id: item.ProjectID_SalesCRM,
             BusinessGroup: item.BusinessGroup,
             DeliveryManager: item.DeliveryManager,
             ProjectName: item.ProjectName,
-            ClientName: item.ClientName,
+            ClientName: item.Client_x0020_Name,
             ProjectManager: item.ProjectManager,
             ProjectType: item.ProjectType,
             ProjectRollOutStrategy: item.ProjectRollOutStrategy,
@@ -549,8 +587,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             ProjectStatus: item.ProjectStatus,
             disable_RMSID: true
           })  
-          console.log(this.state.ProjectManager) ;
+          console.log(this.state.ProjectID) ;
         });
+      }
     }
 
     //fucntion to save the new entry in the list
@@ -561,9 +600,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     let requestData = {
         __metadata:  
         {  
-            type: "SP.Data.Project_x0020_DetailsListItem"  
+            type: getListEntityName(this.props.currentContext, listGUID) 
         },  
-        ProjectID_RMS : this.state.RMS_Id,
+        ProjectID : this.state.ProjectID,
         ProjectID_SalesCRM :this.state.CRM_Id,
         BusinessGroup: this.state.BusinessGroup,
         ProjectName: this.state.ProjectName,
@@ -581,7 +620,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       };
       
       //validation
-      if (requestData.ProjectID_RMS.length < 1){
+      if (requestData.ProjectID.length < 1){
         $('input[name="RMS_Id"]').css('border','2px solid red');
         _validate++;
       }else{
@@ -622,7 +661,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       }
     
       $.ajax({
-        url:this.props.currentContext.pageContext.web.absoluteUrl+ "/_api/web/lists/getByTitle('Project Details')/items",  
+        url:this.props.currentContext.pageContext.web.absoluteUrl+ "/_api/web/lists('" + listGUID + "')/items",  
           type: "POST",  
           data: JSON.stringify(requestData),  
           headers:  
@@ -648,7 +687,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       });
       
       this.setState({
-        RMS_Id : '',
+        ProjectID : '',
         CRM_Id :'',
         BusinessGroup: '',
         ProjectName: '',
@@ -676,7 +715,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
     window.open(winURL,'_self');
     this.setState({
-      RMS_Id : '',
+      ProjectID : '',
       CRM_Id :'',
       BusinessGroup: '',
       ProjectName: '',
@@ -701,7 +740,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     private resetform(e){
     
     this.setState({
-      RMS_Id : '',
+      ProjectID : '',
       CRM_Id :'',
       BusinessGroup: '',
       ProjectName: '',
@@ -721,6 +760,6 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       focusedInput: '',
       FormDigestValue:''
     });
-    console.log(this.state.RMS_Id);
+    console.log(this.state.ProjectID);
     }
 }

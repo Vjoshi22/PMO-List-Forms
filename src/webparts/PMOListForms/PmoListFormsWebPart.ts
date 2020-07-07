@@ -16,11 +16,11 @@ export interface IPmoListFormsWebPartProps {
   currentContext: WebPartContext;
 }
 export interface ISPList{
-  ProjectID_RMS: string;
+  ProjectID: string;
   ProjectID_SalesCRM: string;
   BusinessGroup: string;
   ProjectName: string;
-  ClientName: string;
+  Client_x0020_Name: string;
   DeliveryManager: string;
   ProjectManager: string;
   ProjectType: string;
