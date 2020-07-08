@@ -9,38 +9,25 @@ import { BaseClientSideWebPart, WebPartContext } from '@microsoft/sp-webpart-bas
 
 import * as strings from 'PmoListFormsWebPartStrings';
 import PmoListForms from './components/PmoListForms';
+import PmoListEditForm from "./components/PmoListEditForm";
 import { IPmoListFormsProps } from './components/IPmoListFormsProps';
 
 export interface IPmoListFormsWebPartProps {
   description: string;
   currentContext: WebPartContext;
 }
-export interface ISPList{
-  ProjectID: string;
-  ProjectID_SalesCRM: string;
-  Project_x0020_Name: string;
-  Client_x0020_Name: string;
-  Delivery_x0020_Manager: string;
-  Project_x0020_Manager: string;
-  Project_x0020_Type: string;
-  Project_x0020_Mode: string;
-  PlannedStart: string;
-  Planned_x0020_End: string;
-  Project_x0020_Description: string;
-  Region: string;
-  Project_x0020_Budget: string;
-  Status: string;
-  Actual_x0020_Start:string;
-  Actual_x0020_End:string;
-  Revised_x0020_Budget:string;
-  Total_x0020_Cost:string
-}
-
+var renderPMOForm: any;
 export default class PmoListFormsWebPart extends BaseClientSideWebPart <IPmoListFormsWebPartProps> {
-
+  
   public render(): void {
+    if((/edit/.test(window.location.href))){
+      renderPMOForm = PmoListEditForm 
+    }
+    if((/new/.test(window.location.href))){
+      renderPMOForm = PmoListForms
+    }
     const element: React.ReactElement<IPmoListFormsProps> = React.createElement(
-      PmoListForms,
+      renderPMOForm,
       {
         description: this.properties.description,
         currentContext: this.context
