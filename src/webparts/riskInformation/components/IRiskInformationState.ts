@@ -1,6 +1,6 @@
 export interface IRiskInformationState {
-  Title?: string;
-  RiskID: string;
+  Title?: string;  
+  RiskID: string;//ID in SP
   ProjectID: string;
   RiskName: string;
   RiskDescription: string;

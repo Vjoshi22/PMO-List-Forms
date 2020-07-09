@@ -2,16 +2,17 @@ import * as React from 'react';
 import styles from './RiskInformation.module.scss';
 import { IRiskInformationProps } from './IRiskInformationProps';
 import { escape } from '@microsoft/sp-lodash-subset';
-import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration, SPHttpClientResponse } from "@microsoft/sp-http";
+import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration  ,SPHttpClientResponse, HttpClientResponse} from "@microsoft/sp-http";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { GetParameterValues } from './getQueryString';
 import { Form, FormGroup, Button, FormControl } from "react-bootstrap";
 import { SPComponentLoader } from "@microsoft/sp-loader";
 import { IRiskInformationWebPartProps } from "../RiskInformationWebPart";
 import * as $ from "jquery";
-import { getListEntityName,listType } from './getListEntityName';
+import { getListEntityName, listType } from './getListEntityName';
 import { ISPRiskInformationFields } from './IRiskInformationFileds';
 import { IRiskInformationState } from './IRiskInformationState';
+import { allchoiceColumns } from "../RiskInformationWebPart";
 
 require('./RiskInformation.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
@@ -48,6 +49,10 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
   }
 
   public componentDidMount() {
+    allchoiceColumns.forEach(elem => {
+      this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
+    });
+    
     getListEntityName(this.props.currentContext, listGUID);
 
     this.loadItems();
@@ -85,34 +90,24 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Project ID</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
-              {/* <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="_RMSID" name="RMS_Id" placeholder="RMS ID" onChange={this.handleChange} value={this.state.RMS_Id} /> */}
-              <Form.Control size="sm" type="text" id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID} />
+            <FormGroup className={styles.disabledValue + " col-3"}>
+              <Form.Label>{this.state.ProjectID}</Form.Label>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Risk Category</Form.Label>
+              <Form.Label className={styles.customlabel + " " + styles.required}>Risk ID</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
-              <Form.Control size="sm" id="RiskCategory" as="select" name="RiskCategory" onChange={this.handleChange} value={this.state.RiskCategory}>
-                <option >Select an Option</option>
-                <option value="Resources">Resources</option>
-                <option value="Technology">Technology</option>
-                <option value="Requirements">Requirements</option>
-                <option value="Quality">Quality</option>
-                <option value="External">External</option>
-                <option value="Scope">Scope</option>
-                <option value="Schedule">Schedule</option>
-                <option value="Budget">Budget</option>
-              </Form.Control>
+            <FormGroup className={styles.disabledValue + " col-3"}>
+              <Form.Label>{this.state.RiskID}</Form.Label>
             </FormGroup>
           </Form.Row>
           <Form.Row>
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Risk Name</Form.Label>
             </FormGroup>
-            <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" type="text" id="RiskName" name="RiskName" placeholder="Risk Name" onChange={this.handleChange} value={this.state.RiskName} />
+            <FormGroup className={styles.disabledValue + " col-3"}>
+              {/* <Form.Control size="sm" type="text" id="RiskName" name="RiskName" placeholder="Risk Name" onChange={this.handleChange} value={this.state.RiskName} /> */}
+              <Form.Label>{this.state.RiskName}</Form.Label>
             </FormGroup>
           </Form.Row>
 
@@ -127,11 +122,23 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
 
           <Form.Row>
             <FormGroup className="col-2">
+              <Form.Label className={styles.customlabel + " " + styles.required}>Risk Category</Form.Label>
+            </FormGroup>
+            <FormGroup className="col-9 mb-3">
+              <Form.Control size="sm" id="RiskCategory" as="select" name="RiskCategory" onChange={this.handleChange} value={this.state.RiskCategory}>
+                <option >Select an Option</option>
+              </Form.Control>
+            </FormGroup>
+          </Form.Row>
+
+          <Form.Row>
+            <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Risk Identified On</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
-              <Form.Control size="sm" type="date" id="RiskIdentifiedOn" name="RiskIdentifiedOn" placeholder="Risk Identified On" onChange={this.handleChange} value={this.state.RiskIdentifiedOn} />
-              {/* <DatePicker selected={this.state.PlannedStart}  onChange={this.handleChange} />; */}
+            {/* <FormGroup className="col-3"> */}
+            <FormGroup className={styles.disabledValue + " col-3"}>
+              {<Form.Control disabled size="sm" type="date" id="RiskIdentifiedOn" name="RiskIdentifiedOn" placeholder="Risk Identified On" onChange={this.handleChange} value={this.state.RiskIdentifiedOn} />}
+              {/* <Form.Label>{this.state.RiskIdentifiedOn}</Form.Label> */}
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             <FormGroup className="col-2">
@@ -149,10 +156,6 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskResponse" as="select" name="RiskResponse" onChange={this.handleChange} value={this.state.RiskResponse}>
                 <option >Select an Option</option>
-                <option value="Accept">Accept</option>
-                <option value="Avoid">Avoid</option>
-                <option value="Mitigate">Mitigate</option>
-                <option value="Transfer">Transfer</option>
               </Form.Control>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
@@ -162,11 +165,6 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskImpact" as="select" name="RiskImpact" onChange={this.handleChange} value={this.state.RiskImpact}>
                 <option >Select an Option</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
               </Form.Control>
             </FormGroup>
           </Form.Row>
@@ -178,8 +176,6 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskStatus" as="select" name="RiskStatus" onChange={this.handleChange} value={this.state.RiskStatus}>
                 <option >Select an Option</option>
-                <option value="Open">Open</option>
-                <option value="Closed">Closed</option>
               </Form.Control>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
@@ -199,11 +195,6 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskProbability" as="select" name="RiskProbability" onChange={this.handleChange} value={this.state.RiskProbability}>
                 <option >Select an Option</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
               </Form.Control>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
@@ -270,11 +261,12 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
         .then((item: ISPRiskInformationFields): void => {
           this.setState({
             ProjectID: item.ProjectID,
+            RiskID: item.ID,
             RiskName: item.RiskName,
             RiskDescription: item.RiskDescription,
             RiskCategory: item.RiskCategory,
-            RiskIdentifiedOn: item.RiskIdentifiedOn,
-            RiskClosedOn: item.RiskClosedOn,
+            RiskIdentifiedOn: item.RiskIdentifiedOn.slice(0, 10),
+            RiskClosedOn: item.RiskClosedOn.slice(0, 10),
             RiskStatus: item.RiskStatus,
             RiskOwner: item.RiskOwner,
             RiskResponse: item.RiskResponse,
@@ -282,7 +274,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
             RiskProbability: item.RiskProbability,
             Remarks: item.Remarks,
             RiskRank: item.RiskRank
-          })          
+          })
         });
     }
   }
@@ -298,7 +290,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
         type: listType
       },
       ProjectID: this.state.ProjectID,
-      RiskID:this.state.RiskID,
+      RiskID: this.state.RiskID,
       RiskName: this.state.RiskName,
       RiskDescription: this.state.RiskDescription,
       RiskCategory: this.state.RiskCategory,
@@ -312,7 +304,40 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       Remarks: this.state.Remarks,
       RiskRank: this.state.RiskRank
     } as ISPRiskInformationFields;
+
+    //validation
     
+    // Risk Description mandatory
+    if (requestData.RiskDescription.length < 1) {
+      $('#RiskDescription').css('border', '2px solid red');
+      _validate++;
+    }
+    else {
+      $('#RiskDescription').css('border', '1px solid #ced4da')
+    }
+
+    // Risk Onwer mandatory
+    if (requestData.RiskOwner.length < 1) {
+      $('#RiskOwner').css('border', '2px solid red');
+      _validate++;
+    }
+    else {
+      $('#RiskOwner').css('border', '1px solid #ced4da')
+    }
+
+    // Remarks mandatory
+    if (requestData.Remarks.length < 1) {
+      $('#Remarks').css('border', '2px solid red');
+      _validate++;
+    }
+    else {
+      $('#Remarks').css('border', '1px solid #ced4da')
+    }
+
+    if (_validate > 0) {
+      return false;
+    }
+
     $.ajax({
       url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items(${itemId})`,
       type: "POST",
@@ -399,5 +424,26 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       FormDigestValue: ""
     };
     window.open(winURL, '_self');
+  }
+  private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
+    const endPoint: string = `${siteColUrl}/_api/web/lists('`+ listGUID +`')/fields?$filter=EntityPropertyName eq '`+ columnName +`'`;
+  
+    this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
+      .then((response: HttpClientResponse) => {
+        if (response.ok) {
+          response.json()
+            .then((jsonResponse) => {
+              console.log(jsonResponse.value[0]);
+              let dropdownId = jsonResponse.value[0].Title.replace(/\s/g, '');
+              jsonResponse.value[0].Choices.forEach(dropdownValue => {
+                $('#' + dropdownId ).append('<option value="'+ dropdownValue +'">'+ dropdownValue +'</option>');
+              });
+            }, (err: any): void => {
+              console.warn(`Failed to fulfill Promise\r\n\t${err}`);
+            });
+        } else {
+          console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
+        }
+      });
   }
 }

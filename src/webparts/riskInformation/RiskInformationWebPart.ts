@@ -17,6 +17,8 @@ export interface IRiskInformationWebPartProps {
   currentContext: WebPartContext;
 }
 
+export var allchoiceColumns: any[] = ["RiskCategory", "RiskStatus", "RiskResponse", "RiskImpact", "RiskProbability"];
+
 export default class RiskInformationWebPart extends BaseClientSideWebPart <IRiskInformationWebPartProps> {
 
   public render(): void {

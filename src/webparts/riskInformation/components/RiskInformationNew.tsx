@@ -2,16 +2,17 @@ import * as React from 'react';
 import styles from './RiskInformation.module.scss';
 import { IRiskInformationProps } from './IRiskInformationProps';
 import { escape } from '@microsoft/sp-lodash-subset';
-import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration, SPHttpClientResponse } from "@microsoft/sp-http";
+import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration  ,SPHttpClientResponse, HttpClientResponse} from "@microsoft/sp-http";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { GetParameterValues } from './getQueryString';
 import { Form, FormGroup, Button, FormControl } from "react-bootstrap";
 import { SPComponentLoader } from "@microsoft/sp-loader";
 import { IRiskInformationWebPartProps } from "../RiskInformationWebPart";
 import * as $ from "jquery";
-import { getListEntityName,listType } from './getListEntityName';
+import { getListEntityName, listType } from './getListEntityName';
 import { ISPRiskInformationFields } from './IRiskInformationFileds';
 import { IRiskInformationState } from './IRiskInformationState';
+import { allchoiceColumns } from "../RiskInformationWebPart";
 
 require('./RiskInformation.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
@@ -47,6 +48,11 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   }
 
   public componentDidMount() {
+    //Get all choice filed values
+    allchoiceColumns.forEach(elem => {
+      this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
+    });
+
     getListEntityName(this.props.currentContext, listGUID);
     //Load dd, people picker and other controls    
     this.setFormDigest();
@@ -61,8 +67,8 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     this.setState(newState);
   }
 
-  private handleSubmit = (e) =>{    
-      this.createItem(e);
+  private handleSubmit = (e) => {
+    this.createItem(e);
   }
   public render(): React.ReactElement<IRiskInformationProps> {
 
@@ -78,26 +84,9 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Project ID</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
+            <FormGroup className="col-9 mb-3">
               {/* <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="_RMSID" name="RMS_Id" placeholder="RMS ID" onChange={this.handleChange} value={this.state.RMS_Id} /> */}
-              <Form.Control size="sm" type="text" id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID} />
-            </FormGroup>
-            <FormGroup className="col-1"></FormGroup>
-            <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Risk Category</Form.Label>
-            </FormGroup>
-            <FormGroup className="col-3">
-              <Form.Control size="sm" id="RiskCategory" as="select" name="RiskCategory" onChange={this.handleChange} value={this.state.RiskCategory}>
-                <option >Select an Option</option>
-                <option value="Resources">Resources</option>
-                <option value="Technology">Technology</option>
-                <option value="Requirements">Requirements</option>
-                <option value="Quality">Quality</option>
-                <option value="External">External</option>
-                <option value="Scope">Scope</option>
-                <option value="Schedule">Schedule</option>
-                <option value="Budget">Budget</option>
-              </Form.Control>
+              <Form.Control size="sm" type="number" id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID} />
             </FormGroup>
           </Form.Row>
           <Form.Row>
@@ -115,6 +104,17 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-9 mb-3">
               <Form.Control size="sm" as="textarea" rows={3} type="text" id="RiskDescription" name="RiskDescription" placeholder="Risk Description" onChange={this.handleChange} value={this.state.RiskDescription} />
+            </FormGroup>
+          </Form.Row>
+
+          <Form.Row>
+            <FormGroup className="col-2">
+              <Form.Label className={styles.customlabel + " " + styles.required}>Risk Category</Form.Label>
+            </FormGroup>
+            <FormGroup className="col-9 mb-3">
+              <Form.Control size="sm" id="RiskCategory" as="select" name="RiskCategory" onChange={this.handleChange} value={this.state.RiskCategory}>
+                <option >Select an Option</option>                
+              </Form.Control>
             </FormGroup>
           </Form.Row>
 
@@ -141,11 +141,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskResponse" as="select" name="RiskResponse" onChange={this.handleChange} value={this.state.RiskResponse}>
-                <option >Select an Option</option>
-                <option value="Accept">Accept</option>
-                <option value="Avoid">Avoid</option>
-                <option value="Mitigate">Mitigate</option>
-                <option value="Transfer">Transfer</option>
+                <option >Select an Option</option>                
               </Form.Control>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
@@ -154,12 +150,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskImpact" as="select" name="RiskImpact" onChange={this.handleChange} value={this.state.RiskImpact}>
-                <option >Select an Option</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option >Select an Option</option>                
               </Form.Control>
             </FormGroup>
           </Form.Row>
@@ -170,9 +161,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskStatus" as="select" name="RiskStatus" onChange={this.handleChange} value={this.state.RiskStatus}>
-                <option >Select an Option</option>
-                <option value="Open">Open</option>
-                <option value="Closed">Closed</option>
+                <option >Select an Option</option>                
               </Form.Control>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
@@ -191,12 +180,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskProbability" as="select" name="RiskProbability" onChange={this.handleChange} value={this.state.RiskProbability}>
-                <option >Select an Option</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option >Select an Option</option>                
               </Form.Control>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
@@ -242,16 +226,17 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     );
   }
 
-  private createItem(e){
+  private createItem(e) {
     let _validate = 0;
     e.preventDefault();
+
     let requestData = {
       __metadata:
       {
         type: listType
       },
       ProjectID: this.state.ProjectID,
-      RiskID:this.state.RiskID,
+      RiskID: this.state.RiskID,
       RiskName: this.state.RiskName,
       RiskDescription: this.state.RiskDescription,
       RiskCategory: this.state.RiskCategory,
@@ -267,45 +252,94 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     } as ISPRiskInformationFields;
 
     //validation
-    // if (requestData.ProjectID.length < 1) {
-    //   $('input[name="RMS_Id"]').css('border', '2px solid red');
-    //   _validate++;
-    // } else {
-    //   $('input[name="RMS_Id"]').css('border', '1px solid #ced4da')
-    // }
-    // if (requestData.ProjectID_SalesCRM.length < 1) {
-    //   $('input[name="CRM_Id"]').css('border', '2px solid red');
-    //   _validate++;
-    // } else {
-    //   $('input[name="CRM_Id"]').css('border', '1px solid #ced4da')
-    // }
-    // if (requestData.ProjectName.length < 1) {
-    //   $('#_projectName').css('border', '2px solid red');
-    //   _validate++;
-    // } else {
-    //   $('#_projectName').css('border', '1px solid #ced4da')
-    // }
-    // if (requestData.PlannedStart.length < 1) {
-    //   $('#inpt_plannedStart').css('border', '2px solid red');
-    //   _validate++;
-    // } else {
-    //   $('#inpt_plannedStart').css('border', '1px solid #ced4da');
-    // }
-    // if (requestData.PlannedCompletion.length < 1) {
-    //   $('#inpt_plannedCompletion').css('border', '2px solid red');
-    //   _validate++;
-    // } else {
-    //   $('#inpt_plannedCompletion').css('border', '1px solid #ced4da');
-    // }
-    // if (requestData.ProjectBudget.length < 1) {
-    //   $('#_budget').css('border', '2px solid red');
-    //   _validate++;
-    // } else {
-    //   $('#_budget').css('border', '1px solid #ced4da')
-    // }
-    // if (_validate > 0) {
-    //   return false;
-    // }
+    // ProjectId Number only and mandatory
+    if (requestData.ProjectID.length < 1) {
+      $('#ProjectId').css('border', '2px solid red');
+      _validate++;
+    } 
+    else {
+      $('#ProjectId').css('border', '1px solid #ced4da')
+    }
+    // Risk Name mandatory
+    if (requestData.RiskName.length < 1) {
+      $('#RiskName').css('border', '2px solid red');
+      _validate++;
+    } 
+    else {
+      $('#RiskName').css('border', '1px solid #ced4da')
+    }
+
+    // Risk Description mandatory
+    if (requestData.RiskDescription.length < 1) {
+      $('#RiskDescription').css('border', '2px solid red');
+      _validate++;
+    } 
+    else {
+      $('#RiskDescription').css('border', '1px solid #ced4da')
+    }
+
+    // Risk category mandatory 
+    if( requestData.RiskCategory.length < 1 || requestData.RiskCategory == null || requestData.RiskCategory == ""){
+      $('#RiskCategory').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#RiskCategory').css('border','1px solid #ced4da')
+    }
+
+    // Risk Status mandatory 
+    if( requestData.RiskStatus.length < 1 || requestData.RiskStatus == null || requestData.RiskStatus == ""){
+      $('#RiskStatus').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#RiskStatus').css('border','1px solid #ced4da')
+    }
+
+    // Risk Onwer mandatory
+    if (requestData.RiskOwner.length < 1) {
+      $('#RiskOwner').css('border', '2px solid red');
+      _validate++;
+    } 
+    else {
+      $('#RiskOwner').css('border', '1px solid #ced4da')
+    }
+
+    // Risk Response mandatory 
+    if( requestData.RiskResponse.length < 1 || requestData.RiskResponse == null || requestData.RiskResponse == ""){
+      $('#RiskResponse').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#RiskResponse').css('border','1px solid #ced4da')
+    }
+
+    // Risk Impact mandatory 
+    if( requestData.RiskImpact.length < 1 || requestData.RiskImpact == null || requestData.RiskImpact == ""){
+      $('#RiskImpact').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#RiskImpact').css('border','1px solid #ced4da')
+    }
+
+    // Risk Probability mandatory 
+    if( requestData.RiskProbability.length < 1 || requestData.RiskProbability == null || requestData.RiskProbability == ""){
+      $('#RiskProbability').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#RiskProbability').css('border','1px solid #ced4da')
+    }
+
+    // Risk Remarks mandatory
+    if (requestData.Remarks.length < 1) {
+      $('#Remarks').css('border', '2px solid red');
+      _validate++;
+    } 
+    else {
+      $('#Remarks').css('border', '1px solid #ced4da')
+    }
+
+    
+    if (_validate > 0) {
+      return false;
+    }
 
     $.ajax({
       url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items`,
@@ -355,21 +389,22 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   }
 
   private setFormDigest
-  (){
-    $.ajax({  
-        url: this.props.currentContext.pageContext.web.absoluteUrl+"/_api/contextinfo",  
-        type: "POST",  
-        headers:{'Accept': 'application/json; odata=verbose;', "Content-Type": "application/json;odata=verbose",  
-      },  
-        success: (resultData)=> {  
-          
-          this.setState({  
-            FormDigestValue: resultData.d.GetContextWebInformation.FormDigestValue
-          });  
-        },  
-        error : (jqXHR, textStatus, errorThrown) =>{  
-        }  
-    });  
+    () {
+    $.ajax({
+      url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/contextinfo",
+      type: "POST",
+      headers: {
+        'Accept': 'application/json; odata=verbose;', "Content-Type": "application/json;odata=verbose",
+      },
+      success: (resultData) => {
+
+        this.setState({
+          FormDigestValue: resultData.d.GetContextWebInformation.FormDigestValue
+        });
+      },
+      error: (jqXHR, textStatus, errorThrown) => {
+      }
+    });
   }
 
   private closeform() {
@@ -431,4 +466,26 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   //         //console.log(this.state.) ;
   //       });
   //   }
+
+  private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
+    const endPoint: string = `${siteColUrl}/_api/web/lists('`+ listGUID +`')/fields?$filter=EntityPropertyName eq '`+ columnName +`'`;
+  
+    this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
+      .then((response: HttpClientResponse) => {
+        if (response.ok) {
+          response.json()
+            .then((jsonResponse) => {
+              console.log(jsonResponse.value[0]);
+              let dropdownId = jsonResponse.value[0].Title.replace(/\s/g, '');
+              jsonResponse.value[0].Choices.forEach(dropdownValue => {
+                $('#' + dropdownId ).append('<option value="'+ dropdownValue +'">'+ dropdownValue +'</option>');
+              });
+            }, (err: any): void => {
+              console.warn(`Failed to fulfill Promise\r\n\t${err}`);
+            });
+        } else {
+          console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
+        }
+      });
+  }
 }

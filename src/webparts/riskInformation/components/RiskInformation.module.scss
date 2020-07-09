@@ -5,8 +5,16 @@
   padding-top: 6px;
   font-weight: 700;
 }
+.disabledValue{
+  //background-color: lightgray;
+  padding-top: 6px;
+  //font-weight: 630;
+  display: flex;
+  // justify-content: center;
+  //border-radius: 0.2rem;
+}
 .required::after{
-  content:"*";
+  content:" *";
   color:red;
 }
 .buttonCLass{
@@ -43,7 +51,7 @@
 }
 //customCss End
 
-.riskInformation {
+.pmoListForms {
   .container {
     max-width: 700px;
     margin: 0px auto;
