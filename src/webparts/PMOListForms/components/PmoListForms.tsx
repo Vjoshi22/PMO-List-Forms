@@ -4,12 +4,12 @@ import { IPmoListFormsProps } from './IPmoListFormsProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration  ,SPHttpClientResponse, HttpClientResponse} from "@microsoft/sp-http";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker"; 
-import { GetParameterValues } from './getQueryString';
+import { _getParameterValues } from './getQueryString';
 import { Form, FormGroup, Button, FormControl } from "react-bootstrap";
 import { SPComponentLoader } from "@microsoft/sp-loader";
 import { SPProjectList } from "../components/IProjectListProps";
 import * as $ from "jquery";
-import { getListEntityName, listType } from './getListEntityName';
+import { _getListEntityName, listType } from './getListEntityName';
 import { allchoiceColumns } from "../PmoListFormsWebPart";
 import { data } from 'jquery';
 
@@ -86,7 +86,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     allchoiceColumns.forEach(elem => {
       this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
     })
-    getListEntityName(this.props.currentContext, listGUID);
+    _getListEntityName(this.props.currentContext, listGUID);
     $('.pickerText_4fe0caaf').css('border','0px');
     $('.pickerInput_4fe0caaf').addClass('form-control');
     $('.form-row').css('justify-content','center');
@@ -153,15 +153,15 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         <Form.Row className="mt-3">
           {/*-----------RMS ID------------------- */}
           <FormGroup className="col-2">
-            <Form.Label className={styles.customlabel +" " + styles.required}>RMS ID</Form.Label>
+            <Form.Label className={styles.customlabel +" " + styles.required}>Project Id</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-            <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="RMS ID" onChange={this.handleChange} value={this.state.ProjectID}/>
+            <Form.Control size="sm" type="number" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID}/>
           </FormGroup>
           <FormGroup className="col-1"></FormGroup>
           {/*-----------Project Type------------- */}
           <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel}>Project Type</Form.Label>
+              <Form.Label className={styles.customlabel + " " + styles.required}>Project Type</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="ProjectType" as="select" name="ProjectType" onClick={() =>this._getdropdownValues} onChange={this.handleChange} value={this.state.ProjectType}>
@@ -173,7 +173,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         <Form.Row>
             {/* -----------Client Name------------- */}
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel}>Client Name</Form.Label>
+              <Form.Label className={styles.customlabel + " " + styles.required}>Client Name</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" type="text" id="ClientName" name="ClientName" placeholder="Client Name" onChange={this.handleChange} value={this.state.ClientName}/>
@@ -235,7 +235,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
            </Form.Row>
           <Form.Row> 
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel}>Project Mode</Form.Label>
+              <Form.Label className={styles.customlabel + " " + styles.required}>Project Mode</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="ProjectMode" as="select" name="ProjectMode" onChange={this.handleChange} value={this.state.ProjectMode}>
@@ -244,7 +244,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             </FormGroup>
           <FormGroup className="col-1"></FormGroup>
           <FormGroup className="col-2">
-            <Form.Label className={styles.customlabel}>Project Status</Form.Label>
+            <Form.Label className={styles.customlabel + " " + styles.required}>Project Status</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
             <Form.Control size="sm" id="Status" as="select" name="ProjectStatus"  onChange={this.handleChange} value={this.state.ProjectStatus}>
@@ -258,7 +258,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         </Form.Row>
         <Form.Row>
           <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Tentative Start Date</Form.Label>
+            <Form.Label className={styles.customlabel + " " + styles.required}>Tentative Start Date</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
             <Form.Control size="sm" type="date" id="PlannedStart" name="PlannedStart" placeholder="Planned Start Date" onChange={this.handleChange} value={this.state.PlannedStart}/>
@@ -266,7 +266,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
           </FormGroup>
           <FormGroup className="col-1"></FormGroup>
           <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Tentative End Date</Form.Label>
+            <Form.Label className={styles.customlabel + " " + styles.required}>Tentative End Date</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
             <Form.Control size="sm" type="date" disabled={this.state.disable_plannedCompletion} id="PlannedCompletion" name="PlannedCompletion" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.PlannedCompletion}/>
@@ -275,7 +275,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         {/* Project Description */}
         <Form.Row>
           <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Project Description</Form.Label>
+            <Form.Label className={styles.customlabel + " " + styles.required}>Project Description</Form.Label>
           </FormGroup>
           <FormGroup className="col-9 mb-3">
             <Form.Control size="sm" as="textarea" rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription}/>
@@ -299,7 +299,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         </Form.Row>
         <Form.Row className="mb-4">
           <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Project Progress</Form.Label>
+            <Form.Label className={styles.customlabel + " " + styles.required}>Project Progress</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
             <Form.Control size="sm" type="number" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress}/>
@@ -400,11 +400,17 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     };
     
     //validation
-    if (requestData.ProjectID.length < 1){
+    if (requestData.ProjectID.length < 1 || requestData.ProjectID == null || requestData.ProjectID == ""){
       $('#ProjectId').css('border','2px solid red');
       _validate++;
     }else{
       $('#ProjectId').css('border','1px solid #ced4da')
+    }
+    if( requestData.Client_x0020_Name.length < 1 || requestData.Client_x0020_Name == null || requestData.Client_x0020_Name == ""){
+      $('#ClientName').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#ClientName').css('border','1px solid #ced4da')
     }
     if( requestData.Project_x0020_Name.length < 1){
       $('#ProjectName').css('border','2px solid red');
@@ -412,23 +418,65 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     }else{
       $('#ProjectName').css('border','1px solid #ced4da')
     }
-    if(requestData.PlannedStart.length <1){
+    if( requestData.Project_x0020_Type.length < 1 || requestData.Project_x0020_Type == null || requestData.Project_x0020_Type == ""){
+      $('#ProjectType').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#ProjectType').css('border','1px solid #ced4da')
+    }
+    if(requestData.PlannedStart.length <1 || requestData.PlannedStart == null || requestData.PlannedStart == ""){
       $('#PlannedStart').css('border','2px solid red');
       _validate++;
     }else{
       $('#PlannedStart').css('border','1px solid #ced4da');
     }
-    if(requestData.Planned_x0020_End.length < 1){
+    if(requestData.Planned_x0020_End.length < 1 || requestData.Planned_x0020_End == null || requestData.Planned_x0020_End ==""){
       $('#PlannedCompletion').css('border','2px solid red');
       _validate++;
     }else{
       $('#PlannedCompletion').css('border','1px solid #ced4da');
     }
-    if (requestData.Project_x0020_Budget.length < 1) {
+    if (requestData.Project_x0020_Mode.length < 1 || requestData.Project_x0020_Mode == null || requestData.Project_x0020_Mode =="") {
+      $('#ProjectMode').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#ProjectMode').css('border','1px solid #ced4da')
+    }
+    if (requestData.Status.length < 1 || requestData.Status == null || requestData.Status =="") {
+      $('#Status').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#Status').css('border','1px solid #ced4da')
+    }
+    if (requestData.Region.length < 1 || requestData.Region == null || requestData.Region =="") {
+      $('#Region').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#Region').css('border','1px solid #ced4da')
+    }
+    if (requestData.Project_x0020_Budget.length < 1 || requestData.Project_x0020_Budget == null || requestData.Project_x0020_Budget =="") {
       $('#BudgetSOW').css('border','2px solid red');
       _validate++;
     }else{
       $('#BudgetSOW').css('border','1px solid #ced4da')
+    }
+    if (requestData.Progress.length < 1 || requestData.Progress == null || requestData.Progress =="") {
+      $('#BudgetSOW').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#BudgetSOW').css('border','1px solid #ced4da')
+    } //ProjectProgress
+    if (requestData.Progress.length < 1 || requestData.Progress == null || requestData.Progress =="") {
+      $('#ProjectProgress').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#ProjectProgress').css('border','1px solid #ced4da')
+    }
+    if (requestData.Project_x0020_Description.length < 1 || requestData.Project_x0020_Description == null || requestData.Project_x0020_Description =="") {
+      $('#ProjectDescription').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#ProjectDescription').css('border','1px solid #ced4da')
     }
     if(_validate>0){
       return false;
@@ -563,7 +611,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
           response.json()
             .then((jsonResponse) => {
               console.log(jsonResponse.value[0]);
-              let dropdownId = jsonResponse.value[0].StaticName.replace(/\s/g, '');
+              let dropdownId = jsonResponse.value[0].Title.replace(/\s/g, '');
               jsonResponse.value[0].Choices.forEach(dropdownValue => {
                 $('#' + dropdownId ).append('<option value="'+ dropdownValue +'">'+ dropdownValue +'</option>');
               });
@@ -575,157 +623,4 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         }
       });
   }
-    
-    // //function to save the edit item
-    // private saveItem(e){
-    //   var itemId = GetParameterValues('id');
-    //   let _validate=0;
-    //   e.preventDefault();
-
-
-    //   let requestData = {
-    //     __metadata:  
-    //     {  
-    //         type: listType
-    //     },  
-    //     ProjectID : this.state.ProjectID,
-    //     Project_x0020_Name: this.state.ProjectName,
-    //     Client_x0020_Name: this.state.ClientName,
-    //     Delivery_x0020_Manager: this.state.DeliveryManager,
-    //     Project_x0020_Manager: this.state.ProjectManager,
-    //     Project_x0020_Type: this.state.ProjectType,
-    //     Project_x0020_Mode: this.state.ProjectMode,
-    //     PlannedStart: this.state.PlannedStart,
-    //     Planned_x0020_End: this.state.PlannedCompletion,
-    //     Project_x0020_Description: this.state.ProjectDescription,
-    //     Region: this.state.ProjectLocation,
-    //     Project_x0020_Budget: this.state.ProjectBudget,
-    //     Status: this.state.ProjectStatus
-    
-    //   };
-    //   //validation
-    //   if (requestData.ProjectID.length < 1){
-    //     $('input[name="RMS_Id"]').css('border','2px solid red');
-    //     _validate++;
-    //   }else{
-    //     $('input[name="RMS_Id"]').css('border','1px solid #ced4da')
-    //   }
-    //   if( requestData.Project_x0020_Name.length < 1){
-    //     $('#_projectName').css('border','2px solid red');
-    //     _validate++;
-    //   }else{
-    //     $('#_projectName').css('border','1px solid #ced4da')
-    //   }
-    //   if (requestData.Project_x0020_Budget.length < 1) {
-    //     $('#_budget').css('border','2px solid red');
-    //     _validate++;
-    //   }else{
-    //     $('#_budget').css('border','1px solid #ced4da')
-    //   }
-    //   if(requestData.PlannedStart.length <1){
-    //     $('#inpt_plannedStart').css('border','2px solid red');
-    //     _validate++;
-    //   }else{
-    //     $('#inpt_plannedStart').css('border','1px solid #ced4da');
-    //   }
-    //   if(requestData.Planned_x0020_End.length < 1){
-    //     $('#inpt_plannedCompletion').css('border','2px solid red');
-    //     _validate++;
-    //   }else{
-    //     $('#inpt_plannedCompletion').css('border','1px solid #ced4da');
-    //   }
-    //   if(_validate>0){
-    //     return false;
-    //   }
-     
-    
-    //   $.ajax({
-    //       url:  this.props.currentContext.pageContext.web.absoluteUrl+ "/_api/web/lists('" + listGUID + "')/items("+ itemId +")",  
-    //       type: "POST",  
-    //       data: JSON.stringify(requestData),  
-    //       headers:  
-    //       {  
-    //           "Accept": "application/json;odata=verbose",  
-    //           "Content-Type": "application/json;odata=verbose",  
-    //           "X-RequestDigest": this.state.FormDigestValue,
-    //           "IF-MATCH": "*",
-    //           'X-HTTP-Method': 'MERGE' 
-    //       },  
-    //       success:(data, status, xhr) => 
-    //       {  
-    //         alert("Submitted successfully");
-    //         let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
-    //         window.open(winURL,'_self');
-    //       },  
-    //       error: (xhr, status, error)=>
-    //       {  
-    //         alert(JSON.stringify(xhr.responseText));
-    //         let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
-    //         window.open(winURL,'_self');
-    //       }  
-    //   });
-      
-    //   this.setState({
-    //     ProjectID: '',
-    //     CRM_Id :'',
-    //     ProjectName: '',
-    //     ClientName: '',
-    //     DeliveryManager:'',
-    //     ProjectManager: '',
-    //     ProjectType: '',
-    //     ProjectMode: '',
-    //     PlannedStart: '',
-    //     PlannedCompletion: '',
-    //     ProjectDescription: '',
-    //     ProjectLocation: '',
-    //     ProjectBudget: '',
-    //     ProjectStatus: '',
-    //     startDate: '',
-    //     disable_plannedCompletion:true,
-    //     endDate: '',
-    //     focusedInput: '',
-    //     FormDigestValue:''
-    //   });
-    // }
-   
-    // //fucntion to load items for particular item id on edit form
-    // private loadItems(){
-    
-    // var itemId = GetParameterValues('id');
-    // if(itemId==""){
-    //   alert("Incorrect URL");
-    //   let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
-    //   window.open(winURL,'_self');
-    // }else{
-    // const url = this.props.currentContext.pageContext.web.absoluteUrl + `/_api/web/lists('`+ listGUID +`')/items(`+ itemId +`)`;
-    // return this.props.currentContext.spHttpClient.get(url,SPHttpClient.configurations.v1,  
-    //     {  
-    //         headers: {  
-    //           'Accept': 'application/json;odata=nometadata',  
-    //           'odata-version': ''  
-    //         }  
-    //     }).then((response: SPHttpClientResponse): Promise<SPProjectList> => {  
-    //         return response.json();  
-    //       })  
-    //     .then((item: SPProjectList): void => {   
-    //       this.setState({
-    //         ProjectID: item.ProjectID,
-    //         DeliveryManager: item.Delivery_x0020_Manager,
-    //         ProjectName: item.Project_x0020_Name,
-    //         ClientName: item.Client_x0020_Name,
-    //         ProjectManager: item.Project_x0020_Manager,
-    //         ProjectType: item.Project_x0020_Type,
-    //         ProjectMode: item.Project_x0020_Mode,
-    //         PlannedStart: item.PlannedStart.slice(0,10),
-    //         PlannedCompletion: item.Planned_x0020_End.slice(0,10),
-    //         ProjectDescription: item.Project_x0020_Description,
-    //         ProjectLocation: item.Region,
-    //         ProjectBudget: item.Project_x0020_Budget,
-    //         ProjectStatus: item.Status,
-    //         disable_RMSID: true
-    //       })  
-    //       console.log(this.state.PlannedStart + " " + this.state.PlannedCompletion) ;
-    //     });
-    //   }
-    // }
 }

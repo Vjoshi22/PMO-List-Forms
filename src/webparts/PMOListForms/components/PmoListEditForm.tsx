@@ -4,19 +4,19 @@ import { IPmoListFormsProps } from './IPmoListFormsProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration  ,SPHttpClientResponse, HttpClientResponse} from "@microsoft/sp-http";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker"; 
-import { GetParameterValues } from './getQueryString';
+import { _getParameterValues } from './getQueryString';
 import { Form, FormGroup, Button, FormControl } from "react-bootstrap";
 import { SPComponentLoader } from "@microsoft/sp-loader";
 import { SPProjectListEditForm } from "../components/IEditFormProps";
 import * as $ from "jquery";
-import { getListEntityName, listType } from './getListEntityName';
+import { _getListEntityName, listType } from './getListEntityName';
 import { data } from 'jquery';
 
 
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
-var allchoiceColumnsEditForm: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Status", "Scope", "Resource", "Schedule"];
+var allchoiceColumnsEditForm: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Project_x0020_Cost" ,"Status", "Scope", "Resource", "Schedule"];
 
 export interface IreactState{
     ProjectID: string,
@@ -88,7 +88,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             focusedInput: '',
             FormDigestValue:''
         };  
-        this.saveItem=this.saveItem.bind(this);
+        this._saveItem=this._saveItem.bind(this);
         this.handleChange=this.handleChange.bind(this);
         this._getProjectManager =this._getProjectManager.bind(this);
         //this.loadItems = this.loadItems.bind(this);
@@ -97,28 +97,17 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
       public componentDidMount() {
         //calling function to fetch dropdown values form sp choice coluns
         allchoiceColumnsEditForm.forEach(colName => {
-            this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
+            this._retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
           });
-        getListEntityName(this.props.currentContext, listGUID);
+        _getListEntityName(this.props.currentContext, listGUID);
         $('.pickerText_4fe0caaf').css('border','0px');
         $('.pickerInput_4fe0caaf').addClass('form-control');
         $('.form-row').css('justify-content','center');
-      
-        if((/edit/.test(window.location.href))){
-          newitem = false;
-          this.loadItems();
-        }
-        if((/new/.test(window.location.href))){
-          newitem = true
-        }
-        if(!this.state.ActualStartDate){
-          this.setState({
-            disable_plannedCompletion: false
-          })
-        }
-       this.getAccessToken();
+        this._loadItems();
+        
+        this._getAccessToken();
         timerID=setInterval(
-          () =>this.getAccessToken(),300000); 
+          () =>this._getAccessToken(),300000); 
      }
      public componentWillUnmount()
      {
@@ -130,11 +119,13 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         let newState = {};
         newState[e.target.name] = e.target.value;
         this.setState(newState);
-        this.validateDate(e);
-
+        //fun to validate date
+        this._validateDate(e);
+        //func to validate progrerss
+        this._validateProgress(e);
       }
-      private handleSubmit = (e) =>{
-        this.saveItem(e);
+      private _handleSubmit = (e) =>{
+        this._saveItem(e);
       }
       private _getProjectManager = (items: any[]) => {  
         console.log('Items:', items);  
@@ -150,7 +141,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         return (
             <div id="newItemDiv" className={styles["_main-div"]} >
         <div id="heading" className={styles.heading}><h3>Project Details</h3></div>
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this._handleSubmit}>
             <Form.Row className="mt-3">
             {/*-----------Project ID------------------- */}
                 <FormGroup className="col-2">
@@ -373,7 +364,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 </div>  
                 <FormGroup className="col-.5"></FormGroup>  
                 <div>
-                <Button id="cancel" size="sm" variant="primary" onClick={this.closeform}>
+                <Button id="cancel" size="sm" variant="primary" onClick={this._closeform}>
                     Cancel
                 </Button>
                 </div>
@@ -387,10 +378,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     </div>);
     }
     //function to validate the date, not allowing the user to enter end date lesser than start date
-    private validateDate(e){
+    private _validateDate(e){
         let newState = {};
         //validation for date
-        if(e.target.name == "ActualStartDate" && e.target.value!=""){
+        if((e.target.name == "ActualStartDate" && e.target.value!="") && (this.state.ProjectProgress=="100")){
             this.setState({
               disable_plannedCompletion: false
             })
@@ -406,12 +397,12 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 $('#ActualEndDate').closest('div').append('<span class="errorMessage" style="color:red;font-size:9pt">Must be greater than Actual Start date</span>')
               }else{
                 $('.errorMessage').remove();
-              }
-          }
-          }else if(e.target.name == "ActualStartDate" && e.target.value ==""){
+                }
+            }
+            }else if((e.target.name == "ActualStartDate" && e.target.value =="") && (this.state.ProjectProgress=="100") ){
             this.setState({
               ActualEndDate: "",
-              disable_plannedCompletion: true
+              //disable_plannedCompletion: true
             })
           }
           if(e.target.name == "ActualEndDate"){
@@ -430,10 +421,41 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
           }//validation for date ending
     }
 
+    //function to validate progress
+    private _validateProgress(e){
+        
+        if(e.target.name == "ProjectProgress" && e.target.value!=""){
+            e.target.value > 100 ? this.setState({ProjectProgress: "100"}) : e.target.value;
+        }
+        if(e.target.name == "ProjectProgress" && e.target.value == "100"){
+            this.setState({
+                disable_plannedCompletion: false,
+                ProjectStatus: "Completed"
+            })
+        }else if(e.target.name == "ProjectProgress" && e.target.value != "100"){
+            this.setState({
+                disable_plannedCompletion: true,
+                ProjectStatus: "In Progress"
+            })
+        }
+
+        if(e.target.name == "ProjectStatus" && e.target.value =="Completed"){
+            this.setState({
+                ProjectProgress: "100",
+                disable_plannedCompletion: false
+            })
+        }else if(e.target.name == "ProjectStatus" && e.target.value !="Completed"){
+            this.setState({
+                ProjectProgress: "",
+                disable_plannedCompletion: true
+            })
+        }
+    }
+
     //fucntion to load items for particular item id on edit form
-    private loadItems(){
+    private _loadItems(){
     
-        var itemId = GetParameterValues('id');
+        var itemId = _getParameterValues('id');
         if(itemId==""){
         alert("Incorrect URL");
         let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
@@ -458,8 +480,8 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 ProjectManager: item.Project_x0020_Manager,
                 ProjectType: item.Project_x0020_Type,
                 ProjectMode: item.Project_x0020_Mode,
-                ActualStartDate: item.Actual_x0020_Start.slice(0,10),
-                ActualEndDate: item.Actual_x0020_End.slice(0,10),
+                ActualStartDate: item.Actual_x0020_Start,
+                ActualEndDate: item.Actual_x0020_End,
                 ProjectDescription: item.Project_x0020_Description,
                 ProjectLocation: item.Region,
                 RevisedBudget: item.Revised_x0020_Budget,
@@ -478,11 +500,16 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         }
         }
     //function to save the edit item
-    private saveItem(e){
-        var itemId = GetParameterValues('id');
+    private _saveItem(e){
+        if(this.state.disable_plannedCompletion){
+            this.setState({
+                ActualEndDate:""
+            })
+        }
+        var itemId = _getParameterValues('id');
         let _validate=0;
         e.preventDefault();
-
+       
 
         let requestData = {
             __metadata:  
@@ -524,23 +551,47 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         }else{
             $('#ProjectName').css('border','1px solid #ced4da')
         }
-        if (requestData.Revised_x0020_Budget.length < 1) {
+        if ((requestData.Revised_x0020_Budget == null || requestData.Revised_x0020_Budget=="")) {
             $('#RevisedBudget').css('border','2px solid red');
             _validate++;
         }else{
             $('#RevisedBudget').css('border','1px solid #ced4da')
         }
-        if(requestData.Actual_x0020_Start.length <1){
+        if(requestData.Actual_x0020_Start == null || requestData.Actual_x0020_Start == ""){
             $('#ActualStartDate').css('border','2px solid red');
             _validate++;
         }else{
             $('#ActualStartDate').css('border','1px solid #ced4da');
         }
-        if(requestData.Actual_x0020_End.length < 1){
+        if(requestData.Progress=="100" && (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "") ){
             $('#ActualEndDate').css('border','2px solid red');
             _validate++;
         }else{
             $('#ActualEndDate').css('border','1px solid #ced4da');
+        }
+        if (requestData.Scope.length < 1) {
+            $('#Scope').css('border','2px solid red');
+            _validate++;
+        }else{
+            $('#Scope').css('border','1px solid #ced4da')
+        }
+        if (requestData.Schedule.length < 1) {
+            $('#Schedule').css('border','2px solid red');
+            _validate++;
+        }else{
+            $('#Schedule').css('border','1px solid #ced4da')
+        }
+        if (requestData.Project_x0020_Cost.length < 1) {
+            $('#ProjectCost').css('border','2px solid red');
+            _validate++;
+        }else{
+            $('#ProjectCost').css('border','1px solid #ced4da')
+        }
+        if (requestData.Resource.length < 1) {
+            $('#Resource').css('border','2px solid red');
+            _validate++;
+        }else{
+            $('#Resource').css('border','1px solid #ced4da')
         }
         if(_validate>0){
             return false;
@@ -601,7 +652,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         });
         }
     //function to keep the request digest token active
-    private getAccessToken(){
+    private _getAccessToken(){
     
     $.ajax({  
         url: this.props.currentContext.pageContext.web.absoluteUrl+"/_api/contextinfo",  
@@ -619,7 +670,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     });  
     }
     //function to close the form and redirect to the Grid page
-    private closeform(e){
+    private _closeform(e){
       e.preventDefault();
     let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
     this.setState({
@@ -654,7 +705,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     window.open(winURL,'_self');
     }
     //function to load choice column values in the dropdown
-    private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
+    private _retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
         const endPoint: string = `${siteColUrl}/_api/web/lists('`+ listGUID +`')/fields?$filter=EntityPropertyName eq '`+ columnName +`'`;
       
         this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -663,7 +714,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
               response.json()
                 .then((jsonResponse) => {
                   console.log(jsonResponse.value[0]);
-                  let dropdownId = jsonResponse.value[0].StaticName.replace(/\s/g, '');
+                  let dropdownId = jsonResponse.value[0].Title.replace(/\s/g, '');
                   jsonResponse.value[0].Choices.forEach(dropdownValue => {
                     $('#' + dropdownId ).append('<option value="'+ dropdownValue +'">'+ dropdownValue +'</option>');
                   });

@@ -1,7 +1,7 @@
 import * as $ from 'jquery';
 export var listType: any;
 
-export function getListEntityName(context, listGUID){
+export function _getListEntityName(context, listGUID){
     $.ajax({
         url:  context.pageContext.web.absoluteUrl+ "/_api/Web/Lists('"+ listGUID +"')/ListItemEntityTypeFullName",  
         method: "GET",
