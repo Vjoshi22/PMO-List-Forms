@@ -1,8 +1,16 @@
 {
-  "name": "PMO-List-Forms",
-  "version": "1.0.0",
-  "description": "This is where you include your WebPart documentation.",
-  "main": "gulpfile.js",
+  "name": "pmo-list-forms",
+  "version": "0.0.1",
+  "private": true,
+  "main": "lib/index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "build": "gulp bundle",
+    "clean": "gulp clean",
+    "test": "gulp test"
+  },
   "dependencies": {
     "@microsoft/sp-core-library": "1.10.0",
     "@microsoft/sp-lodash-subset": "1.10.0",
@@ -25,6 +33,9 @@
     "react-dom": "16.8.5",
     "sp-pnp-js": "^3.0.10"
   },
+  "resolutions": {
+    "@types/react": "16.8.8"
+  },
   "devDependencies": {
     "@microsoft/sp-build-web": "1.10.0",
     "@microsoft/sp-tslint-rules": "1.10.0",
@@ -35,19 +46,5 @@
     "@types/chai": "3.4.34",
     "@types/mocha": "2.2.38",
     "ajv": "~5.2.2"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Vjoshi22/PMO-List-Forms.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Vjoshi22/PMO-List-Forms/issues"
-  },
-  "homepage": "https://github.com/Vjoshi22/PMO-List-Forms#readme"
+  }
 }

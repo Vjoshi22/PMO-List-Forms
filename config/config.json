@@ -9,11 +9,20 @@
           "manifest": "./src/webparts/pmoListForms/PmoListFormsWebPart.manifest.json"
         }
       ]
+    },
+    "risk-information-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/riskInformation/RiskInformationWebPart.js",
+          "manifest": "./src/webparts/riskInformation/RiskInformationWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
     "PmoListFormsWebPartStrings": "lib/webparts/pmoListForms/loc/{locale}.js",
-    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js"
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
+    "RiskInformationWebPartStrings": "lib/webparts/riskInformation/loc/{locale}.js"
   }
 }
