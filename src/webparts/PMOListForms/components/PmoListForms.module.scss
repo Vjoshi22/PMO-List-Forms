@@ -6,12 +6,12 @@
   font-weight: 700;
 }
 .disabledValue{
-  background-color: lightgray;
+  //background-color: lightgray;
   padding-top: 6px;
-  font-weight: 630;
+  //font-weight: 630;
   display: flex;
-  justify-content: center;
-  border-radius: 0.2rem;
+  // justify-content: center;
+  //border-radius: 0.2rem;
 }
 .required::after{
   content:" *";
