@@ -22,10 +22,10 @@ export default class RiskInformationWebPart extends BaseClientSideWebPart <IRisk
   public render(): void {
     let renderPMOForm: any;
     if((/edit/.test(window.location.href))){
-      renderPMOForm = RiskInformationNew 
+      renderPMOForm = RiskInformationEdit 
     }
     if((/new/.test(window.location.href))){
-      renderPMOForm = RiskInformationEdit
+      renderPMOForm = RiskInformationNew
     }
     const element: React.ReactElement<IRiskInformationProps> = React.createElement(
       RiskInformationNew,
