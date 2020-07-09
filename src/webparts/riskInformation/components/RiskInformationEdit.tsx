@@ -25,7 +25,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     super(props);
     this.state = {
       Title: "",
-      RiskId: -1,
+      RiskID: "",
       ProjectID: "",
       RiskName: "",
       RiskDescription: "",
@@ -269,19 +269,19 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
         })
         .then((item: ISPRiskInformationFields): void => {
           this.setState({
-            ProjectID: this.state.ProjectID,
-            RiskName: this.state.RiskName,
-            RiskDescription: this.state.RiskDescription,
-            RiskCategory: this.state.RiskCategory,
-            RiskIdentifiedOn: this.state.RiskIdentifiedOn,
-            RiskClosedOn: this.state.RiskClosedOn,
-            RiskStatus: this.state.RiskStatus,
-            RiskOwner: this.state.RiskOwner,
-            RiskResponse: this.state.RiskResponse,
-            RiskImpact: this.state.RiskImpact,
-            RiskProbability: this.state.RiskProbability,
-            Remarks: this.state.Remarks,
-            RiskRank: this.state.RiskRank
+            ProjectID: item.ProjectID,
+            RiskName: item.RiskName,
+            RiskDescription: item.RiskDescription,
+            RiskCategory: item.RiskCategory,
+            RiskIdentifiedOn: item.RiskIdentifiedOn,
+            RiskClosedOn: item.RiskClosedOn,
+            RiskStatus: item.RiskStatus,
+            RiskOwner: item.RiskOwner,
+            RiskResponse: item.RiskResponse,
+            RiskImpact: item.RiskImpact,
+            RiskProbability: item.RiskProbability,
+            Remarks: item.Remarks,
+            RiskRank: item.RiskRank
           })          
         });
     }
@@ -292,13 +292,13 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     let _validate = 0;
     e.preventDefault();
 
-
     let requestData = {
       __metadata:
       {
         type: listType
       },
       ProjectID: this.state.ProjectID,
+      RiskID:this.state.RiskID,
       RiskName: this.state.RiskName,
       RiskDescription: this.state.RiskDescription,
       RiskCategory: this.state.RiskCategory,
@@ -381,7 +381,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/';
     this.state = {
       Title: "",
-      RiskId: -1,
+      RiskID: "",
       ProjectID: "",
       RiskName: "",
       RiskDescription: "",

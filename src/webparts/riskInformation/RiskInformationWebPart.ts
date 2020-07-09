@@ -28,7 +28,7 @@ export default class RiskInformationWebPart extends BaseClientSideWebPart <IRisk
       renderPMOForm = RiskInformationNew
     }
     const element: React.ReactElement<IRiskInformationProps> = React.createElement(
-      RiskInformationNew,
+      renderPMOForm,
       {
         description: this.properties.description,
         currentContext: this.context

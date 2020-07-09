@@ -25,7 +25,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     super(props);
     this.state = {
       Title: "",
-      RiskId: -1,
+      RiskID: "",
       ProjectID: "",
       RiskName: "",
       RiskDescription: "",
@@ -251,6 +251,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
         type: listType
       },
       ProjectID: this.state.ProjectID,
+      RiskID:this.state.RiskID,
       RiskName: this.state.RiskName,
       RiskDescription: this.state.RiskDescription,
       RiskCategory: this.state.RiskCategory,
@@ -375,7 +376,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/';
     this.state = {
       Title: "",
-      RiskId: -1,
+      RiskID: "",
       ProjectID: "",
       RiskName: "",
       RiskDescription: "",
