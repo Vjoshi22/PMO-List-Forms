@@ -2,12 +2,12 @@ import * as React from 'react';
 import styles from './PmoListForms.module.scss';
 import { IPmoListFormsProps } from './IPmoListFormsProps';
 import { escape } from '@microsoft/sp-lodash-subset';
-import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration  ,SPHttpClientResponse} from "@microsoft/sp-http";
+import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration  ,SPHttpClientResponse, HttpClientResponse} from "@microsoft/sp-http";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker"; 
 import { GetParameterValues } from './getQueryString';
 import { Form, FormGroup, Button, FormControl } from "react-bootstrap";
 import { SPComponentLoader } from "@microsoft/sp-loader";
-import { SPProjectList } from "../components/IProjectListProps";
+import { SPProjectListEditForm } from "../components/IEditFormProps";
 import * as $ from "jquery";
 import { getListEntityName, listType } from './getListEntityName';
 import { data } from 'jquery';
@@ -16,30 +16,40 @@ import { data } from 'jquery';
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
+var allchoiceColumnsEditForm: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Status", "Scope", "Resource", "Schedule"];
+
 export interface IreactState{
-  ProjectID: string,
-  CRM_Id: string,
-  ProjectName: string;
-  ClientName: string;
-  ProjectManager: string;
-  ProjectType: string;
-  ProjectMode: string;
-  PlannedStart: string;
-  PlannedCompletion: string;
-  ProjectDescription: string;
-  ProjectLocation: string;
-  ProjectBudget: string;
-  ProjectStatus: string;
-  ProjectProgress: string;
-  //peoplepicker
-  DeliveryManager: string;
-  //date
-  startDate: any;
-  disable_RMSID: boolean;
-  disable_plannedCompletion: boolean;
-  endDate: any;  
-  focusedInput: any;
-  FormDigestValue: string;
+    ProjectID: string,
+    ProjectName: string;
+    ClientName: string;
+    ProjectManager: string;
+    ProjectType: string;
+    ProjectMode: string;
+    // PlannedStart: string;
+    // PlannedCompletion: string;
+    ProjectDescription: string;
+    ProjectLocation: string;
+    // ProjectBudget: string;
+    ProjectStatus: string;
+    ProjectProgress: string;
+    ActualStartDate:string; //edit only
+    ActualEndDate:string; //edit only
+    RevisedBudget:string; //edit only
+    TotalCost:string; //edit only
+    InvoicedAmount: string; //edit only
+    ProjectScope: string; // Project Scope edit only
+    ProjectSchedule: string; //project scheduled edit only
+    ProjectResource: string;
+    ProjectCost: string; //only in edit
+    //peoplepicker
+    DeliveryManager: string;
+    //date
+    startDate: any;
+    disable_RMSID: boolean;
+    disable_plannedCompletion: boolean;
+    endDate: any;  
+    focusedInput: any;
+    FormDigestValue: string;
 }
 
 var listGUID: any = "2c3ffd4e-1b73-4623-898d-8e3a1bb60b91";   //"47272d1e-57d9-447e-9cfd-4cff76241a93"; 
@@ -51,29 +61,32 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         super(props);  
       
         this.state = {  
-          //status: 'Ready',  
-          //items: []
-          ProjectID : '',
-          CRM_Id :'',
-          ProjectName: '',
-          ClientName: '',
-          ProjectManager: '',
-          ProjectType: '',
-          ProjectMode: '',
-          PlannedStart: '',
-          PlannedCompletion: '',
-          ProjectDescription: '',
-          ProjectLocation: '',
-          ProjectBudget: '',
-          ProjectProgress:'',
-          ProjectStatus: '',
-          DeliveryManager:'',
-          startDate: '',
-          endDate: '',
-          disable_RMSID: false,
-          disable_plannedCompletion: true,
-          focusedInput: '',
-          FormDigestValue:''
+            ProjectID : '',
+            ProjectName: '',
+            ClientName: '',
+            ProjectManager: '',
+            ProjectType: '',
+            ProjectMode: '',
+            ProjectDescription: '',
+            ProjectLocation: '',
+            ProjectProgress:'',
+            ProjectStatus: '',
+            ActualStartDate:'',
+            ActualEndDate:'',
+            RevisedBudget:'',
+            TotalCost:'',
+            InvoicedAmount: '',
+            ProjectScope:'',
+            ProjectSchedule: '',
+            ProjectResource: '',
+            ProjectCost: '',
+            DeliveryManager:'',
+            startDate: '',
+            endDate: '',
+            disable_RMSID: false,
+            disable_plannedCompletion: true,
+            focusedInput: '',
+            FormDigestValue:''
         };  
         this.saveItem=this.saveItem.bind(this);
         this.handleChange=this.handleChange.bind(this);
@@ -82,6 +95,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         //this.isOutsideRange = this.isOutsideRange.bind(this);
       }
       public componentDidMount() {
+        //calling function to fetch dropdown values form sp choice coluns
+        allchoiceColumnsEditForm.forEach(colName => {
+            this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
+          });
         getListEntityName(this.props.currentContext, listGUID);
         $('.pickerText_4fe0caaf').css('border','0px');
         $('.pickerInput_4fe0caaf').addClass('form-control');
@@ -94,7 +111,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         if((/new/.test(window.location.href))){
           newitem = true
         }
-        if(!this.state.PlannedStart){
+        if(!this.state.ActualStartDate){
           this.setState({
             disable_plannedCompletion: false
           })
@@ -113,46 +130,8 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         let newState = {};
         newState[e.target.name] = e.target.value;
         this.setState(newState);
-    
-        //validation for date
-        if(e.target.name == "PlannedStart" && e.target.value!=""){
-          this.setState({
-            disable_plannedCompletion: false
-          })
-          if(this.state.PlannedCompletion!=""){
-            $('.errorMessage').text("");
-            var date1 = $('#inpt_plannedStart').val();
-            var date2 = $('#inpt_plannedCompletion').val()
-            if(date1>=date2){
-              $('#inpt_plannedCompletion').val("")
-              newState[e.target.name] = "";
-              this.setState(newState);
-              //alert("Planned Completion Cannot be less than Planned Start");
-              $('#inpt_plannedCompletion').closest('div').append('<span class="errorMessage" style="color:red;font-size:9pt">Must be greater than Planned Start date</span>')
-            }else{
-              $('.errorMessage').remove();
-            }
-        }
-        }else if(e.target.name == "PlannedStart" && e.target.value ==""){
-          this.setState({
-            PlannedCompletion: "",
-            disable_plannedCompletion: true
-          })
-        }
-        if(e.target.name == "PlannedCompletion"){
-          $('.errorMessage').text("");
-          var date1 = $('#inpt_plannedStart').val();
-          var date2 = $('#inpt_plannedCompletion').val()
-          if(date1>=date2){
-            $('#inpt_plannedCompletion').val("")
-            newState[e.target.name] = "";
-            this.setState(newState);
-            //alert("Planned Completion Cannot be less than Planned Start");
-            $('#inpt_plannedCompletion').closest('div').append('<span class="errorMessage" style="color:red;font-size:9pt">Must be greater than Planned Start date</span>')
-          }else{
-            $('.errorMessage').remove();
-          }
-        }//validation for date ending
+        this.validateDate(e);
+
       }
       private handleSubmit = (e) =>{
         this.saveItem(e);
@@ -170,241 +149,285 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     
         return (
             <div id="newItemDiv" className={styles["_main-div"]} >
-        <div id="heading" className={styles.heading}><h4>Project Details</h4></div>
-      <Form onSubmit={this.handleSubmit}>
-        <Form.Row className="mt-3">
-          {/*-----------RMS ID------------------- */}
-          <FormGroup className="col-2">
-            <Form.Label className={styles.customlabel +" " + styles.required}>RMS ID</Form.Label>
-          </FormGroup>
-          <FormGroup className="col-3">
-            <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="_RMSID" name="ProjectID" placeholder="RMS ID" onChange={this.handleChange} value={this.state.ProjectID}/>
-          </FormGroup>
-          <FormGroup className="col-1"></FormGroup>
-          {/*-----------Project Type------------- */}
-          <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel}>Project Type</Form.Label>
-            </FormGroup>
-            <FormGroup className="col-3">
-              <Form.Control size="sm" id="_projectType" as="select" name="ProjectType" onChange={this.handleChange} value={this.state.ProjectType}>
-                <option value="">Select an Option</option>
-                <option value="SAPS4-Conversion">SAPS4-Conversion  All S/4 HANA Conversions[Migrations]</option>
-                <option value="SAPS4-Con_Upg">SAPS4-Con_Upg  All S/4 HANA Conversions & Upgrades together</option>
-                <option value="SAPS4-Implementation">SAPS4-Implementation  All S/4 HANA Implementations</option>
-                <option value="SAPSOH-Mig_Upg">SAPSOH-Mig_Upg  Suite on HANA Migrations & Upgrades</option>
-                <option value="SAPSOH-Functional">SAPSOH-Functional   All other Suite on HANA Functional projects</option>
-                <option value="SAPBS-Implementation">SAPBS-Implementation  Business Suite Implementations. This Business Suite includes SAP products ERP/SCM/CRM/PLM/SRM</option>
-                <option value="SAPBS-Upgrade">SAPBS-Upgrade  Business Suite Upgrades. This Business Suite includes SAP products ERP/SCM/CRM/PLM/SRM</option>
-                <option value="SAPECC-Rollout">SAPECC-Rollout  ECC Template Rollouts</option>
-                <option value="SAP-Module-Based">SAP-Module-Based  Module Based projects like EWM</option>
-                <option value="SAP-Technical">SAP-Technical  Unicode conversions, Solman related projects or ABAP related projects</option>
-                <option value="SAP- SuccessFactors">SAP- SuccessFactors  SAP SuccessFactors projects</option>
-                <option value="SAP-Other">SAP-Other  All other projects for SAP</option>
-                <option value="Con Adv">Con Adv - Consulting Advisory…can be process work, business strategy etc</option>
-                <option value="PMO Serv">PMO Serv – PMO Services</option>
-                <option value="Train Serv">Train Serv – Training Services</option>
-                <option value="Test Serv">Test Serv – Testing Services</option>
-              </Form.Control>
-            </FormGroup>
-        </Form.Row>
+        <div id="heading" className={styles.heading}><h3>Project Details</h3></div>
+        <Form onSubmit={this.handleSubmit}>
+            <Form.Row className="mt-3">
+            {/*-----------Project ID------------------- */}
+                <FormGroup className="col-2">
+                    <Form.Label className={styles.customlabel}>Project Id</Form.Label>
+                </FormGroup>
+                <FormGroup className={styles.disabledValue + " col-3"}>
+                    {/* Please check: --- disable RMS id to be removed */}
+                    {/* <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project Id" onChange={this.handleChange} value={this.state.ProjectID}/> */}
+                    <Form.Label>{this.state.ProjectID}</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-1"></FormGroup>
+                {/*-----------Project Type------------- */}
+                <FormGroup className="col-2">
+                    <Form.Label className={styles.customlabel}>Project Type</Form.Label>
+                </FormGroup>
+                <FormGroup className={styles.disabledValue + " col-3"}>
+                    {/* Other options appending from sp list column using retrieveAllChoicesFromListField fun */}
+                    {/* <Form.Control size="sm" id="ProjectType" as="select" name="ProjectType" onChange={this.handleChange} value={this.state.ProjectType}>
+                        <option value="">Select an Option</option>
+                    </Form.Control> */}
+                    <Form.Label>{this.state.ProjectType}</Form.Label>
+                </FormGroup>
+            </Form.Row>
 
-        <Form.Row>
-            {/* -----------Client Name------------- */}
-            <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel}>Client Name</Form.Label>
-            </FormGroup>
-            <FormGroup className="col-3">
-              <Form.Control size="sm" type="text" id="_clientName" name="ClientName" placeholder="Client Name" onChange={this.handleChange} value={this.state.ClientName}/>
-            </FormGroup>
-            <FormGroup className="col-1"></FormGroup>
-            {/* -----------Project Name---------------- */}
-            <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel +" " + styles.required}>Project Name</Form.Label>
-            </FormGroup>
-            <FormGroup className="col-3">
-              <Form.Control size="sm" type="text" id="_projectName" name="ProjectName" placeholder="Ex: John Deer" onChange={this.handleChange} value={this.state.ProjectName} />
-            </FormGroup>
-          </Form.Row>
+            <Form.Row>
+                {/* -----------Client Name------------- */}
+                <FormGroup className="col-2">
+                    <Form.Label className={styles.customlabel}>Client Name</Form.Label>
+                </FormGroup>
+                <FormGroup className={styles.disabledValue + " col-3"}>
+                    {/* <Form.Control size="sm" type="text" id="ClientName" name="ClientName" placeholder="Client Name" onChange={this.handleChange} value={this.state.ClientName}/> */}
+                    <Form.Label>{this.state.ClientName}</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-1"></FormGroup>
+                {/* -----------Project Name---------------- */}
+                <FormGroup className="col-2">
+                    <Form.Label className={styles.customlabel}>Project Name</Form.Label>
+                </FormGroup>
+                <FormGroup className={styles.disabledValue + " col-3"}>
+                    {/* <Form.Control size="sm" type="text" id="ProjectName" name="ProjectName" placeholder="Ex: John Deer" onChange={this.handleChange} value={this.state.ProjectName} /> */}
+                    <Form.Label>{this.state.ProjectName}</Form.Label>
+                </FormGroup>
+            </Form.Row>
 
-          <Form.Row>
-            {/* --------Delivery Manager------------ */}
-            <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel}>Delivery Manager</Form.Label>
-            </FormGroup>
-            <FormGroup className="col-3">
-              <div id="deliveryManager">
-                <PeoplePicker
-                context={this.props.currentContext}
-                personSelectionLimit={1}    
-                groupName={""} // Leave this blank in case you want to filter from all users    
-                showtooltip={true}    
-                isRequired={true}    
-                disabled={false}    
-                ensureUser={true}  
-                selectedItems={this._getDeliveryManager}   
-                defaultSelectedUsers={[this.state.DeliveryManager]} 
-                showHiddenInUI={false}    
-                principalTypes={[PrincipalType.User]}    
-                resolveDelay={1000} />
-              </div>
-            </FormGroup>
-            <FormGroup className="col-1"></FormGroup>
-              {/*--------Project Manager-------------  */}
-            <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel +" " + styles.required}>Project Manager</Form.Label>
-            </FormGroup>
-            <FormGroup className="col-3">
-              <div id="projectManager">
-                <PeoplePicker
-                context={this.props.currentContext}   
-                personSelectionLimit={1}    
-                groupName={""} // Leave this blank in case you want to filter from all users    
-                showtooltip={true}    
-                isRequired={true}    
-                disabled={false}    
-                ensureUser={true}    
-                selectedItems={this._getProjectManager} 
-                defaultSelectedUsers={[this.state.ProjectManager]}   
-                showHiddenInUI={false}    
-                principalTypes={[PrincipalType.User]}    
-                resolveDelay={1000} />
-              </div>
-            </FormGroup>
-           </Form.Row>
-
-          {/* <Form.Row>
-            <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel}>Client Name</Form.Label>
-            </FormGroup>
-            <FormGroup className="col-3">
-              <Form.Control size="sm" type="text" id="_clientName" name="ClientName" placeholder="Client Name" onChange={this.handleChange} value={this.state.ClientName}/>
-            </FormGroup>
-            <FormGroup className="col-1"></FormGroup>
-            <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel}>Project Type</Form.Label>
-            </FormGroup>
-            <FormGroup className="col-3">
-              <Form.Control size="sm" id="_projectType" as="select" name="ProjectType" onChange={this.handleChange} value={this.state.ProjectType}>
-                <option value="">Select an Option</option>
-                <option value="SAPS4-Conversion">SAPS4-Conversion  All S/4 HANA Conversions[Migrations]</option>
-                <option value="SAPS4-Con_Upg">SAPS4-Con_Upg  All S/4 HANA Conversions & Upgrades together</option>
-                <option value="SAPS4-Implementation">SAPS4-Implementation  All S/4 HANA Implementations</option>
-                <option value="SAPSOH-Mig_Upg">SAPSOH-Mig_Upg  Suite on HANA Migrations & Upgrades</option>
-                <option value="SAPSOH-Functional">SAPSOH-Functional   All other Suite on HANA Functional projects</option>
-                <option value="SAPBS-Implementation">SAPBS-Implementation  Business Suite Implementations. This Business Suite includes SAP products ERP/SCM/CRM/PLM/SRM</option>
-                <option value="SAPBS-Upgrade">SAPBS-Upgrade  Business Suite Upgrades. This Business Suite includes SAP products ERP/SCM/CRM/PLM/SRM</option>
-                <option value="SAPECC-Rollout">SAPECC-Rollout  ECC Template Rollouts</option>
-                <option value="SAP-Module-Based">SAP-Module-Based  Module Based projects like EWM</option>
-                <option value="SAP-Technical">SAP-Technical  Unicode conversions, Solman related projects or ABAP related projects</option>
-                <option value="SAP- SuccessFactors">SAP- SuccessFactors  SAP SuccessFactors projects</option>
-                <option value="SAP-Other">SAP-Other  All other projects for SAP</option>
-                <option value="Con Adv">Con Adv - Consulting Advisory…can be process work, business strategy etc</option>
-                <option value="PMO Serv">PMO Serv – PMO Services</option>
-                <option value="Train Serv">Train Serv – Training Services</option>
-                <option value="Test Serv">Test Serv – Testing Services</option>
-              </Form.Control>
-            </FormGroup>
-          </Form.Row>*/}
-        <Form.Row> 
-          <FormGroup className="col-2">
-            <Form.Label className={styles.customlabel}>Project test</Form.Label>
-          </FormGroup>
-          <FormGroup className="col-3">
-              <Form.Control size="sm" id="_projectRollOut" as="select" name="ProjectMode" onChange={this.handleChange} value={this.state.ProjectMode}>
-              <option value="">Select an Option</option>
-              <option value="Fixed">Fixed</option>
-              <option value="TandM">T and M</option>
-              <option value="Support">Support</option>
-              <option value="FTE">FTE</option>
-              <option value="others">others</option>
-              </Form.Control>
-            </FormGroup>
-          <FormGroup className="col-1"></FormGroup>
-          <FormGroup className="col-2">
-            <Form.Label className={styles.customlabel}>Project Status</Form.Label>
-          </FormGroup>
-          <FormGroup className="col-3">
-            <Form.Control size="sm" id="_projectStatus" as="select" name="ProjectStatus"  onChange={this.handleChange} value={this.state.ProjectStatus}>
-              <option value="">Select an Option</option>
-              <option value="In progress">In progress</option>
-              <option value="Initiated">Initiated</option>
-              <option value="Closed">Closed</option>
-              <option value="Withdrawn">Withdrawn</option>
-            </Form.Control>
-          </FormGroup>
-        </Form.Row>
-        <Form.Row>
-          <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Tentative Start Date</Form.Label>
-          </FormGroup>
-          <FormGroup className="col-3">
-            <Form.Control size="sm" type="date" id="inpt_plannedStart" name="PlannedStart" placeholder="Planned Start Date" onChange={this.handleChange} value={this.state.PlannedStart}/>
-            {/* <DatePicker selected={this.state.PlannedStart}  onChange={this.handleChange} />; */}
-          </FormGroup>
-          <FormGroup className="col-1"></FormGroup>
-          <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Tentative End Date</Form.Label>
-          </FormGroup>
-          <FormGroup className="col-3">
-            <Form.Control size="sm" type="date" disabled={this.state.disable_plannedCompletion} id="inpt_plannedCompletion" name="PlannedCompletion" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.PlannedCompletion}/>
-          </FormGroup>
-        </Form.Row>
-        {/* Project Description */}
-        <Form.Row>
-          <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Project Description</Form.Label>
-          </FormGroup>
-          <FormGroup className="col-9 mb-3">
-            <Form.Control size="sm" as="textarea" rows={4} type="text" id="_projectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription}/>
-          </FormGroup>
-        </Form.Row>
-        {/* Next Row */}
-        <Form.Row className="mb-4">
-          <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Region</Form.Label>
-          </FormGroup>
-          <FormGroup className="col-3">
-            <Form.Control size="sm" type="text" id="_location" name="ProjectLocation" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}/>
-          </FormGroup>
-          <FormGroup className="col-1"></FormGroup>
-          <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel +" " + styles.required}>Budget as per SOW</Form.Label>
-          </FormGroup>
-          <FormGroup className="col-3">
-            <Form.Control size="sm" type="text" id="_budget" name="ProjectBudget" placeholder="Project Budget" onChange={this.handleChange} value={this.state.ProjectBudget}/>
-          </FormGroup>
-        </Form.Row>
-        <Form.Row className="mb-4">
-          <FormGroup className="col-2"> 
-            <Form.Label className={styles.customlabel}>Project Progress</Form.Label>
-          </FormGroup>
-          <FormGroup className="col-3">
-            <Form.Control size="sm" type="number" id="_location" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress}/>
-          </FormGroup>
-          <FormGroup className="col-6">
-          </FormGroup>
-        </Form.Row>
-        <Form.Row className={styles.buttonCLass}>
-          <FormGroup></FormGroup>
-            <div>
-              <Button id="submit" size="sm" variant="primary" type="submit">
-                Submit
-              </Button> 
-            </div>  
-            <FormGroup className="col-.5"></FormGroup>  
-            <div>
-              <Button id="cancel" size="sm" variant="primary" onClick={this.closeform}>
-                Cancle
-              </Button>
-            </div>
-            {/* <div>
-              <Button id="reset" size="sm" variant="primary" onClick={this.resetform}>
-                Reset
-              </Button>
-            </div> */}
-        </Form.Row>
-      </Form> 
+            <Form.Row>
+                {/* --------Delivery Manager------------ */}
+                <FormGroup className="col-2">
+                    <Form.Label className={styles.customlabel}>Delivery Manager</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <div id="DeliveryManager">
+                        <PeoplePicker
+                        context={this.props.currentContext}
+                        personSelectionLimit={1}    
+                        groupName={""} // Leave this blank in case you want to filter from all users    
+                        showtooltip={true}    
+                        isRequired={true}    
+                        disabled={false}    
+                        ensureUser={true}  
+                        selectedItems={this._getDeliveryManager}   
+                        defaultSelectedUsers={[this.state.DeliveryManager]} 
+                        showHiddenInUI={false}    
+                        principalTypes={[PrincipalType.User]}    
+                        resolveDelay={1000} />
+                    </div>
+                </FormGroup>
+                <FormGroup className="col-1"></FormGroup>
+                {/*--------Project Manager-------------  */}
+                <FormGroup className="col-2">
+                    <Form.Label className={styles.customlabel +" " + styles.required}>Project Manager</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <div id="ProjectManager">
+                        <PeoplePicker
+                        context={this.props.currentContext}   
+                        personSelectionLimit={1}    
+                        groupName={""} // Leave this blank in case you want to filter from all users    
+                        showtooltip={true}    
+                        isRequired={true}    
+                        disabled={false}    
+                        ensureUser={true}    
+                        selectedItems={this._getProjectManager} 
+                        defaultSelectedUsers={[this.state.ProjectManager]}   
+                        showHiddenInUI={false}    
+                        principalTypes={[PrincipalType.User]}    
+                        resolveDelay={1000} />
+                    </div>
+                </FormGroup>
+            </Form.Row>
+            <Form.Row> 
+                <FormGroup className="col-2">
+                    <Form.Label className={styles.customlabel}>Project Mode</Form.Label>
+                </FormGroup>
+                <FormGroup className= {styles.disabledValue + " col-3"}>
+                    {/* <Form.Control size="sm" id="ProjectMode" as="select" name="ProjectMode" onChange={this.handleChange} value={this.state.ProjectMode}>
+                        <option value="">Select an Option</option>
+                    </Form.Control> */}
+                    <Form.Label>{this.state.ProjectMode}</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-1"></FormGroup>
+                <FormGroup className="col-2">
+                    <Form.Label className={styles.customlabel}>Project Status</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <Form.Control size="sm" id="Status" as="select" name="ProjectStatus"  onChange={this.handleChange} value={this.state.ProjectStatus}>
+                        <option value="">Select an Option</option>
+                    </Form.Control>
+                </FormGroup>
+             </Form.Row>
+            <Form.Row>
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel}>Actual Start Date</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <Form.Control size="sm" type="date" id="ActualStartDate" name="ActualStartDate" placeholder="Actual Start Date" onChange={this.handleChange} value={this.state.ActualStartDate}/>
+                    {/* <DatePicker selected={this.state.PlannedStart}  onChange={this.handleChange} />; */}
+                </FormGroup>
+                <FormGroup className="col-1"></FormGroup>
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel}>Actual End Date</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <Form.Control size="sm" type="date" disabled={this.state.disable_plannedCompletion} id="ActualEndDate" name="ActualEndDate" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.ActualEndDate}/>
+                </FormGroup>
+             </Form.Row>
+            {/* Project Description */}
+            <Form.Row>
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel}>Project Description</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-9 mb-3">
+                    <Form.Control size="sm" as="textarea" rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription}/>
+                </FormGroup>
+            </Form.Row>
+            {/* Next Row */}
+            <Form.Row>
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel}>Region</Form.Label>
+                </FormGroup>
+                <FormGroup className={styles.disabledValue + " col-3"}>
+                    {/* <Form.Control size="sm" type="text" id="Region" name="Region" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}/> */}
+                    <Form.Label>{this.state.ProjectLocation}</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-1"></FormGroup>
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel +" " + styles.required}>Revised Budget</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <Form.Control size="sm" type="number" id="RevisedBudget" name="RevisedBudget" placeholder="Revised Budget" onChange={this.handleChange} value={this.state.RevisedBudget}/>
+                </FormGroup>
+            </Form.Row>
+            <Form.Row>
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel}>Project Progress</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <Form.Control size="sm" type="number" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress}/>
+                </FormGroup>
+                <FormGroup className="col-1"></FormGroup>
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel + " " + styles.required}>Project Scope</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <Form.Control size="sm" type="text" as="select" id="Scope" name="ProjectScope" placeholder="Project Scope" onChange={this.handleChange} value={this.state.ProjectScope}>
+                        <option value="">Select an Option</option>
+                    </Form.Control>
+                </FormGroup>
+            </Form.Row>
+            <Form.Row>
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel + " " + styles.required}>Project Schedule</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <Form.Control size="sm" type="text" as="select" id="Schedule" name="ProjectSchedule" placeholder="Project Schedule" onChange={this.handleChange} value={this.state.ProjectSchedule}>
+                        <option value="">Select an Option</option>
+                    </Form.Control>
+                </FormGroup>
+                <FormGroup className="col-1"></FormGroup>
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel + " " + styles.required}>Project Resources</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <Form.Control size="sm" type="text" as="select" id="Resource" name="ProjectResource" placeholder="Project Resource" onChange={this.handleChange} value={this.state.ProjectResource}>
+                        <option value="">Select an Option</option>
+                    </Form.Control>
+                </FormGroup>
+            </Form.Row>
+            <Form.Row>
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel}>Invoiced Amount</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <Form.Control size="sm" type="number" id="InvoicedAmount" name="InvoicedAmount" placeholder="Invoiced Amount" onChange={this.handleChange} value={this.state.InvoicedAmount}/>
+                </FormGroup>
+                <FormGroup className="col-1"></FormGroup>
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel + " " + styles.required}>Project Cost</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <Form.Control size="sm" type="text" as="select" id="ProjectCost" name="ProjectCost" placeholder="Project Cost" onChange={this.handleChange} value={this.state.ProjectCost}>
+                        <option value="">Select an Option</option>
+                    </Form.Control>
+                </FormGroup>
+            </Form.Row>
+            <Form.Row className="mb-4">
+                <FormGroup className="col-2"> 
+                    <Form.Label className={styles.customlabel}>Total Cost</Form.Label>
+                </FormGroup>
+                <FormGroup className="col-3">
+                    <Form.Control size="sm" type="text" id="TotalCost" name="TotalCost" placeholder="Total Cost" onChange={this.handleChange} value={this.state.TotalCost}/>
+                </FormGroup>
+                <FormGroup className="col-6"></FormGroup>
+            </Form.Row>
+            <Form.Row className={styles.buttonCLass}>
+                <FormGroup></FormGroup>
+                <div>
+                <Button id="submit" size="sm" variant="primary" type="submit">
+                    Submit
+                </Button> 
+                </div>  
+                <FormGroup className="col-.5"></FormGroup>  
+                <div>
+                <Button id="cancel" size="sm" variant="primary" onClick={this.closeform}>
+                    Cancel
+                </Button>
+                </div>
+                {/* <div>
+                <Button id="reset" size="sm" variant="primary" onClick={this.resetform}>
+                    Reset
+                </Button>
+                </div> */}
+             </Form.Row>
+        </Form> 
     </div>);
+    }
+    //function to validate the date, not allowing the user to enter end date lesser than start date
+    private validateDate(e){
+        let newState = {};
+        //validation for date
+        if(e.target.name == "ActualStartDate" && e.target.value!=""){
+            this.setState({
+              disable_plannedCompletion: false
+            })
+            if(this.state.ActualEndDate!=""){
+              $('.errorMessage').text("");
+              var date1 = $('#ActualStartDate').val();
+              var date2 = $('#ActualEndDate').val()
+              if(date1>=date2){
+                $('#ActualEndDate').val("");
+                newState[e.target.name] = "";
+                this.setState(newState);
+                //alert("Planned Completion Cannot be less than Planned Start");
+                $('#ActualEndDate').closest('div').append('<span class="errorMessage" style="color:red;font-size:9pt">Must be greater than Actual Start date</span>')
+              }else{
+                $('.errorMessage').remove();
+              }
+          }
+          }else if(e.target.name == "ActualStartDate" && e.target.value ==""){
+            this.setState({
+              ActualEndDate: "",
+              disable_plannedCompletion: true
+            })
+          }
+          if(e.target.name == "ActualEndDate"){
+            $('.errorMessage').text("");
+            var date1 = $('#ActualStartDate').val();
+            var date2 = $('#ActualEndDate').val()
+            if(date1>=date2){
+              $('#ActualEndDate').val("")
+              newState[e.target.name] = "";
+              this.setState(newState);
+              //alert("Planned Completion Cannot be less than Planned Start");
+              $('#ActualEndDate').closest('div').append('<span class="errorMessage" style="color:red;font-size:9pt">Must be greater than Actual Start date</span>')
+            }else{
+              $('.errorMessage').remove();
+            }
+          }//validation for date ending
     }
 
     //fucntion to load items for particular item id on edit form
@@ -423,10 +446,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 'Accept': 'application/json;odata=nometadata',  
                 'odata-version': ''  
                 }  
-            }).then((response: SPHttpClientResponse): Promise<SPProjectList> => {  
+            }).then((response: SPHttpClientResponse): Promise<SPProjectListEditForm> => {  
                 return response.json();  
             })  
-            .then((item: SPProjectList): void => {   
+            .then((item: SPProjectListEditForm): void => {   
             this.setState({
                 ProjectID: item.ProjectID,
                 DeliveryManager: item.Delivery_x0020_Manager,
@@ -435,15 +458,22 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 ProjectManager: item.Project_x0020_Manager,
                 ProjectType: item.Project_x0020_Type,
                 ProjectMode: item.Project_x0020_Mode,
-                PlannedStart: item.PlannedStart.slice(0,10),
-                PlannedCompletion: item.Planned_x0020_End.slice(0,10),
+                ActualStartDate: item.Actual_x0020_Start.slice(0,10),
+                ActualEndDate: item.Actual_x0020_End.slice(0,10),
                 ProjectDescription: item.Project_x0020_Description,
                 ProjectLocation: item.Region,
-                ProjectBudget: item.Project_x0020_Budget,
+                RevisedBudget: item.Revised_x0020_Budget,
                 ProjectStatus: item.Status,
+                TotalCost: item.Total_x0020_Cost,
+                InvoicedAmount: item.Invoiced_x0020_amount,
+                ProjectScope:item.Scope,
+                ProjectSchedule: item.Schedule,
+                ProjectResource: item.Resource,
+                ProjectCost: item.Project_x0020_Cost,
+                ProjectProgress: item.Progress,
                 disable_RMSID: true
             })  
-            console.log(this.state.PlannedStart + " " + this.state.PlannedCompletion) ;
+            // console.log(this.state.PlannedStart + " " + this.state.PlannedCompletion) ;
             });
         }
         }
@@ -466,44 +496,51 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             Project_x0020_Manager: this.state.ProjectManager,
             Project_x0020_Type: this.state.ProjectType,
             Project_x0020_Mode: this.state.ProjectMode,
-            PlannedStart: this.state.PlannedStart,
-            Planned_x0020_End: this.state.PlannedCompletion,
+            Actual_x0020_Start: this.state.ActualStartDate,
+            Actual_x0020_End: this.state.ActualEndDate,
             Project_x0020_Description: this.state.ProjectDescription,
             Region: this.state.ProjectLocation,
-            Project_x0020_Budget: this.state.ProjectBudget,
-            Status: this.state.ProjectStatus
+            Revised_x0020_Budget: this.state.RevisedBudget,
+            Status: this.state.ProjectStatus,
+            Progress: this.state.ProjectProgress,
+            Total_x0020_Cost: this.state.TotalCost,
+            Invoiced_x0020_amount: this.state.InvoicedAmount,
+            Scope: this.state.ProjectScope,
+            Schedule: this.state.ProjectSchedule,
+            Resource: this.state.ProjectResource,
+            Project_x0020_Cost: this.state.ProjectCost
         
         };
         //validation
         if (requestData.ProjectID.length < 1){
-            $('input[name="RMS_Id"]').css('border','2px solid red');
+            $('#ProjectId').css('border','2px solid red');
             _validate++;
         }else{
-            $('input[name="RMS_Id"]').css('border','1px solid #ced4da')
+            $('#ProjectId').css('border','1px solid #ced4da')
         }
         if( requestData.Project_x0020_Name.length < 1){
-            $('#_projectName').css('border','2px solid red');
+            $('#ProjectName').css('border','2px solid red');
             _validate++;
         }else{
-            $('#_projectName').css('border','1px solid #ced4da')
+            $('#ProjectName').css('border','1px solid #ced4da')
         }
-        if (requestData.Project_x0020_Budget.length < 1) {
-            $('#_budget').css('border','2px solid red');
+        if (requestData.Revised_x0020_Budget.length < 1) {
+            $('#RevisedBudget').css('border','2px solid red');
             _validate++;
         }else{
-            $('#_budget').css('border','1px solid #ced4da')
+            $('#RevisedBudget').css('border','1px solid #ced4da')
         }
-        if(requestData.PlannedStart.length <1){
-            $('#inpt_plannedStart').css('border','2px solid red');
+        if(requestData.Actual_x0020_Start.length <1){
+            $('#ActualStartDate').css('border','2px solid red');
             _validate++;
         }else{
-            $('#inpt_plannedStart').css('border','1px solid #ced4da');
+            $('#ActualStartDate').css('border','1px solid #ced4da');
         }
-        if(requestData.Planned_x0020_End.length < 1){
-            $('#inpt_plannedCompletion').css('border','2px solid red');
+        if(requestData.Actual_x0020_End.length < 1){
+            $('#ActualEndDate').css('border','2px solid red');
             _validate++;
         }else{
-            $('#inpt_plannedCompletion').css('border','1px solid #ced4da');
+            $('#ActualEndDate').css('border','1px solid #ced4da');
         }
         if(_validate>0){
             return false;
@@ -538,19 +575,24 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         
         this.setState({
             ProjectID: '',
-            CRM_Id :'',
             ProjectName: '',
             ClientName: '',
             DeliveryManager:'',
             ProjectManager: '',
             ProjectType: '',
             ProjectMode: '',
-            PlannedStart: '',
-            PlannedCompletion: '',
             ProjectDescription: '',
             ProjectLocation: '',
-            ProjectBudget: '',
             ProjectStatus: '',
+            ActualStartDate:'',
+            ActualEndDate:'',
+            RevisedBudget:'',
+            TotalCost:'',
+            InvoicedAmount: '',
+            ProjectScope:'',
+            ProjectSchedule: '',
+            ProjectResource: '',
+            ProjectCost: '',
             startDate: '',
             disable_plannedCompletion:true,
             endDate: '',
@@ -580,29 +622,59 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     private closeform(e){
       e.preventDefault();
     let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
-    window.open(winURL,'_self');
     this.setState({
-      ProjectID : '',
-      CRM_Id :'',
-      ProjectName: '',
-      ClientName: '',
-      DeliveryManager:'',
-      ProjectManager: '',
-      ProjectType: '',
-      ProjectMode: '',
-      PlannedStart: '',
-      PlannedCompletion: '',
-      ProjectDescription: '',
-      ProjectLocation: '',
-      ProjectBudget: '',
-      ProjectStatus: '',
-      ProjectProgress:'',
-      startDate: '',
-      endDate: '',
-      focusedInput: '',
-      FormDigestValue:''
+        ProjectID : '',
+        ProjectName: '',
+        ClientName: '',
+        DeliveryManager:'',
+        ProjectManager: '',
+        ProjectType: '',
+        ProjectMode: '',
+        //   PlannedStart: '',
+        //   PlannedCompletion: '',
+        ProjectDescription: '',
+        ProjectLocation: '',
+        //   ProjectBudget: '',
+        ProjectStatus: '',
+        ProjectProgress:'',
+        ActualStartDate:'',
+        ActualEndDate:'',
+        RevisedBudget:'',
+        TotalCost:'',
+        InvoicedAmount: '',
+        ProjectScope:'',
+        ProjectSchedule: '',
+        ProjectResource: '',
+        ProjectCost: '',
+        startDate: '',
+        endDate: '',
+        focusedInput: '',
+        FormDigestValue:''
     });
+    window.open(winURL,'_self');
     }
+    //function to load choice column values in the dropdown
+    private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
+        const endPoint: string = `${siteColUrl}/_api/web/lists('`+ listGUID +`')/fields?$filter=EntityPropertyName eq '`+ columnName +`'`;
+      
+        this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
+          .then((response: HttpClientResponse) => {
+            if (response.ok) {
+              response.json()
+                .then((jsonResponse) => {
+                  console.log(jsonResponse.value[0]);
+                  let dropdownId = jsonResponse.value[0].StaticName.replace(/\s/g, '');
+                  jsonResponse.value[0].Choices.forEach(dropdownValue => {
+                    $('#' + dropdownId ).append('<option value="'+ dropdownValue +'">'+ dropdownValue +'</option>');
+                  });
+                }, (err: any): void => {
+                  console.warn(`Failed to fulfill Promise\r\n\t${err}`);
+                });
+            } else {
+              console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
+            }
+          });
+      }
 
 
 }

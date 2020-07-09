@@ -13,8 +13,5 @@ export interface SPProjectList{
     Region: string;
     Project_x0020_Budget: string;
     Status: string;
-    Actual_x0020_Start:string;
-    Actual_x0020_End:string;
-    Revised_x0020_Budget:string;
-    Total_x0020_Cost:string
+    Progress: string;
   }
