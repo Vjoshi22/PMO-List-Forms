@@ -454,6 +454,12 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     }else{
       $('#Region').css('border','1px solid #ced4da')
     }
+    // if (requestData.Delivery_x0020_Manager.length < 1 || requestData.Delivery_x0020_Manager == null || requestData.Delivery_x0020_Manager =="") {
+    //   $('#DeliveryManager').css('border','2px solid red');
+    //   _validate++;
+    // }else{
+    //   $('#DeliveryManager').css('border','1px solid #ced4da')
+    // }
     if (requestData.Project_x0020_Budget.length < 1 || requestData.Project_x0020_Budget == null || requestData.Project_x0020_Budget =="") {
       $('#BudgetSOW').css('border','2px solid red');
       _validate++;
