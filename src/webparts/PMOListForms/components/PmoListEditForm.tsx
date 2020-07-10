@@ -427,7 +427,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         if(e.target.name == "ProjectProgress" && e.target.value!=""){
             e.target.value > 100 ? this.setState({ProjectProgress: "100"}) : e.target.value;
         }
-        if(e.target.name == "ProjectProgress" && e.target.value == "100"){
+        if(e.target.name == "ProjectProgress" && e.target.value >= "100"){
             this.setState({
                 disable_plannedCompletion: false,
                 ProjectStatus: "Completed"
@@ -458,7 +458,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         var itemId = _getParameterValues('id');
         if(itemId==""){
         alert("Incorrect URL");
-        let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
+        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
         window.open(winURL,'_self');
         }else{
         const url = this.props.currentContext.pageContext.web.absoluteUrl + `/_api/web/lists('`+ listGUID +`')/items(`+ itemId +`)`;
@@ -613,13 +613,13 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             success:(data, status, xhr) => 
             {  
                 alert("Submitted successfully");
-                let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
+                let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
                 window.open(winURL,'_self');
             },  
             error: (xhr, status, error)=>
             {  
                 alert(JSON.stringify(xhr.responseText));
-                let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
+                let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
                 window.open(winURL,'_self');
             }  
         });
@@ -672,36 +672,36 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     //function to close the form and redirect to the Grid page
     private _closeform(e){
       e.preventDefault();
-    let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
-    this.setState({
-        ProjectID : '',
-        ProjectName: '',
-        ClientName: '',
-        DeliveryManager:'',
-        ProjectManager: '',
-        ProjectType: '',
-        ProjectMode: '',
-        //   PlannedStart: '',
-        //   PlannedCompletion: '',
-        ProjectDescription: '',
-        ProjectLocation: '',
-        //   ProjectBudget: '',
-        ProjectStatus: '',
-        ProjectProgress:'',
-        ActualStartDate:'',
-        ActualEndDate:'',
-        RevisedBudget:'',
-        TotalCost:'',
-        InvoicedAmount: '',
-        ProjectScope:'',
-        ProjectSchedule: '',
-        ProjectResource: '',
-        ProjectCost: '',
-        startDate: '',
-        endDate: '',
-        focusedInput: '',
-        FormDigestValue:''
-    });
+    let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+    // this.setState({
+    //     ProjectID : '',
+    //     ProjectName: '',
+    //     ClientName: '',
+    //     DeliveryManager:'',
+    //     ProjectManager: '',
+    //     ProjectType: '',
+    //     ProjectMode: '',
+    //     //   PlannedStart: '',
+    //     //   PlannedCompletion: '',
+    //     ProjectDescription: '',
+    //     ProjectLocation: '',
+    //     //   ProjectBudget: '',
+    //     ProjectStatus: '',
+    //     ProjectProgress:'',
+    //     ActualStartDate:'',
+    //     ActualEndDate:'',
+    //     RevisedBudget:'',
+    //     TotalCost:'',
+    //     InvoicedAmount: '',
+    //     ProjectScope:'',
+    //     ProjectSchedule: '',
+    //     ProjectResource: '',
+    //     ProjectCost: '',
+    //     startDate: '',
+    //     endDate: '',
+    //     focusedInput: '',
+    //     FormDigestValue:''
+    // });
     window.open(winURL,'_self');
     }
     //function to load choice column values in the dropdown

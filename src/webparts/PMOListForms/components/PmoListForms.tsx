@@ -118,6 +118,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     newState[e.target.name] = e.target.value;
     this.setState(newState);
     this.validateDate(e);
+    this._validateProgress(e);
   }
   private handleSubmit = (e) =>{
     
@@ -372,6 +373,40 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       }
     }//validation for date ending
   }
+
+  //Validate  Progress
+  //function to validate progress
+  private _validateProgress(e){
+        
+    if(e.target.name == "ProjectProgress" && e.target.value!=""){
+        e.target.value > 100 ? this.setState({ProjectProgress: "100"}) : e.target.value;
+    }
+    if(e.target.name == "ProjectProgress" && e.target.value >= "100"){
+        this.setState({
+            disable_plannedCompletion: false,
+            ProjectStatus: "Completed"
+        })
+    }else if(e.target.name == "ProjectProgress" && e.target.value != "100"){
+        this.setState({
+            disable_plannedCompletion: true,
+            ProjectStatus: "In Progress"
+        })
+    }
+
+    if(e.target.name == "ProjectStatus" && e.target.value =="Completed"){
+        this.setState({
+            ProjectProgress: "100",
+            disable_plannedCompletion: false
+        })
+    }else if(e.target.name == "ProjectStatus" && e.target.value !="Completed"){
+        this.setState({
+            ProjectProgress: "",
+            disable_plannedCompletion: true
+        })
+    }
+}
+
+
   //fucntion to save the new entry in the list
   private createItem(e){
   let _validate=0;
@@ -503,13 +538,13 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         success:(data, status, xhr) => 
         {  
           alert("Submitted successfully");
-          let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
           window.open(winURL,'_self');
         },  
         error: (xhr, status, error)=>
         {  
           alert(JSON.stringify(xhr.responseText));
-          let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
           window.open(winURL,'_self');
         }  
     });
@@ -557,29 +592,29 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
   //function to close the form and redirect to the Grid page
   private closeform(e){
     e.preventDefault();
-  let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
-  window.open(winURL,'_self');
-  this.setState({
-    ProjectID : '',
-    CRM_Id :'',
-    ProjectName: '',
-    ClientName: '',
-    DeliveryManager:'',
-    ProjectManager: '',
-    ProjectType: '',
-    ProjectMode: '',
-    PlannedStart: '',
-    PlannedCompletion: '',
-    ProjectDescription: '',
-    ProjectLocation: '',
-    ProjectBudget: '',
-    ProjectStatus: '',
-    ProjectProgress:'',
-    startDate: '',
-    endDate: '',
-    focusedInput: '',
-    FormDigestValue:''
-  });
+  let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+  // this.setState({
+  //   ProjectID : '',
+  //   CRM_Id :'',
+  //   ProjectName: '',
+  //   ClientName: '',
+  //   DeliveryManager:'',
+  //   ProjectManager: '',
+  //   ProjectType: '',
+  //   ProjectMode: '',
+  //   PlannedStart: '',
+  //   PlannedCompletion: '',
+  //   ProjectDescription: '',
+  //   ProjectLocation: '',
+  //   ProjectBudget: '',
+  //   ProjectStatus: '',
+  //   ProjectProgress:'',
+  //   startDate: '',
+  //   endDate: '',
+  //   focusedInput: '',
+  //   FormDigestValue:''
+  // });
+   window.open(winURL,'_self');
   }
   //function to reset the form. Currently disabled
   private resetform(e){
