@@ -2,7 +2,7 @@ import * as React from 'react';
 import styles from './RiskInformation.module.scss';
 import { IRiskInformationProps } from './IRiskInformationProps';
 import { escape } from '@microsoft/sp-lodash-subset';
-import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration  ,SPHttpClientResponse, HttpClientResponse} from "@microsoft/sp-http";
+import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration, SPHttpClientResponse, HttpClientResponse } from "@microsoft/sp-http";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { GetParameterValues } from './getQueryString';
 import { Form, FormGroup, Button, FormControl } from "react-bootstrap";
@@ -65,6 +65,44 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     let newState = {};
     newState[e.target.name] = e.target.value;
     this.setState(newState);
+
+    //Calculate Risk Rank
+    if (e.target.name == "RiskImpact") {
+      if (e.target.value != "" && this.state.RiskProbability != "") {
+        try {
+          this.setState({
+            RiskRank: (Number(e.target.value) * Number(this.state.RiskProbability)).toString()
+          })
+        }
+        catch (ex) {
+          console.log("Error in Calculating Risk Rank");
+        }
+      }
+      else {
+        this.setState({
+          RiskRank: ""
+        })
+      }
+    }
+    if (e.target.name == "RiskProbability") {
+      if (e.target.value != "" && this.state.RiskImpact != "") {
+        try {
+          this.setState({
+            RiskRank: (Number(e.target.value) * Number(this.state.RiskImpact)).toString()
+          })
+        }
+        catch (ex) {
+          console.log("Error in Calculating Risk Rank");
+        }
+      }
+      else {
+        this.setState({
+          RiskRank: ""
+        })
+      }
+    }
+    
+    //console.log("Rank : " + this.state.RiskRank); //this.state.RiskRank Doesn't relect correct value until onchange finish execution
   }
 
   private handleSubmit = (e) => {
@@ -113,7 +151,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-9 mb-3">
               <Form.Control size="sm" id="RiskCategory" as="select" name="RiskCategory" onChange={this.handleChange} value={this.state.RiskCategory}>
-                <option >Select an Option</option>                
+                <option >Select an Option</option>
               </Form.Control>
             </FormGroup>
           </Form.Row>
@@ -141,7 +179,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskResponse" as="select" name="RiskResponse" onChange={this.handleChange} value={this.state.RiskResponse}>
-                <option >Select an Option</option>                
+                <option >Select an Option</option>
               </Form.Control>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
@@ -150,7 +188,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskImpact" as="select" name="RiskImpact" onChange={this.handleChange} value={this.state.RiskImpact}>
-                <option >Select an Option</option>                
+                <option >Select an Option</option>
               </Form.Control>
             </FormGroup>
           </Form.Row>
@@ -161,7 +199,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskStatus" as="select" name="RiskStatus" onChange={this.handleChange} value={this.state.RiskStatus}>
-                <option >Select an Option</option>                
+                <option >Select an Option</option>
               </Form.Control>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
@@ -180,17 +218,16 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskProbability" as="select" name="RiskProbability" onChange={this.handleChange} value={this.state.RiskProbability}>
-                <option >Select an Option</option>                
+                <option >Select an Option</option>
               </Form.Control>
             </FormGroup>
-            <FormGroup className="col-1"></FormGroup>
+            {/*<FormGroup className="col-1"></FormGroup>
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel}>Risk Rank</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
-              {/* <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="_RMSID" name="RMS_Id" placeholder="RMS ID" onChange={this.handleChange} value={this.state.RMS_Id} /> */}
+             <FormGroup className="col-3">              
               <Form.Control size="sm" type="text" id="RiskRank" name="RiskRank" placeholder="Risk Rank" onChange={this.handleChange} value={this.state.RiskRank} />
-            </FormGroup>
+            </FormGroup> */}
           </Form.Row>
 
           <Form.Row>
@@ -256,7 +293,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     if (requestData.ProjectID.length < 1) {
       $('#ProjectId').css('border', '2px solid red');
       _validate++;
-    } 
+    }
     else {
       $('#ProjectId').css('border', '1px solid #ced4da')
     }
@@ -264,7 +301,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     if (requestData.RiskName.length < 1) {
       $('#RiskName').css('border', '2px solid red');
       _validate++;
-    } 
+    }
     else {
       $('#RiskName').css('border', '1px solid #ced4da')
     }
@@ -273,70 +310,77 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     if (requestData.RiskDescription.length < 1) {
       $('#RiskDescription').css('border', '2px solid red');
       _validate++;
-    } 
+    }
     else {
       $('#RiskDescription').css('border', '1px solid #ced4da')
     }
 
     // Risk category mandatory 
-    if( requestData.RiskCategory.length < 1 || requestData.RiskCategory == null || requestData.RiskCategory == ""){
-      $('#RiskCategory').css('border','2px solid red');
+    if (requestData.RiskCategory == null || requestData.RiskCategory.length < 1 || requestData.RiskCategory == "") {
+      $('#RiskCategory').css('border', '2px solid red');
       _validate++;
-    }else{
-      $('#RiskCategory').css('border','1px solid #ced4da')
+    } else {
+      $('#RiskCategory').css('border', '1px solid #ced4da')
     }
 
+    // Risk identified On mandatory
+    if (requestData.RiskIdentifiedOn == null || requestData.RiskIdentifiedOn.length < 1 || requestData.RiskIdentifiedOn == "") {
+      $('#RiskIdentifiedOn').css('border', '2px solid red');
+    }
+    else {
+      $('#RiskIdentifiedOn').css('border', '1px solid #ced4da')
+    }
     // Risk Status mandatory 
-    if( requestData.RiskStatus.length < 1 || requestData.RiskStatus == null || requestData.RiskStatus == ""){
-      $('#RiskStatus').css('border','2px solid red');
+    if (requestData.RiskStatus == null || requestData.RiskStatus.length < 1 || requestData.RiskStatus == "") {
+      $('#RiskStatus').css('border', '2px solid red');
       _validate++;
-    }else{
-      $('#RiskStatus').css('border','1px solid #ced4da')
+    } else {
+      $('#RiskStatus').css('border', '1px solid #ced4da')
     }
 
     // Risk Onwer mandatory
     if (requestData.RiskOwner.length < 1) {
       $('#RiskOwner').css('border', '2px solid red');
       _validate++;
-    } 
+    }
     else {
       $('#RiskOwner').css('border', '1px solid #ced4da')
     }
 
     // Risk Response mandatory 
-    if( requestData.RiskResponse.length < 1 || requestData.RiskResponse == null || requestData.RiskResponse == ""){
-      $('#RiskResponse').css('border','2px solid red');
+    if (requestData.RiskResponse == null || requestData.RiskResponse.length < 1 || requestData.RiskResponse == "") {
+      $('#RiskResponse').css('border', '2px solid red');
       _validate++;
-    }else{
-      $('#RiskResponse').css('border','1px solid #ced4da')
+    } else {
+      $('#RiskResponse').css('border', '1px solid #ced4da')
     }
 
     // Risk Impact mandatory 
-    if( requestData.RiskImpact.length < 1 || requestData.RiskImpact == null || requestData.RiskImpact == ""){
-      $('#RiskImpact').css('border','2px solid red');
+    if (requestData.RiskImpact == null || requestData.RiskImpact.length < 1 || requestData.RiskImpact == "") {
+      $('#RiskImpact').css('border', '2px solid red');
       _validate++;
-    }else{
-      $('#RiskImpact').css('border','1px solid #ced4da')
+    } else {
+      $('#RiskImpact').css('border', '1px solid #ced4da')
     }
 
     // Risk Probability mandatory 
-    if( requestData.RiskProbability.length < 1 || requestData.RiskProbability == null || requestData.RiskProbability == ""){
-      $('#RiskProbability').css('border','2px solid red');
+    if (requestData.RiskProbability == null || requestData.RiskProbability.length < 1 || requestData.RiskProbability == "") {
+      $('#RiskProbability').css('border', '2px solid red');
       _validate++;
-    }else{
-      $('#RiskProbability').css('border','1px solid #ced4da')
+    } else {
+      $('#RiskProbability').css('border', '1px solid #ced4da')
     }
 
     // Risk Remarks mandatory
     if (requestData.Remarks.length < 1) {
       $('#Remarks').css('border', '2px solid red');
       _validate++;
-    } 
+    }
     else {
       $('#Remarks').css('border', '1px solid #ced4da')
     }
 
-    
+
     if (_validate > 0) {
       return false;
     }
@@ -468,8 +512,8 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   //   }
 
   private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
-    const endPoint: string = `${siteColUrl}/_api/web/lists('`+ listGUID +`')/fields?$filter=EntityPropertyName eq '`+ columnName +`'`;
-  
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {
         if (response.ok) {
@@ -478,7 +522,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
               console.log(jsonResponse.value[0]);
               let dropdownId = jsonResponse.value[0].Title.replace(/\s/g, '');
               jsonResponse.value[0].Choices.forEach(dropdownValue => {
-                $('#' + dropdownId ).append('<option value="'+ dropdownValue +'">'+ dropdownValue +'</option>');
+                $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
