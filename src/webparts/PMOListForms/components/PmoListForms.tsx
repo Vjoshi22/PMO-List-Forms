@@ -117,6 +117,11 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     let newState = {};
     newState[e.target.name] = e.target.value;
     this.setState(newState);
+
+     //functin to check the existing Id
+     if(e.target.name == "ProjectID"){
+      this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl);
+     }
     this.validateDate(e);
     this._validateProgress(e);
   }
@@ -405,7 +410,24 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         })
     }
 }
-
+    //function to check if ProjectId already exists or not
+    private _checkExistingProjectId(siteColUrl){
+      const endPoint: string = `${siteColUrl}/_api/web/lists('`+ listGUID +`')/items?select = ProjectID`;
+    
+      this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
+        .then((response: HttpClientResponse) => {
+          if (response.ok) {
+            response.json()
+              .then((jsonResponse) => {
+               console.log(jsonResponse);
+              }, (err: any): void => {
+                console.warn(`Failed to fulfill Promise\r\n\t${err}`);
+              });
+          } else {
+            console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
+          }
+        });
+  }
 
   //fucntion to save the new entry in the list
   private createItem(e){

@@ -270,7 +270,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             {/* Project Description */}
             <Form.Row>
                 <FormGroup className="col-2"> 
-                    <Form.Label className={styles.customlabel}>Project Description</Form.Label>
+                    <Form.Label className={styles.customlabel + " " + styles.required }>Project Description</Form.Label>
                 </FormGroup>
                 <FormGroup className="col-9 mb-3">
                     <Form.Control size="sm" as="textarea" rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription}/>
@@ -377,6 +377,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         </Form> 
     </div>);
     }
+
     //function to validate the date, not allowing the user to enter end date lesser than start date
     private _validateDate(e){
         let newState = {};
@@ -569,30 +570,36 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         }else{
             $('#ActualEndDate').css('border','1px solid #ced4da');
         }
-        if (requestData.Scope.length < 1) {
+        if (requestData.Scope == null || requestData.Scope == "") {
             $('#Scope').css('border','2px solid red');
             _validate++;
         }else{
             $('#Scope').css('border','1px solid #ced4da')
         }
-        if (requestData.Schedule.length < 1) {
+        if (requestData.Schedule == null || requestData.Schedule == "") {
             $('#Schedule').css('border','2px solid red');
             _validate++;
         }else{
             $('#Schedule').css('border','1px solid #ced4da')
         }
-        if (requestData.Project_x0020_Cost.length < 1) {
+        if (requestData.Project_x0020_Cost == null || requestData.Schedule == "") {
             $('#ProjectCost').css('border','2px solid red');
             _validate++;
         }else{
             $('#ProjectCost').css('border','1px solid #ced4da')
         }
-        if (requestData.Resource.length < 1) {
+        if (requestData.Resource == null || requestData.Resource == "") {
             $('#Resource').css('border','2px solid red');
             _validate++;
         }else{
             $('#Resource').css('border','1px solid #ced4da')
         }
+        if (requestData.Project_x0020_Description == null ||  requestData.Project_x0020_Description =="") {
+            $('#ProjectDescription').css('border','2px solid red');
+            _validate++;
+          }else{
+            $('#ProjectDescription').css('border','1px solid #ced4da')
+          }
         if(_validate>0){
             return false;
         }
