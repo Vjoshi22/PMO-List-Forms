@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xml:base="https://ytpl.sharepoint.com/sites/YASHPMO/_api/" 
+    xmlns="http://www.w3.org/2005/Atom" 
+    xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" 
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" 
+    xmlns:georss="http://www.georss.org/georss" 
+    xmlns:gml="http://www.opengis.net/gml">
+    <id>13970ca5-0dfb-40e6-88e5-8a0088b82376</id>
+    <title />
+    <updated>2020-07-08T10:21:34Z</updated>
+    <entry>
+        <id>https://ytpl.sharepoint.com/sites/YASHPMO/_api/Web/Lists(guid'3dfdae3b-3905-460d-8abb-06800cf4874f')/Fields(guid'6274b7be-3ec7-4854-918e-6ca6fc974dfd')</id>
+        <category term="SP.FieldChoice" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+        <link rel="edit" href="Web/Lists(guid'3dfdae3b-3905-460d-8abb-06800cf4874f')/Fields(guid'6274b7be-3ec7-4854-918e-6ca6fc974dfd')" />
+        <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/DescriptionResource" type="application/atom+xml;type=entry" title="DescriptionResource" href="Web/Lists(guid'3dfdae3b-3905-460d-8abb-06800cf4874f')/Fields(guid'6274b7be-3ec7-4854-918e-6ca6fc974dfd')/DescriptionResource" />
+        <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/TitleResource" type="application/atom+xml;type=entry" title="TitleResource" href="Web/Lists(guid'3dfdae3b-3905-460d-8abb-06800cf4874f')/Fields(guid'6274b7be-3ec7-4854-918e-6ca6fc974dfd')/TitleResource" />
+        <title />
+        <updated>2020-07-08T10:21:34Z</updated>
+        <author>
+            <name />
+        </author>
+        <content type="application/xml">
+            <m:properties>
+                <d:AutoIndexed m:type="Edm.Boolean">false</d:AutoIndexed>
+                <d:CanBeDeleted m:type="Edm.Boolean">true</d:CanBeDeleted>
+                <d:ClientSideComponentId m:type="Edm.Guid">00000000-0000-0000-0000-000000000000</d:ClientSideComponentId>
+                <d:ClientSideComponentProperties m:null="true" />
+                <d:ClientValidationFormula m:null="true" />
+                <d:ClientValidationMessage m:null="true" />
+                <d:CustomFormatter m:null="true" />
+                <d:DefaultFormula m:null="true" />
+                <d:DefaultValue m:null="true" />
+                <d:Description></d:Description>
+                <d:Direction>none</d:Direction>
+                <d:EnforceUniqueValues m:type="Edm.Boolean">false</d:EnforceUniqueValues>
+                <d:EntityPropertyName>Parent</d:EntityPropertyName>
+                <d:Filterable m:type="Edm.Boolean">true</d:Filterable>
+                <d:FromBaseType m:type="Edm.Boolean">false</d:FromBaseType>
+                <d:Group>Custom Columns</d:Group>
+                <d:Hidden m:type="Edm.Boolean">false</d:Hidden>
+                <d:Id m:type="Edm.Guid">6274b7be-3ec7-4854-918e-6ca6fc974dfd</d:Id>
+                <d:Indexed m:type="Edm.Boolean">false</d:Indexed>
+                <d:IndexStatus m:type="Edm.Int32">0</d:IndexStatus>
+                <d:InternalName>Parent</d:InternalName>
+                <d:JSLink>clienttemplates.js</d:JSLink>
+                <d:PinnedToFiltersPane m:type="Edm.Boolean">false</d:PinnedToFiltersPane>
+                <d:ReadOnlyField m:type="Edm.Boolean">false</d:ReadOnlyField>
+                <d:Required m:type="Edm.Boolean">true</d:Required>
+                <d:SchemaXml>&lt;Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Parent" FillInChoice="FALSE" Format="Dropdown" Name="Parent" Required="TRUE" Title="Parent" Type="Choice" ID="{6274b7be-3ec7-4854-918e-6ca6fc974dfd}" Version="6" StaticName="Parent" SourceID="{3dfdae3b-3905-460d-8abb-06800cf4874f}" ColName="nvarchar9" RowOrdinal="0"&gt;&lt;CHOICES&gt;&lt;CHOICE&gt;NA&lt;/CHOICE&gt;&lt;CHOICE&gt;PMO Governance&lt;/CHOICE&gt;&lt;CHOICE&gt;Project Methodologies&lt;/CHOICE&gt;&lt;CHOICE&gt;Project Management Tools and Templates&lt;/CHOICE&gt;&lt;CHOICE&gt;Program Reporting&lt;/CHOICE&gt;&lt;CHOICE&gt;Project Management Training&lt;/CHOICE&gt;&lt;CHOICE&gt;Projects Repository&lt;/CHOICE&gt;&lt;CHOICE&gt;SAP Project&lt;/CHOICE&gt;&lt;/CHOICES&gt;&lt;/Field&gt;</d:SchemaXml>
+                <d:Scope>/sites/YASHPMO/Lists/Navigation</d:Scope>
+                <d:Sealed m:type="Edm.Boolean">false</d:Sealed>
+                <d:ShowInFiltersPane m:type="Edm.Int32">0</d:ShowInFiltersPane>
+                <d:Sortable m:type="Edm.Boolean">true</d:Sortable>
+                <d:StaticName>Parent</d:StaticName>
+                <d:Title>Parent</d:Title>
+                <d:FieldTypeKind m:type="Edm.Int32">6</d:FieldTypeKind>
+                <d:TypeAsString>Choice</d:TypeAsString>
+                <d:TypeDisplayName>Choice</d:TypeDisplayName>
+                <d:TypeShortDescription>Choice (menu to choose from)</d:TypeShortDescription>
+                <d:ValidationFormula m:null="true" />
+                <d:ValidationMessage m:null="true" />
+                <d:FillInChoice m:type="Edm.Boolean">false</d:FillInChoice>
+                <d:Mappings m:null="true" />
+                <d:Choices m:type="Collection(Edm.String)">
+                    <d:element>NA</d:element>
+                    <d:element>PMO Governance</d:element>
+                    <d:element>Project Methodologies</d:element>
+                    <d:element>Project Management Tools and Templates</d:element>
+                    <d:element>Program Reporting</d:element>
+                    <d:element>Project Management Training</d:element>
+                    <d:element>Projects Repository</d:element>
+                    <d:element>SAP Project</d:element>
+                </d:Choices>
+                <d:EditFormat m:type="Edm.Int32">0</d:EditFormat>
+            </m:properties>
+        </content>
+    </entry>
+</feed>
