@@ -647,15 +647,43 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             $('.ProjectManager').remove();
             $('#ProjectManager input').css('border','1px solid #ced4da');
         }
-          //revised project
-        if ((requestData.Revised_x0020_Budget == null || requestData.Revised_x0020_Budget=="")) {
+        //   //revised project
+        // if ((requestData.Revised_x0020_Budget == null || requestData.Revised_x0020_Budget=="")) {
+        //     this._validationMessage("RevisedBudget", "RevisedBudget", "Revised Budget cannot be empty");
+        //     $('#RevisedBudget').css('border','1px solid red');
+        //     _validate++;
+        // }else{
+        //     $('.RevisedBudget').remove();
+        //     $('#RevisedBudget').css('border','1px solid #ced4da')
+        // }
+        if (requestData.Revised_x0020_Budget == null || requestData.Revised_x0020_Budget.length < 1 || requestData.Revised_x0020_Budget =="") {
             this._validationMessage("RevisedBudget", "RevisedBudget", "Revised Budget cannot be empty");
             $('#RevisedBudget').css('border','1px solid red');
             _validate++;
-        }else{
+          }else if ((requestData.Revised_x0020_Budget != "" || requestData.Revised_x0020_Budget != null) && requestData.Revised_x0020_Budget == "0"){
+            //$('.ProjectID').remove();
+            $('#RevisedBudget').css('border','1px solid red');
+            this._validationMessage("RevisedBudget", "RevisedBudget", "Revised Budget cannot be 0");
+            _validate++;
+          }else{
             $('.RevisedBudget').remove();
             $('#RevisedBudget').css('border','1px solid #ced4da')
         }
+        //progress
+        if(requestData.Progress.length < 1 || requestData.Progress == null || requestData.Progress =="") {
+            this._validationMessage("ProjectProgress", "ProjectProgress", "Project Progress cannot be empty");
+            $('#ProjectProgress').css('border','1px solid red');
+            _validate++;
+          }else if ((requestData.Progress != "" || requestData.Progress != null) && requestData.Progress == "0"){
+            //$('.ProjectID').remove();
+            $('#ProjectProgress').css('border','1px solid red');
+            this._validationMessage("ProjectProgress", "ProjectProgress", "Project Progress cannot be 0");
+            _validate++;
+          }else{
+            $('.ProjectProgress').remove();
+            $('#ProjectProgress').css('border','1px solid #ced4da')
+        }
+        //actual start
         if(requestData.Actual_x0020_Start == null || requestData.Actual_x0020_Start == ""){
             this._validationMessage("ActualStartDate", "ActualStartDate", "Actual Start Date cannot be empty");
             $('#ActualStartDate').css('border','1px solid red');

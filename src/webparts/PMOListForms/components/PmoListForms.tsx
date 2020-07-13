@@ -304,7 +304,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <Form.Label className={styles.customlabel +" " + styles.required}>Budget as per SOW</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-            <Form.Control size="sm" type="number" min="1" id="BudgetSOW" name="ProjectBudget" placeholder="Project Budget" onChange={this.handleChange} value={this.state.ProjectBudget}/>
+            <Form.Control size="sm" type="number" id="BudgetSOW" name="ProjectBudget" placeholder="Project Budget" onChange={this.handleChange} value={this.state.ProjectBudget}/>
           </FormGroup>
         </Form.Row>
         <Form.Row className="mb-4">
@@ -312,7 +312,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <Form.Label className={styles.customlabel + " " + styles.required}>Project Progress</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-            <Form.Control size="sm" type="number" min="1" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress}/>
+            <Form.Control size="sm" type="number" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress}/>
           </FormGroup>
           <FormGroup className="col-6">
           </FormGroup>
@@ -579,6 +579,11 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       this._validationMessage("BudgetSOW", "BudgetSOW", "Project Budget cannot be empty");
       $('#BudgetSOW').css('border','1px solid red');
       _validate++;
+    }else if ((requestData.Project_x0020_Budget != "" || requestData.Project_x0020_Budget != null) && requestData.Project_x0020_Budget == "0"){
+      //$('.ProjectID').remove();
+      $('#BudgetSOW').css('border','1px solid red');
+      this._validationMessage("BudgetSOW", "BudgetSOW", "Budget as per SOW cannot be 0");
+      _validate++;
     }else{
       $('.BudgetSOW').remove();
       $('#BudgetSOW').css('border','1px solid #ced4da')
@@ -586,6 +591,11 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     if (requestData.Progress.length < 1 || requestData.Progress == null || requestData.Progress =="") {
       this._validationMessage("ProjectProgress", "ProjectProgress", "Project Progress cannot be empty");
       $('#ProjectProgress').css('border','1px solid red');
+      _validate++;
+    }else if ((requestData.Progress != "" || requestData.Progress != null) && requestData.Progress == "0"){
+      //$('.ProjectID').remove();
+      $('#ProjectProgress').css('border','1px solid red');
+      this._validationMessage("ProjectProgress", "ProjectProgress", "Project Progress cannot be 0");
       _validate++;
     }else{
       $('.ProjectProgress').remove();
