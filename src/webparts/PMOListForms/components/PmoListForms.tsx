@@ -119,8 +119,11 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     this.setState(newState);
 
      //functin to check the existing Id
-     if(e.target.name == "ProjectID"){
-      this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl);
+     if(e.target.name == "ProjectID" && (e.target.value != 0 || e.target.value =="")){
+      this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl, e.target.value);
+     } else if(e.target.value == 0){
+      $('.ProjectID').remove();
+      $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Project Id cannot be 0</span>');
      }
     this.validateDate(e);
     this._validateProgress(e);
@@ -162,7 +165,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <Form.Label className={styles.customlabel +" " + styles.required}>Project Id</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-            <Form.Control size="sm" type="number" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID}/>
+            <Form.Control size="sm" type="number" min="1" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID}/>
           </FormGroup>
           <FormGroup className="col-1"></FormGroup>
           {/*-----------Project Type------------- */}
@@ -300,7 +303,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <Form.Label className={styles.customlabel +" " + styles.required}>Budget as per SOW</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-            <Form.Control size="sm" type="text" id="BudgetSOW" name="ProjectBudget" placeholder="Project Budget" onChange={this.handleChange} value={this.state.ProjectBudget}/>
+            <Form.Control size="sm" type="number" min="1" id="BudgetSOW" name="ProjectBudget" placeholder="Project Budget" onChange={this.handleChange} value={this.state.ProjectBudget}/>
           </FormGroup>
         </Form.Row>
         <Form.Row className="mb-4">
@@ -308,7 +311,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <Form.Label className={styles.customlabel + " " + styles.required}>Project Progress</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-            <Form.Control size="sm" type="number" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress}/>
+            <Form.Control size="sm" type="number" min="1" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress}/>
           </FormGroup>
           <FormGroup className="col-6">
           </FormGroup>
@@ -381,8 +384,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
 
   //Validate  Progress
   //function to validate progress
-  private _validateProgress(e){
-        
+  private _validateProgress(e){        
     if(e.target.name == "ProjectProgress" && e.target.value!=""){
         e.target.value > 100 ? this.setState({ProjectProgress: "100"}) : e.target.value;
     }
@@ -410,23 +412,36 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         })
     }
 }
-    //function to check if ProjectId already exists or not
-    private _checkExistingProjectId(siteColUrl){
-      const endPoint: string = `${siteColUrl}/_api/web/lists('`+ listGUID +`')/items?select = ProjectID`;
-    
-      this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
-        .then((response: HttpClientResponse) => {
-          if (response.ok) {
-            response.json()
-              .then((jsonResponse) => {
-               console.log(jsonResponse);
-              }, (err: any): void => {
-                console.warn(`Failed to fulfill Promise\r\n\t${err}`);
+  //function to check if ProjectId already exists or not
+  private _checkExistingProjectId(siteColUrl, ProjectIDValue){
+    const endPoint: string = `${siteColUrl}/_api/web/lists('`+ listGUID +`')/items?select = ProjectID`;
+    let breakCondition = false;
+    $('.ProjectID').remove();
+    this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
+      .then((response: HttpClientResponse) => {
+        if (response.ok) {
+          response.json()
+            .then((jsonResponse) => {
+              jsonResponse.value.forEach( item => {
+              if(ProjectIDValue == item.ProjectID && !breakCondition){
+                this.setState({
+                  ProjectID: ''
+                })
+                $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Project Id already Exists</span>');
+                breakCondition = true;
+              } 
+              // if(ProjectIDValue != item.ProjectID && breakCondition){
+              //   $('.ProjectID').remove();
+              // }
+              
               });
-          } else {
-            console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
-          }
-        });
+            }, (err: any): void => {
+              console.warn(`Failed to fulfill Promise\r\n\t${err}`);
+            });
+        } else {
+          console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
+        }
+      });
   }
 
   //fucntion to save the new entry in the list
@@ -517,18 +532,12 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     // }else{
     //   $('#DeliveryManager').css('border','1px solid #ced4da')
     // }
-    if (requestData.Project_x0020_Budget.length < 1 || requestData.Project_x0020_Budget == null || requestData.Project_x0020_Budget =="") {
+    if (requestData.Project_x0020_Budget == null || requestData.Project_x0020_Budget.length < 1 || requestData.Project_x0020_Budget =="") {
       $('#BudgetSOW').css('border','2px solid red');
       _validate++;
     }else{
       $('#BudgetSOW').css('border','1px solid #ced4da')
     }
-    if (requestData.Progress.length < 1 || requestData.Progress == null || requestData.Progress =="") {
-      $('#BudgetSOW').css('border','2px solid red');
-      _validate++;
-    }else{
-      $('#BudgetSOW').css('border','1px solid #ced4da')
-    } //ProjectProgress
     if (requestData.Progress.length < 1 || requestData.Progress == null || requestData.Progress =="") {
       $('#ProjectProgress').css('border','2px solid red');
       _validate++;

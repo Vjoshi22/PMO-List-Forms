@@ -290,7 +290,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                     <Form.Label className={styles.customlabel +" " + styles.required}>Revised Budget</Form.Label>
                 </FormGroup>
                 <FormGroup className="col-3">
-                    <Form.Control size="sm" type="number" id="RevisedBudget" name="RevisedBudget" placeholder="Revised Budget" onChange={this.handleChange} value={this.state.RevisedBudget}/>
+                    <Form.Control size="sm" type="number" min="1" id="RevisedBudget" name="RevisedBudget" placeholder="Revised Budget" onChange={this.handleChange} value={this.state.RevisedBudget}/>
                 </FormGroup>
             </Form.Row>
             <Form.Row>
@@ -298,7 +298,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                     <Form.Label className={styles.customlabel}>Project Progress</Form.Label>
                 </FormGroup>
                 <FormGroup className="col-3">
-                    <Form.Control size="sm" type="number" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress}/>
+                    <Form.Control size="sm" type="number" min="1" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress}/>
                 </FormGroup>
                 <FormGroup className="col-1"></FormGroup>
                 <FormGroup className="col-2"> 
