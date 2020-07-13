@@ -7,6 +7,8 @@ export interface SPProjectListEditForm{
     Project_x0020_Mode: string; 
     Project_x0020_Type: string;
     Project_x0020_Description: string;
+    PlannedStart: string;
+    Planned_x0020_End: string;
     Region: string;
     Status: string;
     Progress: string 

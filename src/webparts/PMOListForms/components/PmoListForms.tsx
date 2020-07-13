@@ -83,6 +83,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     //this.isOutsideRange = this.isOutsideRange.bind(this);
   }
   public componentDidMount() {
+    $('.webPartContainer').hide();
     allchoiceColumns.forEach(elem => {
       this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
     })
@@ -152,8 +153,8 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
   public render(): React.ReactElement<IPmoListFormsProps> {
 
     SPComponentLoader.loadCss("//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css");
-    SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js");
-    SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css");
+    // SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js");
+    // SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css");
     
     return (
       <div id="newItemDiv" className={styles["_main-div"]} >
@@ -165,7 +166,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <Form.Label className={styles.customlabel +" " + styles.required}>Project Id</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-            <Form.Control size="sm" type="number" min="1" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID}/>
+            <Form.Control size="sm" type="number" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID}/>
           </FormGroup>
           <FormGroup className="col-1"></FormGroup>
           {/*-----------Project Type------------- */}
@@ -200,11 +201,11 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
           <Form.Row>
             {/* --------Delivery Manager------------ */}
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel}>Delivery Manager</Form.Label>
+              <Form.Label className={styles.customlabel  +" " + styles.required}>Delivery Manager</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
               <div id="DeliveryManager">
-                <PeoplePicker
+                <PeoplePicker 
                 context={this.props.currentContext}
                 personSelectionLimit={1}    
                 groupName={""} // Leave this blank in case you want to filter from all users    
@@ -347,7 +348,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         disable_plannedCompletion: false
       })
       if(this.state.PlannedCompletion!=""){
-        $('.errorMessage').text("");
+        $('.PlannedCompletion').text("");
         var date1 = $('#PlannedStart').val();
         var date2 = $('#PlannedCompletion').val()
         if(date1>=date2){
@@ -355,9 +356,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
           newState[e.target.name] = "";
           this.setState(newState);
           //alert("Planned Completion Cannot be less than Planned Start");
-          $('#PlannedCompletion').closest('div').append('<span class="errorMessage" style="color:red;font-size:9pt">Must be greater than Planned Start date</span>')
+          $('#PlannedCompletion').closest('div').append('<span class="PlannedCompletion" style="color:red;font-size:9pt">Must be greater than Planned Start date</span>')
         }else{
-          $('.errorMessage').remove();
+          $('.PlannedCompletion').remove();
         }
     }
     }else if(e.target.name == "PlannedStart" && e.target.value ==""){
@@ -367,7 +368,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       })
     }
     if(e.target.name == "PlannedCompletion"){
-      $('.errorMessage').text("");
+      $('.PlannedCompletion').text("");
       var date1 = $('#PlannedStart').val();
       var date2 = $('#PlannedCompletion').val()
       if(date1>=date2){
@@ -375,9 +376,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         newState[e.target.name] = "";
         this.setState(newState);
         //alert("Planned Completion Cannot be less than Planned Start");
-        $('#PlannedCompletion').closest('div').append('<span class="errorMessage" style="color:red;font-size:9pt">Must be greater than Planned Start date</span>')
+        $('#PlannedCompletion').closest('div').append('<span class="PlannedCompletion" style="color:red;font-size:9pt">Must be greater than Planned Start date</span>')
       }else{
-        $('.errorMessage').remove();
+        $('.PlannedCompletion').remove();
       }
     }//validation for date ending
   }
@@ -388,14 +389,15 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     if(e.target.name == "ProjectProgress" && e.target.value!=""){
         e.target.value > 100 ? this.setState({ProjectProgress: "100"}) : e.target.value;
     }
-    if(e.target.name == "ProjectProgress" && e.target.value >= "100"){
+    if(e.target.name == "ProjectProgress" && e.target.value >= 100){
         this.setState({
             disable_plannedCompletion: false,
             ProjectStatus: "Completed"
         })
-    }else if(e.target.name == "ProjectProgress" && e.target.value != "100"){
+    }else if(e.target.name == "ProjectProgress" && e.target.value != 100){
         this.setState({
             disable_plannedCompletion: true,
+            PlannedCompletion: '',
             ProjectStatus: "In Progress"
         })
     }
@@ -408,6 +410,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     }else if(e.target.name == "ProjectStatus" && e.target.value !="Completed"){
         this.setState({
             ProjectProgress: "",
+            PlannedCompletion:'',
             disable_plannedCompletion: true
         })
     }
@@ -472,58 +475,98 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     };
     
     //validation
+    //projectId validation
     if (requestData.ProjectID.length < 1 || requestData.ProjectID == null || requestData.ProjectID == ""){
-      $('#ProjectId').css('border','2px solid red');
+      $('#ProjectId').css('border','1px solid red');
+      this._validationMessage("ProjectId", "ProjectID", "Project Id cannot be empty");
+      _validate++;
+    }else if ((requestData.ProjectID != "" || requestData.ProjectID != null) && requestData.ProjectID == "0"){
+      //$('.ProjectID').remove();
+      $('#ProjectId').css('border','1px solid red');
+      this._validationMessage("ProjectId", "ProjectID", "Project Id cannot be 0");
       _validate++;
     }else{
+      $('.ProjectID').remove();
       $('#ProjectId').css('border','1px solid #ced4da')
     }
     if( requestData.Client_x0020_Name.length < 1 || requestData.Client_x0020_Name == null || requestData.Client_x0020_Name == ""){
-      $('#ClientName').css('border','2px solid red');
+      this._validationMessage("ClientName", "ClientName", "Client Name cannot be empty");
+      $('#ClientName').css('border','1px solid red');
       _validate++;
     }else{
+      $('.ClientName').remove();
       $('#ClientName').css('border','1px solid #ced4da')
     }
     if( requestData.Project_x0020_Name.length < 1){
-      $('#ProjectName').css('border','2px solid red');
+      this._validationMessage("ProjectName", "ProjectName", "Project Name cannot be empty");
+      $('#ProjectName').css('border','1px solid red');
       _validate++;
     }else{
-      $('#ProjectName').css('border','1px solid #ced4da')
+      $('.ProjectName').remove();
+      $('#ProjectName').css('border','1px solid #ced4da');
+    }
+    if(requestData.Delivery_x0020_Manager.length < 1){
+      this._validationMessage("DeliveryManager", "DeliveryManager", "Delivery Manager cannot be empty");
+      $('#DeliveryManager input').css('border','1px solid red');
+      _validate++;
+    }else{
+      $('.DeliveryManager').remove();
+      $('#DeliveryManager input').css('border','1px solid #ced4da');
+    }
+    if(requestData.Project_x0020_Manager.length < 1){
+      this._validationMessage("ProjectManager", "ProjectManager", "Project Manager cannot be empty");
+      $('#ProjectManager input').css('border','1px solid red');
+      _validate++;
+    }else{
+      $('.ProjectManager').remove();
+      $('#ProjectManager input').css('border','1px solid #ced4da');
     }
     if( requestData.Project_x0020_Type.length < 1 || requestData.Project_x0020_Type == null || requestData.Project_x0020_Type == ""){
-      $('#ProjectType').css('border','2px solid red');
+      this._validationMessage("ProjectType", "ProjectType", "Project Type cannot be empty");
+      $('#ProjectType').css('border','1px solid red');
       _validate++;
     }else{
+      $('.ProjectType').remove();
       $('#ProjectType').css('border','1px solid #ced4da')
     }
     if(requestData.PlannedStart.length <1 || requestData.PlannedStart == null || requestData.PlannedStart == ""){
-      $('#PlannedStart').css('border','2px solid red');
+      this._validationMessage("PlannedStart", "PlannedStart", "Tentative Start Date cannot be empty");
+      $('#PlannedStart').css('border','1px solid red');
       _validate++;
     }else{
+      $('.PlannedStart').remove();
       $('#PlannedStart').css('border','1px solid #ced4da');
     }
     if(requestData.Planned_x0020_End.length < 1 || requestData.Planned_x0020_End == null || requestData.Planned_x0020_End ==""){
-      $('#PlannedCompletion').css('border','2px solid red');
+      this._validationMessage("PlannedCompletion", "PlannedCompletion", "Tentative End Date cannot be empty");
+      $('#PlannedCompletion').css('border','1px solid red');
       _validate++;
     }else{
+      $('.PlannedCompletion').remove();
       $('#PlannedCompletion').css('border','1px solid #ced4da');
     }
     if (requestData.Project_x0020_Mode.length < 1 || requestData.Project_x0020_Mode == null || requestData.Project_x0020_Mode =="") {
-      $('#ProjectMode').css('border','2px solid red');
+      this._validationMessage("ProjectMode", "ProjectMode", "Project Mode cannot be empty");
+      $('#ProjectMode').css('border','1px solid red');
       _validate++;
     }else{
+      $('.ProjectMode').remove();
       $('#ProjectMode').css('border','1px solid #ced4da')
     }
     if (requestData.Status.length < 1 || requestData.Status == null || requestData.Status =="") {
-      $('#Status').css('border','2px solid red');
+      this._validationMessage("Status", "Status", "Project Status cannot be empty");
+      $('#Status').css('border','1px solid red');
       _validate++;
     }else{
+      $('.Status').remove();
       $('#Status').css('border','1px solid #ced4da')
     }
     if (requestData.Region.length < 1 || requestData.Region == null || requestData.Region =="") {
-      $('#Region').css('border','2px solid red');
+      this._validationMessage("Region", "Region", "Project Region cannot be empty");
+      $('#Region').css('border','1px solid red');
       _validate++;
     }else{
+      $('.Region').remove();
       $('#Region').css('border','1px solid #ced4da')
     }
     // if (requestData.Delivery_x0020_Manager.length < 1 || requestData.Delivery_x0020_Manager == null || requestData.Delivery_x0020_Manager =="") {
@@ -533,21 +576,27 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     //   $('#DeliveryManager').css('border','1px solid #ced4da')
     // }
     if (requestData.Project_x0020_Budget == null || requestData.Project_x0020_Budget.length < 1 || requestData.Project_x0020_Budget =="") {
-      $('#BudgetSOW').css('border','2px solid red');
+      this._validationMessage("BudgetSOW", "BudgetSOW", "Project Budget cannot be empty");
+      $('#BudgetSOW').css('border','1px solid red');
       _validate++;
     }else{
+      $('.BudgetSOW').remove();
       $('#BudgetSOW').css('border','1px solid #ced4da')
     }
     if (requestData.Progress.length < 1 || requestData.Progress == null || requestData.Progress =="") {
-      $('#ProjectProgress').css('border','2px solid red');
+      this._validationMessage("ProjectProgress", "ProjectProgress", "Project Progress cannot be empty");
+      $('#ProjectProgress').css('border','1px solid red');
       _validate++;
     }else{
+      $('.ProjectProgress').remove();
       $('#ProjectProgress').css('border','1px solid #ced4da')
     }
     if (requestData.Project_x0020_Description.length < 1 || requestData.Project_x0020_Description == null || requestData.Project_x0020_Description =="") {
-      $('#ProjectDescription').css('border','2px solid red');
+      this._validationMessage("ProjectDescription", "ProjectDescription", "Project Description cannot be empty");
+      $('#ProjectDescription').css('border','1px solid red');
       _validate++;
     }else{
+      $('.ProjectDescription').remove();
       $('#ProjectDescription').css('border','1px solid #ced4da')
     }
     if(_validate>0){
@@ -574,9 +623,13 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         },  
         error: (xhr, status, error)=>
         {  
-          alert(JSON.stringify(xhr.responseText));
+          if(xhr.responseText.match('2130575169')){
+            alert("The Project Id you entered already exists, please try with a new Project Id")
+          }
+          //alert(JSON.stringify(xhr.responseText));
           let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
-          window.open(winURL,'_self');
+          //window.open(winURL,'_self');
+          location.reload();
         }  
     });
     
@@ -602,6 +655,10 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       FormDigestValue:''
     });
 
+  }
+  private _validationMessage(_id, _classname, _message){
+    $('.' + _classname).remove();
+    $('#' + _id).closest('div').append('<span class="' + _classname + '" style="color:red;font-size:9pt">'+ _message +'</span>');
   }
     //   //function to keep the request digest token active
   private getAccessToken(){

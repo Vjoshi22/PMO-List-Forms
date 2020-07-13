@@ -25,8 +25,8 @@ export interface IreactState{
     ProjectManager: string;
     ProjectType: string;
     ProjectMode: string;
-    // PlannedStart: string;
-    // PlannedCompletion: string;
+    PlannedStart: string;
+    PlannedCompletion: string;
     ProjectDescription: string;
     ProjectLocation: string;
     // ProjectBudget: string;
@@ -68,6 +68,8 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             ProjectType: '',
             ProjectMode: '',
             ProjectDescription: '',
+            PlannedStart: '',
+            PlannedCompletion: '',
             ProjectLocation: '',
             ProjectProgress:'',
             ProjectStatus: '',
@@ -95,6 +97,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         //this.isOutsideRange = this.isOutsideRange.bind(this);
       }
       public componentDidMount() {
+          $('.webPartContainer').hide();
         //calling function to fetch dropdown values form sp choice coluns
         allchoiceColumnsEditForm.forEach(colName => {
             this._retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
@@ -123,7 +126,14 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         this._validateDate(e);
         //func to validate progrerss
         this._validateProgress(e);
-      }
+         //functin to check the existing Id
+        if(e.target.name == "ProjectID" && (e.target.value != 0 || e.target.value =="")){
+         this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl, e.target.value);
+        } else if(e.target.value == 0){
+            $('.ProjectID').remove();
+            $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Project Id cannot be 0</span>');
+            }
+    }
       private _handleSubmit = (e) =>{
         this._saveItem(e);
       }
@@ -189,7 +199,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             <Form.Row>
                 {/* --------Delivery Manager------------ */}
                 <FormGroup className="col-2">
-                    <Form.Label className={styles.customlabel}>Delivery Manager</Form.Label>
+                    <Form.Label className={styles.customlabel + " " + styles.required}>Delivery Manager</Form.Label>
                 </FormGroup>
                 <FormGroup className="col-3">
                     <div id="DeliveryManager">
@@ -251,6 +261,24 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                     </Form.Control>
                 </FormGroup>
              </Form.Row>
+             <Form.Row>
+          <FormGroup className="col-2"> 
+            <Form.Label className={styles.customlabel}>Tentative Start Date</Form.Label>
+          </FormGroup>
+          <FormGroup className="col-3">
+            {/* <Form.Control size="sm" type="date" id="PlannedStart" name="PlannedStart" placeholder="Planned Start Date" onChange={this.handleChange} value={this.state.PlannedStart}/> */}
+            {/* <DatePicker selected={this.state.PlannedStart}  onChange={this.handleChange} />; */}
+            <Form.Label>{this.state.PlannedStart}</Form.Label>
+          </FormGroup>
+          <FormGroup className="col-1"></FormGroup>
+          <FormGroup className="col-2"> 
+            <Form.Label className={styles.customlabel}>Tentative End Date</Form.Label>
+          </FormGroup>
+          <FormGroup className="col-3">
+            {/* <Form.Control size="sm" type="date" disabled={this.state.disable_plannedCompletion} id="PlannedCompletion" name="PlannedCompletion" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.PlannedCompletion}/> */}
+            <Form.Label>{this.state.PlannedCompletion}</Form.Label>
+          </FormGroup>
+        </Form.Row>
             <Form.Row>
                 <FormGroup className="col-2"> 
                     <Form.Label className={styles.customlabel}>Actual Start Date</Form.Label>
@@ -387,7 +415,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
               disable_plannedCompletion: false
             })
             if(this.state.ActualEndDate!=""){
-              $('.errorMessage').text("");
+              $('.ActualEndDate').text("");
               var date1 = $('#ActualStartDate').val();
               var date2 = $('#ActualEndDate').val()
               if(date1>=date2){
@@ -395,9 +423,9 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 newState[e.target.name] = "";
                 this.setState(newState);
                 //alert("Planned Completion Cannot be less than Planned Start");
-                $('#ActualEndDate').closest('div').append('<span class="errorMessage" style="color:red;font-size:9pt">Must be greater than Actual Start date</span>')
+                $('#ActualEndDate').closest('div').append('<span class="ActualEndDate" style="color:red;font-size:9pt">Must be greater than Actual Start date</span>')
               }else{
-                $('.errorMessage').remove();
+                $('.ActualEndDate').remove();
                 }
             }
             }else if((e.target.name == "ActualStartDate" && e.target.value =="") && (this.state.ProjectProgress=="100") ){
@@ -407,7 +435,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             })
           }
           if(e.target.name == "ActualEndDate"){
-            $('.errorMessage').text("");
+            $('.ActualEndDate').text("");
             var date1 = $('#ActualStartDate').val();
             var date2 = $('#ActualEndDate').val()
             if(date1>=date2){
@@ -415,9 +443,9 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
               newState[e.target.name] = "";
               this.setState(newState);
               //alert("Planned Completion Cannot be less than Planned Start");
-              $('#ActualEndDate').closest('div').append('<span class="errorMessage" style="color:red;font-size:9pt">Must be greater than Actual Start date</span>')
+              $('#ActualEndDate').closest('div').append('<span class="ActualEndDate" style="color:red;font-size:9pt">Must be greater than Actual Start date</span>')
             }else{
-              $('.errorMessage').remove();
+              $('.ActualEndDate').remove();
             }
           }//validation for date ending
     }
@@ -428,14 +456,15 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         if(e.target.name == "ProjectProgress" && e.target.value!=""){
             e.target.value > 100 ? this.setState({ProjectProgress: "100"}) : e.target.value;
         }
-        if(e.target.name == "ProjectProgress" && e.target.value >= "100"){
+        if(e.target.name == "ProjectProgress" && e.target.value >= 100){
             this.setState({
                 disable_plannedCompletion: false,
                 ProjectStatus: "Completed"
             })
-        }else if(e.target.name == "ProjectProgress" && e.target.value != "100"){
+        }else if(e.target.name == "ProjectProgress" && e.target.value != 100){
             this.setState({
                 disable_plannedCompletion: true,
+                ActualEndDate: '',
                 ProjectStatus: "In Progress"
             })
         }
@@ -448,11 +477,43 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         }else if(e.target.name == "ProjectStatus" && e.target.value !="Completed"){
             this.setState({
                 ProjectProgress: "",
+                ActualEndDate:'',
                 disable_plannedCompletion: true
             })
         }
     }
 
+    //function to check if ProjectId already exists or not
+    private _checkExistingProjectId(siteColUrl, ProjectIDValue){
+        const endPoint: string = `${siteColUrl}/_api/web/lists('`+ listGUID +`')/items?select = ProjectID`;
+        let breakCondition = false;
+        $('.ProjectID').remove();
+        this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
+        .then((response: HttpClientResponse) => {
+            if (response.ok) {
+            response.json()
+                .then((jsonResponse) => {
+                jsonResponse.value.forEach( item => {
+                if(ProjectIDValue == item.ProjectID && !breakCondition){
+                    this.setState({
+                    ProjectID: ''
+                    })
+                    $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Project Id already Exists</span>');
+                    breakCondition = true;
+                } 
+                // if(ProjectIDValue != item.ProjectID && breakCondition){
+                //   $('.ProjectID').remove();
+                // }
+                
+                });
+                }, (err: any): void => {
+                console.warn(`Failed to fulfill Promise\r\n\t${err}`);
+                });
+            } else {
+            console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
+            }
+        });
+    }
     //fucntion to load items for particular item id on edit form
     private _loadItems(){
     
@@ -481,6 +542,8 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 ProjectManager: item.Project_x0020_Manager,
                 ProjectType: item.Project_x0020_Type,
                 ProjectMode: item.Project_x0020_Mode,
+                PlannedStart: item.PlannedStart,
+                PlannedCompletion: item.Planned_x0020_End,
                 ActualStartDate: item.Actual_x0020_Start,
                 ActualEndDate: item.Actual_x0020_End,
                 ProjectDescription: item.Project_x0020_Description,
@@ -540,64 +603,121 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         
         };
         //validation
-        if (requestData.ProjectID.length < 1){
-            $('#ProjectId').css('border','2px solid red');
+        // if (requestData.ProjectID.length < 1){
+        //     $('#ProjectId').css('border','1px solid red');
+        //     _validate++;
+        // }else{
+        //     $('#ProjectId').css('border','1px solid #ced4da')
+        // }
+        //projectId validation
+        // if (requestData.ProjectID == null ||  requestData.ProjectID == "" || requestData.ProjectID.length < 1){
+        //     $('#ProjectId').css('border','1px solid red');
+        //     this._validationMessage("ProjectId", "ProjectID", "Project Id cannot be empty");
+        //     _validate++;
+        // }else if ((requestData.ProjectID != "" || requestData.ProjectID != null) && requestData.ProjectID == "0"){
+        //     //$('.ProjectID').remove();
+        //     $('#ProjectId').css('border','1px solid red');
+        //     this._validationMessage("ProjectId", "ProjectID", "Project Id cannot be 0");
+        //     _validate++;
+        // }else{
+        //     $('.ProjectID').remove();
+        //     $('#ProjectId').css('border','1px solid #ced4da')
+        // }
+        // if( requestData.Project_x0020_Name.length < 1){
+        //     $('#ProjectName').css('border','1px solid red');
+        //     _validate++;
+        // }else{
+        //     $('#ProjectName').css('border','1px solid #ced4da')
+        // }
+        //delivery manager 
+        if(requestData.Delivery_x0020_Manager == null || requestData.Delivery_x0020_Manager == "" ){
+            this._validationMessage("DeliveryManager", "DeliveryManager", "Delivery Manager cannot be empty");
+            $('#DeliveryManager input').css('border','1px solid red');
             _validate++;
         }else{
-            $('#ProjectId').css('border','1px solid #ced4da')
+            $('.DeliveryManager').remove();
+            $('#DeliveryManager input').css('border','1px solid #ced4da');
         }
-        if( requestData.Project_x0020_Name.length < 1){
-            $('#ProjectName').css('border','2px solid red');
+        //project manager
+        if(requestData.Project_x0020_Manager == null || requestData.Project_x0020_Manager == ""){
+            this._validationMessage("ProjectManager", "ProjectManager", "Project Manager cannot be empty");
+            $('#ProjectManager input').css('border','1px solid red');
             _validate++;
         }else{
-            $('#ProjectName').css('border','1px solid #ced4da')
+            $('.ProjectManager').remove();
+            $('#ProjectManager input').css('border','1px solid #ced4da');
         }
+          //revised project
         if ((requestData.Revised_x0020_Budget == null || requestData.Revised_x0020_Budget=="")) {
-            $('#RevisedBudget').css('border','2px solid red');
+            this._validationMessage("RevisedBudget", "RevisedBudget", "Revised Budget cannot be empty");
+            $('#RevisedBudget').css('border','1px solid red');
             _validate++;
         }else{
+            $('.RevisedBudget').remove();
             $('#RevisedBudget').css('border','1px solid #ced4da')
         }
         if(requestData.Actual_x0020_Start == null || requestData.Actual_x0020_Start == ""){
-            $('#ActualStartDate').css('border','2px solid red');
+            this._validationMessage("ActualStartDate", "ActualStartDate", "Actual Start Date cannot be empty");
+            $('#ActualStartDate').css('border','1px solid red');
             _validate++;
         }else{
+            $('.ActualStartDate').remove();
             $('#ActualStartDate').css('border','1px solid #ced4da');
         }
         if(requestData.Progress=="100" && (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "") ){
-            $('#ActualEndDate').css('border','2px solid red');
+            this._validationMessage("ActualEndDate", "ActualEndDate", "Actual End Date cannot be empty");
+            $('#ActualEndDate').css('border','1px solid red');
             _validate++;
         }else{
+            $('.ActualEndDate').remove();
             $('#ActualEndDate').css('border','1px solid #ced4da');
         }
         if (requestData.Scope == null || requestData.Scope == "") {
-            $('#Scope').css('border','2px solid red');
+            this._validationMessage("Scope", "Scope", "Project Scope cannot be empty");
+            $('#Scope').css('border','1px solid red');
             _validate++;
         }else{
+            $('.Scope').remove();
             $('#Scope').css('border','1px solid #ced4da')
         }
+        if (requestData.Status == null || requestData.Status =="" || requestData.Status.length < 1) {
+            this._validationMessage("Status", "Status", "Project Status cannot be empty");
+            $('#Status').css('border','1px solid red');
+            _validate++;
+          }else{
+            $('.Status').remove();
+            $('#Status').css('border','1px solid #ced4da')
+          }
         if (requestData.Schedule == null || requestData.Schedule == "") {
-            $('#Schedule').css('border','2px solid red');
+            this._validationMessage("Schedule", "Schedule", "Project Schedule cannot be empty");
+            $('#Schedule').css('border','1px solid red');
             _validate++;
         }else{
+            $('.Schedule').remove();
             $('#Schedule').css('border','1px solid #ced4da')
         }
         if (requestData.Project_x0020_Cost == null || requestData.Schedule == "") {
-            $('#ProjectCost').css('border','2px solid red');
+            this._validationMessage("ProjectCost", "ProjectCost", "Project Cost cannot be empty");
+            $('#ProjectCost').css('border','1px solid red');
             _validate++;
         }else{
+            $('.ProjectCost').remove();
             $('#ProjectCost').css('border','1px solid #ced4da')
         }
         if (requestData.Resource == null || requestData.Resource == "") {
-            $('#Resource').css('border','2px solid red');
+            this._validationMessage("Resource", "Resource", "Project Resource cannot be empty");
+            $('#Resource').css('border','1px solid red');
             _validate++;
         }else{
+            $('.Resource').remove();
             $('#Resource').css('border','1px solid #ced4da')
         }
         if (requestData.Project_x0020_Description == null ||  requestData.Project_x0020_Description =="") {
-            $('#ProjectDescription').css('border','2px solid red');
+            this._validationMessage("ProjectDescription", "ProjectDescription", "Project Description cannot be empty");
+            $('#ProjectDescription').css('border','1px solid red');
             _validate++;
           }else{
+              $('.ProjectDescription').remove();
             $('#ProjectDescription').css('border','1px solid #ced4da')
           }
         if(_validate>0){
@@ -657,7 +777,12 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             focusedInput: '',
             FormDigestValue:''
         });
-        }
+    }
+
+    private _validationMessage(_id, _classname, _message){
+        $('.' + _classname).remove();
+        $('#' + _id).closest('div').append('<span class="' + _classname + '" style="color:red;font-size:9pt">'+ _message +'</span>');
+      }
     //function to keep the request digest token active
     private _getAccessToken(){
     
