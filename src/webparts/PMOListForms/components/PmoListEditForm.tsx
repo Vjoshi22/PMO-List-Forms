@@ -99,13 +99,15 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
       public componentDidMount() {
           $('.webPartContainer').hide();
         //calling function to fetch dropdown values form sp choice coluns
-        allchoiceColumnsEditForm.forEach(colName => {
-            this._retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
-          });
+        window.addEventListener('load', this.handleload)
+        // allchoiceColumnsEditForm.forEach(colName => {
+        //     this._retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
+        //   });
         _getListEntityName(this.props.currentContext, listGUID);
         $('.pickerText_4fe0caaf').css('border','0px');
         $('.pickerInput_4fe0caaf').addClass('form-control');
         $('.form-row').css('justify-content','center');
+
         this._loadItems();
         
         this._getAccessToken();
@@ -115,8 +117,14 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
      public componentWillUnmount()
      {
       clearInterval(timerID);
+      window.removeEventListener('load', this.handleload)
       
      } 
+     private handleload(){
+        allchoiceColumnsEditForm.forEach(colName => {
+            this._retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
+          });
+     }
      //public  isOutsideRange = day =>day.isAfter(Moment()) || day.isBefore(Moment().subtract(0, "days"));  
       private handleChange = (e) => {
         let newState = {};
