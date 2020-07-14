@@ -25,6 +25,9 @@
     "react-dom": "16.8.5",
     "sp-pnp-js": "^3.0.10"
   },
+  "resolutions": {
+    "@types/react": "16.8.8"
+  },
   "devDependencies": {
     "@microsoft/sp-build-web": "1.10.0",
     "@microsoft/sp-tslint-rules": "1.10.0",

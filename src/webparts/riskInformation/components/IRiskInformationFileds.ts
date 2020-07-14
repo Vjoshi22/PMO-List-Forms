@@ -1,7 +1,7 @@
 export interface ISPRiskInformationFields{
   ID?:string;
   ProjectID: string;
-  RiskID: string;
+  //RiskID: string;
   RiskName: string;
   RiskDescription: string;
   RiskCategory:string;
