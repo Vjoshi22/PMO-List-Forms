@@ -6,7 +6,7 @@ export interface IRiskInformationState {
   RiskDescription: string;
   RiskCategory: string;
   RiskIdentifiedOn: string;
-  RiskClosedOn: string | null;
+  RiskClosedOn: string;
   RiskStatus: string;
   RiskOwner: string;
   RiskResponse: string;

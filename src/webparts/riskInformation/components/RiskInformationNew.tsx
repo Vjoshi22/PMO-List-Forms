@@ -32,7 +32,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       RiskDescription: "",
       RiskCategory: "",
       RiskIdentifiedOn: "",
-      RiskClosedOn: null,
+      RiskClosedOn: "",
       RiskStatus: "",
       RiskOwner: "",
       RiskResponse: "",
@@ -48,16 +48,20 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   }
 
   public componentDidMount() {
+    $('.webPartContainer').hide();
+    $('.form-row').css('justify-content', 'center');
     //Get all choice filed values
     allchoiceColumns.forEach(elem => {
       this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
     });
 
     getListEntityName(this.props.currentContext, listGUID);
-    //Load dd, people picker and other controls    
     this.setFormDigest();
     timerID = setInterval(
       () => this.setFormDigest(), 300000);
+  }
+  public componentWillUnmount() {
+    clearInterval(timerID);
   }
 
   //For React form controls
@@ -100,9 +104,45 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
           RiskRank: ""
         })
       }
+      //console.log("Rank : " + this.state.RiskRank); //this.state.RiskRank Doesn't relect correct value until onchange finish execution
     }
-    
-    //console.log("Rank : " + this.state.RiskRank); //this.state.RiskRank Doesn't relect correct value until onchange finish execution
+    if (e.target.name == "RiskIdentifiedOn" || e.target.name == "RiskClosedOn") {
+      //Should not be future date
+      let todaysdate = new Date();
+      let date1 = new Date($('#RiskIdentifiedOn').val().toString());
+      let date2 = new Date($('#RiskClosedOn').val().toString());
+      if (e.target.name == "RiskIdentifiedOn") {
+        $('.errRiskClosedOn').remove();
+        if (todaysdate < date1) {
+          $('#RiskIdentifiedOn').closest('div').append(`<span class="errRiskIdentifiedOn" style="color:red;font-size:9pt">Can't be greater than today's date</span>`)
+        } else {
+          $('.errRiskIdentifiedOn').remove();
+        }
+      }
+      if (e.target.name == "RiskClosedOn") {
+        $('.errRiskClosedOn').remove();
+        if (todaysdate < date2) {
+          $('#RiskClosedOn').closest('div').append(`<span class="errRiskClosedOn" style="color:red;font-size:9pt">Can't be greater than today's date</span>`)
+        } else {
+          $('.errRiskClosedOn').remove();
+          if (date1 > date2) {
+            $('#RiskClosedOn').closest('div').append(`<span class="errRiskClosedOn" style="color:red;font-size:9pt">Must be greater than Risk Identified On</span>`)
+          } else {
+            $('.errRiskClosedOn').remove();
+            this.setState({
+              RiskStatus: "Closed"
+            })
+          }
+        }
+      }
+    }
+    if (e.target.name == "RiskStatus") {
+      if (e.target.value == "Closed" && this.state.RiskClosedOn == "") {
+        $('.RiskStatus').remove();
+        $('#RiskClosedOn').css('border', '1px solid red');
+        $('#RiskStatus').closest('div').append(`<span class="errRiskClosedOn" style="color:red;font-size:9pt">Please enter closing date</span>`)
+      }
+    }    
   }
 
   private handleSubmit = (e) => {
@@ -124,7 +164,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-9 mb-3">
               {/* <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="_RMSID" name="RMS_Id" placeholder="RMS ID" onChange={this.handleChange} value={this.state.RMS_Id} /> */}
-              <Form.Control size="sm" type="number" id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID} />
+              <Form.Control size="sm" type="number" id="ProjectID" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID} />
             </FormGroup>
           </Form.Row>
           <Form.Row>
@@ -179,7 +219,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskResponse" as="select" name="RiskResponse" onChange={this.handleChange} value={this.state.RiskResponse}>
-                <option >Select an Option</option>
+                <option value="">Select an Option</option>
               </Form.Control>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
@@ -188,7 +228,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskImpact" as="select" name="RiskImpact" onChange={this.handleChange} value={this.state.RiskImpact}>
-                <option >Select an Option</option>
+                <option value="">Select an Option</option>
               </Form.Control>
             </FormGroup>
           </Form.Row>
@@ -199,7 +239,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskStatus" as="select" name="RiskStatus" onChange={this.handleChange} value={this.state.RiskStatus}>
-                <option >Select an Option</option>
+                <option value="">Select an Option</option>
               </Form.Control>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
@@ -218,16 +258,16 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="RiskProbability" as="select" name="RiskProbability" onChange={this.handleChange} value={this.state.RiskProbability}>
-                <option >Select an Option</option>
+                <option value="">Select an Option</option>
               </Form.Control>
             </FormGroup>
-            {/*<FormGroup className="col-1"></FormGroup>
-            <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel}>Risk Rank</Form.Label>
+            <FormGroup className="col-1"></FormGroup>
+            <FormGroup className="col-5">
+              {/* <Form.Label className={styles.customlabel}>Risk Rank</Form.Label> */}
             </FormGroup>
-             <FormGroup className="col-3">              
-              <Form.Control size="sm" type="text" id="RiskRank" name="RiskRank" placeholder="Risk Rank" onChange={this.handleChange} value={this.state.RiskRank} />
-            </FormGroup> */}
+            <FormGroup className="col-3">
+              {/* <Form.Control size="sm" type="text" id="RiskRank" name="RiskRank" placeholder="Risk Rank" onChange={this.handleChange} value={this.state.RiskRank} /> */}
+            </FormGroup>
           </Form.Row>
 
           <Form.Row>
@@ -273,12 +313,12 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
         type: listType
       },
       ProjectID: this.state.ProjectID,
-      RiskID: this.state.RiskID,
+      //RiskID: this.state.RiskID,
       RiskName: this.state.RiskName,
       RiskDescription: this.state.RiskDescription,
       RiskCategory: this.state.RiskCategory,
       RiskIdentifiedOn: this.state.RiskIdentifiedOn,
-      RiskClosedOn: this.state.RiskClosedOn,
+      RiskClosedOn: this.state.RiskClosedOn == null ? "" : this.state.RiskClosedOn,
       RiskStatus: this.state.RiskStatus,
       RiskOwner: this.state.RiskOwner,
       RiskResponse: this.state.RiskResponse,
@@ -289,17 +329,19 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     } as ISPRiskInformationFields;
 
     //validation
-    // ProjectId Number only and mandatory
+    // ProjectID Number only and mandatory
     if (requestData.ProjectID.length < 1) {
-      $('#ProjectId').css('border', '2px solid red');
+      this._validationMessage("ProjectID", "ProjectID", "Project ID cannot be empty");
+      $('#ProjectID').css('border', '1px solid red');
       _validate++;
     }
     else {
-      $('#ProjectId').css('border', '1px solid #ced4da')
+      $('#ProjectID').css('border', '1px solid #ced4da')
     }
     // Risk Name mandatory
     if (requestData.RiskName.length < 1) {
-      $('#RiskName').css('border', '2px solid red');
+      this._validationMessage("RiskName", "RiskName", "Risk Name cannot be empty");
+      $('#RiskName').css('border', '1px solid red');
       _validate++;
     }
     else {
@@ -308,16 +350,17 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
 
     // Risk Description mandatory
     if (requestData.RiskDescription.length < 1) {
-      $('#RiskDescription').css('border', '2px solid red');
+      this._validationMessage("RiskDescription", "RiskDescription", "Risk Description cannot be empty");
+      $('#RiskDescription').css('border', '1px solid red');
       _validate++;
     }
     else {
       $('#RiskDescription').css('border', '1px solid #ced4da')
     }
-
     // Risk category mandatory 
     if (requestData.RiskCategory == null || requestData.RiskCategory.length < 1 || requestData.RiskCategory == "") {
-      $('#RiskCategory').css('border', '2px solid red');
+      this._validationMessage("RiskCategory", "RiskCategory", "Risk Category cannot be empty");
+      $('#RiskCategory').css('border', '1px solid red');
       _validate++;
     } else {
       $('#RiskCategory').css('border', '1px solid #ced4da')
@@ -325,22 +368,36 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
 
     // Risk identified On mandatory
     if (requestData.RiskIdentifiedOn == null || requestData.RiskIdentifiedOn.length < 1 || requestData.RiskIdentifiedOn == "") {
-      $('#RiskIdentifiedOn').css('border', '2px solid red');
+      this._validationMessage("RiskIdentifiedOn", "RiskIdentifiedOn", "Risk Identified On cannot be empty");
+      $('#RiskIdentifiedOn').css('border', '1px solid red');
     }
     else {
       $('#RiskIdentifiedOn').css('border', '1px solid #ced4da')
     }
+    // Risk Closed On mandatory is status is closed
     // Risk Status mandatory 
     if (requestData.RiskStatus == null || requestData.RiskStatus.length < 1 || requestData.RiskStatus == "") {
-      $('#RiskStatus').css('border', '2px solid red');
+      this._validationMessage("RiskStatus", "RiskStatus", "Risk Status cannot be empty");
+      $('#RiskStatus').css('border', '1px solid red');
       _validate++;
-    } else {
-      $('#RiskStatus').css('border', '1px solid #ced4da')
     }
-
+    else {
+      $('#RiskStatus').css('border', '1px solid #ced4da');
+      if (requestData.RiskStatus == "Closed") {
+        if (requestData.RiskClosedOn == null || requestData.RiskClosedOn.length < 1 || requestData.RiskClosedOn == "") {
+          this._validationMessage("RiskClosedOn", "RiskClosedOn", "Risk Closed On cannot be empty if status is closed");
+          $('#RiskClosedOn').css('border', '1px solid red');
+          _validate++;
+        }
+        else {
+          $('#RiskClosedOn').css('border', '1px solid #ced4da')
+        }
+      }
+    }
     // Risk Onwer mandatory
     if (requestData.RiskOwner.length < 1) {
-      $('#RiskOwner').css('border', '2px solid red');
+      this._validationMessage("RiskOwner", "RiskOwner", "Risk Owner cannot be empty");
+      $('#RiskOwner').css('border', '1px solid red');
       _validate++;
     }
     else {
@@ -349,7 +406,8 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
 
     // Risk Response mandatory 
     if (requestData.RiskResponse == null || requestData.RiskResponse.length < 1 || requestData.RiskResponse == "") {
-      $('#RiskResponse').css('border', '2px solid red');
+      this._validationMessage("RiskResponse", "RiskResponse", "Risk Response cannot be empty");
+      $('#RiskResponse').css('border', '1px solid red');
       _validate++;
     } else {
       $('#RiskResponse').css('border', '1px solid #ced4da')
@@ -357,7 +415,8 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
 
     // Risk Impact mandatory 
     if (requestData.RiskImpact == null || requestData.RiskImpact.length < 1 || requestData.RiskImpact == "") {
-      $('#RiskImpact').css('border', '2px solid red');
+      this._validationMessage("RiskImpact", "RiskImpact", "Risk Impact cannot be empty");
+      $('#RiskImpact').css('border', '1px solid red');
       _validate++;
     } else {
       $('#RiskImpact').css('border', '1px solid #ced4da')
@@ -365,21 +424,22 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
 
     // Risk Probability mandatory 
     if (requestData.RiskProbability == null || requestData.RiskProbability.length < 1 || requestData.RiskProbability == "") {
-      $('#RiskProbability').css('border', '2px solid red');
+      this._validationMessage("RiskProbability", "RiskProbability", "Risk Probability cannot be empty");
+      $('#RiskProbability').css('border', '1px solid red');
       _validate++;
     } else {
       $('#RiskProbability').css('border', '1px solid #ced4da')
     }
 
-    // Risk Remarks mandatory
+    // Remarks mandatory
     if (requestData.Remarks.length < 1) {
-      $('#Remarks').css('border', '2px solid red');
+      this._validationMessage("Remarks", "Remarks", "Remarks cannot be empty");
+      $('#Remarks').css('border', '1px solid red');
       _validate++;
     }
     else {
       $('#Remarks').css('border', '1px solid #ced4da')
     }
-
 
     if (_validate > 0) {
       return false;
@@ -432,8 +492,11 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     // };
   }
 
-  private setFormDigest
-    () {
+  private _validationMessage(_id, _classname, _message){
+    $('.' + _classname).remove();
+    $('#' + _id).closest('div').append('<span class="' + _classname + '" style="color:red;font-size:9pt">'+ _message +'</span>');
+  }
+  private setFormDigest() {
     $.ajax({
       url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/contextinfo",
       type: "POST",
@@ -461,7 +524,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       RiskDescription: "",
       RiskCategory: "",
       RiskIdentifiedOn: "",
-      RiskClosedOn: null,
+      RiskClosedOn: "",
       RiskStatus: "",
       RiskOwner: "",
       RiskResponse: "",
@@ -474,43 +537,6 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     };
     window.open(winURL, '_self');
   }
-  // private loadItem(){
-
-  //   var itemId = GetParameterValues('id');
-  //   const url = this.props.currentContext.pageContext.web.absoluteUrl + `/_api/web/lists(' ${listGUID} ')/items( ${itemId} )`;
-  //   return this.props.currentContext.spHttpClient.get(url,SPHttpClient.configurations.v1,  
-  //       {  
-  //           headers: {  
-  //             'Accept': 'application/json;odata=nometadata',  
-  //             'odata-version': ''  
-  //           }  
-  //       }).then((response: SPHttpClientResponse): Promise<I> => {  
-  //           return response.json();  
-  //         })  
-  //       .then((item: ISPRiskInformationFields): void => {   
-  //         this.state = {
-  //           Title: ,
-  //           RiskId: -1,
-  //           ProjectID: "",
-  //           RiskName: "",
-  //           RiskDescription: "",
-  //           RiskCategory: "",
-  //           RiskIdentifiedOn: "",
-  //           RiskClosedOn: "",
-  //           RiskStatus: "",
-  //           RiskOwner: "",
-  //           RiskResponse: "",
-  //           RiskImpact: "",
-  //           RiskProbability: "",
-  //           RiskRank: "",
-  //           Remarks: "",
-  //           focusedInput: "",
-  //           FormDigestValue: ""
-  //         })  
-  //         //console.log(this.state.) ;
-  //       });
-  //   }
-
   private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
     const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
