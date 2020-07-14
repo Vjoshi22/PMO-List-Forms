@@ -396,22 +396,22 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         })
     }else if(e.target.name == "ProjectProgress" && e.target.value != 100){
         this.setState({
-            disable_plannedCompletion: true,
-            PlannedCompletion: '',
-            ProjectStatus: "In Progress"
+            //disable_plannedCompletion: true
+            // PlannedCompletion: '',
+            ProjectStatus: ""
         })
     }
 
     if(e.target.name == "ProjectStatus" && e.target.value =="Completed"){
         this.setState({
-            ProjectProgress: "100",
-            disable_plannedCompletion: false
+            ProjectProgress: "100"
+            // disable_plannedCompletion: false
         })
     }else if(e.target.name == "ProjectStatus" && e.target.value !="Completed"){
         this.setState({
-            ProjectProgress: "",
-            PlannedCompletion:'',
-            disable_plannedCompletion: true
+               ProjectProgress: (this.state.ProjectProgress == "100" ? "" : this.state.ProjectProgress )
+            // PlannedCompletion:'',
+            // disable_plannedCompletion: true
         })
     }
 }
