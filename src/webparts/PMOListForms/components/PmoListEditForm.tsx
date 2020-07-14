@@ -99,10 +99,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
       public componentDidMount() {
           $('.webPartContainer').hide();
         //calling function to fetch dropdown values form sp choice coluns
-        window.addEventListener('load', this.handleload)
-        // allchoiceColumnsEditForm.forEach(colName => {
-        //     this._retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
-        //   });
+        //window.addEventListener('load', this.handleload)
+        allchoiceColumnsEditForm.forEach(colName => {
+            this._retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
+          });
         _getListEntityName(this.props.currentContext, listGUID);
         $('.pickerText_4fe0caaf').css('border','0px');
         $('.pickerInput_4fe0caaf').addClass('form-control');
@@ -117,14 +117,14 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
      public componentWillUnmount()
      {
       clearInterval(timerID);
-      window.removeEventListener('load', this.handleload)
+      //window.removeEventListener('load', this.handleload)
       
      } 
-     private handleload(){
-        allchoiceColumnsEditForm.forEach(colName => {
-            this._retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
-          });
-     }
+    //  private handleload(){
+    //     allchoiceColumnsEditForm.forEach(colName => {
+    //         this._retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
+    //       });
+    //  }
      //public  isOutsideRange = day =>day.isAfter(Moment()) || day.isBefore(Moment().subtract(0, "days"));  
       private handleChange = (e) => {
         let newState = {};
@@ -473,7 +473,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             this.setState({
                 disable_plannedCompletion: true,
                 ActualEndDate: '',
-                ProjectStatus: "In Progress"
+                ProjectStatus: ""
             })
         }
 
@@ -484,7 +484,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             })
         }else if(e.target.name == "ProjectStatus" && e.target.value !="Completed"){
             this.setState({
-                ProjectProgress: "",
+                ProjectProgress: (this.state.ProjectProgress == "100" ? "" : this.state.ProjectProgress ),
                 ActualEndDate:'',
                 disable_plannedCompletion: true
             })

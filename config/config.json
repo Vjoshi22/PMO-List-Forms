@@ -18,11 +18,19 @@
         }
       ]
     },
+<<<<<<< HEAD
     "issue-information-web-part": {
       "components": [
         {
           "entrypoint": "./lib/webparts/issueInformation/IssueInformationWebPart.js",
           "manifest": "./src/webparts/issueInformation/IssueInformationWebPart.manifest.json"
+=======
+    "milestone-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/milestone/MilestoneWebPart.js",
+          "manifest": "./src/webparts/milestone/MilestoneWebPart.manifest.json"
+>>>>>>> 28973b42ffcbf47ad38515e2c5d38f9107e10393
         }
       ]
     }
@@ -32,6 +40,10 @@
     "PmoListFormsWebPartStrings": "lib/webparts/pmoListForms/loc/{locale}.js",
     "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
     "RiskInformationWebPartStrings": "lib/webparts/riskInformation/loc/{locale}.js",
+<<<<<<< HEAD
     "IssueInformationWebPartStrings": "lib/webparts/issueInformation/loc/{locale}.js"
+=======
+    "MilestoneWebPartStrings": "lib/webparts/milestone/loc/{locale}.js"
+>>>>>>> 28973b42ffcbf47ad38515e2c5d38f9107e10393
   }
 }
