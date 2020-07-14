@@ -17,12 +17,21 @@
           "manifest": "./src/webparts/riskInformation/RiskInformationWebPart.manifest.json"
         }
       ]
+    },
+    "milestone-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/milestone/MilestoneWebPart.js",
+          "manifest": "./src/webparts/milestone/MilestoneWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
     "PmoListFormsWebPartStrings": "lib/webparts/pmoListForms/loc/{locale}.js",
     "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
-    "RiskInformationWebPartStrings": "lib/webparts/riskInformation/loc/{locale}.js"
+    "RiskInformationWebPartStrings": "lib/webparts/riskInformation/loc/{locale}.js",
+    "MilestoneWebPartStrings": "lib/webparts/milestone/loc/{locale}.js"
   }
 }
