@@ -48,17 +48,30 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   }
 
   public componentDidMount() {
-    $('.webPartContainer').hide();
-    $('.form-row').css('justify-content', 'center');
-    //Get all choice filed values
-    allchoiceColumns.forEach(elem => {
-      this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
-    });
+    //Retrive Project ID
+    let itemId = GetParameterValues('ProjectID');
+    let isNumber = parseInt(itemId);
+    if (itemId == null || itemId == "" || isNaN(isNumber)) {
+      alert("Incorrect URL.Redirecting...");
+      window.history.back();
+    }
+    else {
+      this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl, itemId);
+      this.setState({
+        ProjectID: itemId
+      })
+      $('.webPartContainer').hide();
+      $('.form-row').css('justify-content', 'center');
+      //Get all choice filed values
+      allchoiceColumns.forEach(elem => {
+        this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
+      });
 
-    getListEntityName(this.props.currentContext, listGUID);
-    this.setFormDigest();
-    timerID = setInterval(
-      () => this.setFormDigest(), 300000);
+      getListEntityName(this.props.currentContext, listGUID);
+      this.setFormDigest();
+      timerID = setInterval(
+        () => this.setFormDigest(), 300000);
+    }
   }
   public componentWillUnmount() {
     clearInterval(timerID);
@@ -142,7 +155,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
         $('#RiskClosedOn').css('border', '1px solid red');
         $('#RiskStatus').closest('div').append(`<span class="errRiskClosedOn" style="color:red;font-size:9pt">Please enter closing date</span>`)
       }
-    }    
+    }
   }
 
   private handleSubmit = (e) => {
@@ -164,7 +177,8 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             </FormGroup>
             <FormGroup className="col-9 mb-3">
               {/* <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="_RMSID" name="RMS_Id" placeholder="RMS ID" onChange={this.handleChange} value={this.state.RMS_Id} /> */}
-              <Form.Control size="sm" type="number" id="ProjectID" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID} />
+              {/* <Form.Control size="sm" type="number" id="ProjectID" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID} /> */}
+              <Form.Label>{this.state.ProjectID}</Form.Label>
             </FormGroup>
           </Form.Row>
           <Form.Row>
@@ -303,6 +317,36 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     );
   }
 
+  private _checkExistingProjectId(siteColUrl, ProjectIDValue) {
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?select = ProjectID`;
+    let breakCondition = false;
+    $('.ProjectID').remove();
+    this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
+      .then((response: HttpClientResponse) => {
+        if (response.ok) {
+          response.json()
+            .then((jsonResponse) => {
+              jsonResponse.value.forEach(item => {
+                if (ProjectIDValue == item.ProjectID && !breakCondition) {                                   
+                  breakCondition = true;
+                }
+                else{
+                  alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
+                  //window.history.back();
+                }
+                // if(ProjectIDValue != item.ProjectID && breakCondition){
+                //   $('.ProjectID').remove();
+                // }
+
+              });
+            }, (err: any): void => {
+              console.warn(`Failed to fulfill Promise\r\n\t${err}`);
+            });
+        } else {
+          console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
+        }
+      });
+  }
   private createItem(e) {
     let _validate = 0;
     e.preventDefault();
@@ -492,9 +536,9 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     // };
   }
 
-  private _validationMessage(_id, _classname, _message){
+  private _validationMessage(_id, _classname, _message) {
     $('.' + _classname).remove();
-    $('#' + _id).closest('div').append('<span class="' + _classname + '" style="color:red;font-size:9pt">'+ _message +'</span>');
+    $('#' + _id).closest('div').append('<span class="' + _classname + '" style="color:red;font-size:9pt">' + _message + '</span>');
   }
   private setFormDigest() {
     $.ajax({

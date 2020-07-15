@@ -108,6 +108,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         $('.pickerInput_4fe0caaf').addClass('form-control');
         $('.form-row').css('justify-content','center');
 
+        //this._loadItems();
         setInterval(() =>this._loadItems(), 1000);
         
         this._getAccessToken();

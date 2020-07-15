@@ -56,7 +56,8 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     });
 
     getListEntityName(this.props.currentContext, listGUID);
-    this.loadItems();
+    // this.loadItems();
+    setInterval(() =>this.loadItems(), 1000);
 
     this.setFormDigest();
     timerID = setInterval(
@@ -71,7 +72,42 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     let newState = {};
     newState[e.target.name] = e.target.value;
     this.setState(newState);
-
+    
+    if (e.target.name == "RiskImpact") {
+      if (e.target.value != "" && this.state.RiskProbability != "") {
+        try {
+          this.setState({
+            RiskRank: (Number(e.target.value) * Number(this.state.RiskProbability)).toString()
+          })
+        }
+        catch (ex) {
+          console.log("Error in Calculating Risk Rank");
+        }
+      }
+      else {
+        this.setState({
+          RiskRank: ""
+        })
+      }
+    }
+    if (e.target.name == "RiskProbability") {
+      if (e.target.value != "" && this.state.RiskImpact != "") {
+        try {
+          this.setState({
+            RiskRank: (Number(e.target.value) * Number(this.state.RiskImpact)).toString()
+          })
+        }
+        catch (ex) {
+          console.log("Error in Calculating Risk Rank");
+        }
+      }
+      else {
+        this.setState({
+          RiskRank: ""
+        })
+      }
+      //console.log("Rank : " + this.state.RiskRank); //this.state.RiskRank Doesn't relect correct value until onchange finish execution
+    }
     if (e.target.name == "RiskIdentifiedOn" || e.target.name == "RiskClosedOn") {
       //Should not be future date
       let todaysdate = new Date();      
