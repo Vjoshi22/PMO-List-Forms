@@ -5,23 +5,34 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
-import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
+import { BaseClientSideWebPart, WebPartContext } from '@microsoft/sp-webpart-base';
 
 import * as strings from 'IssueInformationWebPartStrings';
-import IssueInformation from './components/IssueInformation';
+import CreateIssue from './components/CreateIssue';
+import UpdateIssue from './components/UpdateIssue';
 import { IIssueInformationProps } from './components/IIssueInformationProps';
 
 export interface IIssueInformationWebPartProps {
   description: string;
+  currentContext: WebPartContext;
 }
+var renderIssueForm: any;
 
 export default class IssueInformationWebPart extends BaseClientSideWebPart <IIssueInformationWebPartProps> {
 
   public render(): void {
+    if((/edit/.test(window.location.href))){
+      renderIssueForm = UpdateIssue 
+    }
+    if((/new/.test(window.location.href))){
+      renderIssueForm = CreateIssue
+    }
     const element: React.ReactElement<IIssueInformationProps> = React.createElement(
-      IssueInformation,
+      renderIssueForm,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        currentContext: this.context
+        
       }
     );
 
