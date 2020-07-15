@@ -56,7 +56,8 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     });
 
     getListEntityName(this.props.currentContext, listGUID);
-    this.loadItems();
+    // this.loadItems();
+    setInterval(() =>this.loadItems(), 1000);
 
     this.setFormDigest();
     timerID = setInterval(
