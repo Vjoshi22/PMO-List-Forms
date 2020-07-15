@@ -318,7 +318,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   }
 
   private _checkExistingProjectId(siteColUrl, ProjectIDValue) {
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?select = ProjectID`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -326,8 +326,9 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
         if (response.ok) {
           response.json()
             .then((jsonResponse) => {
+              if(jsonResponse.value.length > 0){
               jsonResponse.value.forEach(item => {
-                if (ProjectIDValue == item.ProjectID && !breakCondition) {                                   
+                if (ProjectIDValue == item.ProjectID) {                                   
                   breakCondition = true;
                 }
                 else{
@@ -339,6 +340,10 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
                 // }
 
               });
+            }else{
+              alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
+              window.history.back();
+            }
             }, (err: any): void => {
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
