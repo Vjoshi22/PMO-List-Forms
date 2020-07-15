@@ -29,7 +29,7 @@ export interface ICreateIssueState{
   FormDigestValue: string;
 }
 //declaring variables
-var listGUID: any = "373C7C3-3379-49C9-B3B1-AC87C2166DC0";   //"47272d1e-57d9-447e-9cfd-4cff76241a93"; 
+var listGUID: any = "A373C7C3-3379-49C9-B3B1-AC87C2166DC0";   //"47272d1e-57d9-447e-9cfd-4cff76241a93"; 
 var timerID;
 var allchoiceColumns: any[] = ["IssueCategory", "IssueStatus", "IssuePriority"]
 
@@ -74,7 +74,7 @@ private handleSubmit(e){
 
 }
   public render(): React.ReactElement<IIssueInformationProps> {
-    SPComponentLoader.loadCss("//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css");
+    SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
     return (
       <div id="newItemDiv" className={styles["_main-div"]} >
         <div id="heading" className={styles.heading}><h3>Register an Issue</h3></div>
@@ -95,9 +95,11 @@ private handleSubmit(e){
               <Form.Label className={styles.customlabel +" " + styles.required}>Issue Category</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="number" id="IssueCategory" name="IssueCategory" placeholder="Issue Category" onChange={this.handleChange} value={this.state.IssueCategory}/>
+              <Form.Control size="sm" as="select" id="IssueCategory" name="IssueCategory" placeholder="Issue Category" onChange={this.handleChange} value={this.state.IssueCategory}>
+              <option value="">Select an Option</option>
+              </Form.Control>
             </FormGroup>
-            <FormGroup className="col-1"></FormGroup>
+            <FormGroup className="col-6"></FormGroup>
           </Form.Row>
           {/* ---------ROW 3---------------- */}
           <Form.Row className="mt-3">
@@ -164,7 +166,7 @@ private handleSubmit(e){
             <FormGroup className="col-3">
               <Form.Control size="sm" type="text" id="IssueReportedOn" name="IssueReportedOn" onChange={this.handleChange} value={this.state.IssueReportedOn}/>
             </FormGroup>
-            <FormGroup className="col-1"></FormGroup>
+            <FormGroup className="col-6"></FormGroup>
           </Form.Row>
           {/* ---------ROW 4---------------- */}
           <Form.Row className="mt-3">
@@ -172,16 +174,17 @@ private handleSubmit(e){
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel +" " + styles.required}>Issue Description</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
-              <Form.Control size="sm" type="text" id="IssueDescription" name="IssueDescription" placeholder="Description about the Issue" onChange={this.handleChange} value={this.state.IssueDescription}/>
+            <FormGroup className="col-9">
+              <Form.Control size="sm" as="textarea" rows={4} id="IssueDescription" name="IssueDescription" placeholder="Description about the Issue" onChange={this.handleChange} value={this.state.IssueDescription}/>
             </FormGroup>
-            <FormGroup className="col-1"></FormGroup>
+            </Form.Row>
             {/*-----------Issue Priority------------- */}
+            <Form.Row>
             <FormGroup className="col-2">
-                <Form.Label className={styles.customlabel + " " + styles.required}>Issue Closed On</Form.Label>
+                <Form.Label className={styles.customlabel + " " + styles.required}>Next Steps Or Resolutions</Form.Label>
               </FormGroup>
-              <FormGroup className="col-3">
-                <Form.Control size="sm" id="NextStepsOrResolution" type="text" name="NextStepsOrResolution" placeholder="Next Steps and Resolutions for the Issue" onChange={this.handleChange} value={this.state.NextStepsOrResolution}/>
+              <FormGroup className="col-9">
+                <Form.Control size="sm" id="NextStepsOrResolution" as="textarea" rows={4} name="NextStepsOrResolution" placeholder="Next Steps and Resolutions for the Issue" onChange={this.handleChange} value={this.state.NextStepsOrResolution}/>
               </FormGroup>
           </Form.Row>
         </Form>
