@@ -504,11 +504,11 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       success: (data, status, xhr) => {
         console.log("Submitted successfully");
         alert("Submitted successfully");
-        // let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
-        // window.open(winURL, '_self');
+        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        window.open(winURL, '_self');
       },
       error: (xhr, status, error) => {
-        alert(JSON.stringify(xhr.responseText));
+        alert("Something went wrong, please try after sometime");
         console.log(xhr.responseText + " | " + error);
         // let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
         // window.open(winURL, '_self');
@@ -559,7 +559,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   }
 
   private closeform() {
-    let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/';
+    let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
     this.state = {
       Title: "",
       RiskID: "",
