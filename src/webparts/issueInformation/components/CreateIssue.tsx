@@ -109,7 +109,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
         IssueClosedOn:''
       })
     }
-    
+
     //functin to check the existing Id
     if (e.target.name == "ProjectID" && (e.target.value != 0 || e.target.value == "")) {
       this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl, e.target.value);
@@ -127,7 +127,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
       <div id="newItemDiv" className={styles["_main-div"]} >
         <div id="heading" className={styles.heading}><h3>Register an Issue</h3></div>
         <Form onSubmit={this.handleSubmit}>
-          <Form.Row className="mt-3">
+          <Form.Row className="mt-4">
             {/*-----------RMS ID------------------- */}
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Id</Form.Label>
@@ -139,19 +139,29 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
             <FormGroup className="col-6"></FormGroup>
           </Form.Row>
           {/* --------ROW 2----------------- */}
-          <Form.Row className="mt-3">
+          <Form.Row>
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Issue Category</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
+            <FormGroup className="col-9">
               <Form.Control size="sm" as="select" id="IssueCategory" name="IssueCategory" placeholder="Issue Category" onChange={this.handleChange} value={this.state.IssueCategory}>
                 <option value="">Select an Option</option>
               </Form.Control>
             </FormGroup>
-            <FormGroup className="col-6"></FormGroup>
+            {/* <FormGroup className="col-6"></FormGroup> */}
           </Form.Row>
           {/* ---------ROW 3---------------- */}
-          <Form.Row className="mt-3">
+          <Form.Row>
+            {/*-----------Issue Status------------------- */}
+            <FormGroup className="col-2">
+              <Form.Label className={styles.customlabel + " " + styles.required}>Issue Description</Form.Label>
+            </FormGroup>
+            <FormGroup className="col-9">
+              <Form.Control size="sm" as="textarea" rows={4} id="IssueDescription" name="IssueDescription" placeholder="Description about the Issue" onChange={this.handleChange} value={this.state.IssueDescription} />
+            </FormGroup>
+          </Form.Row>
+          {/* ---------ROW 4---------------- */}
+          <Form.Row>
             {/*-----------Issue Status------------------- */}
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Issue Status</Form.Label>
@@ -172,8 +182,8 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               </Form.Control>
             </FormGroup>
           </Form.Row>
-          {/* ---------ROW 4---------------- */}
-          <Form.Row className="mt-3">
+          {/* ---------ROW 5---------------- */}
+          <Form.Row>
             {/*-----------Issue Status------------------- */}
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Assigned Team</Form.Label>
@@ -190,8 +200,8 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Control size="sm" id="Assginedperson" type="text" name="Assginedperson" onChange={this.handleChange} value={this.state.Assginedperson} />
             </FormGroup>
           </Form.Row>
-          {/* ---------ROW 4---------------- */}
-          <Form.Row className="mt-3">
+          {/* ---------ROW 6---------------- */}
+          <Form.Row>
             {/*-----------Issue Status------------------- */}
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Issue Reported On</Form.Label>
@@ -208,8 +218,8 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Control size="sm" id="IssueClosedOn" type="date" name="IssueClosedOn" onChange={this.handleChange} value={this.state.IssueClosedOn} />
             </FormGroup>
           </Form.Row>
-          {/* ---------ROW 5---------------- */}
-          <Form.Row className="mt-3">
+          {/* ---------ROW 7---------------- */}
+          <Form.Row>
             {/*-----------Issue Status------------------- */}
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Required Date</Form.Label>
@@ -218,16 +228,6 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Control size="sm" type="date" id="RequiredDate" name="RequiredDate" onChange={this.handleChange} value={this.state.RequiredDate} />
             </FormGroup>
             <FormGroup className="col-6"></FormGroup>
-          </Form.Row>
-          {/* ---------ROW 6---------------- */}
-          <Form.Row className="mt-3">
-            {/*-----------Issue Status------------------- */}
-            <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Issue Description</Form.Label>
-            </FormGroup>
-            <FormGroup className="col-9">
-              <Form.Control size="sm" as="textarea" rows={4} id="IssueDescription" name="IssueDescription" placeholder="Description about the Issue" onChange={this.handleChange} value={this.state.IssueDescription} />
-            </FormGroup>
           </Form.Row>
           {/*-----------Issue Priority------------- */}
           <Form.Row>

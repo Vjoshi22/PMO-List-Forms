@@ -259,7 +259,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
             </div>
             <FormGroup className="col-.5"></FormGroup>
             <div>
-              <Button id="cancel" size="sm" variant="primary" onClick={this.closeForm}>
+              <Button id="cancel" size="sm" variant="primary" onClick={() => { this.closeForm() }}>
                 Cancel
                 </Button>
             </div>
