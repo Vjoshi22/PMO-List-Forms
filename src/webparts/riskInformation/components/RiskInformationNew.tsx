@@ -385,6 +385,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       _validate++;
     }
     else {
+      $('.ProjectID').remove();
       $('#ProjectID').css('border', '1px solid #ced4da')
     }
     // Risk Name mandatory
@@ -394,6 +395,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       _validate++;
     }
     else {
+      $('.RiskName').remove();
       $('#RiskName').css('border', '1px solid #ced4da')
     }
 
@@ -404,6 +406,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       _validate++;
     }
     else {
+      $('.RiskDescription').remove();
       $('#RiskDescription').css('border', '1px solid #ced4da')
     }
     // Risk category mandatory 
@@ -412,6 +415,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       $('#RiskCategory').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.RiskCategory').remove();
       $('#RiskCategory').css('border', '1px solid #ced4da')
     }
 
@@ -421,6 +425,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       $('#RiskIdentifiedOn').css('border', '1px solid red');
     }
     else {
+      $('.RiskIdentifiedOn').remove();
       $('#RiskIdentifiedOn').css('border', '1px solid #ced4da')
     }
     // Risk Closed On mandatory is status is closed
@@ -431,6 +436,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       _validate++;
     }
     else {
+      $('.RiskStatus').remove();
       $('#RiskStatus').css('border', '1px solid #ced4da');
       if (requestData.RiskStatus == "Closed") {
         if (requestData.RiskClosedOn == null || requestData.RiskClosedOn.length < 1 || requestData.RiskClosedOn == "") {
@@ -439,6 +445,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
           _validate++;
         }
         else {
+          $('.RiskClosedOn').remove();
           $('#RiskClosedOn').css('border', '1px solid #ced4da')
         }
       }
@@ -450,6 +457,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       _validate++;
     }
     else {
+      $('.RiskOwner').remove();
       $('#RiskOwner').css('border', '1px solid #ced4da')
     }
 
@@ -459,6 +467,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       $('#RiskResponse').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.RiskResponse').remove();
       $('#RiskResponse').css('border', '1px solid #ced4da')
     }
 
@@ -468,6 +477,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       $('#RiskImpact').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.RiskImpact').remove();
       $('#RiskImpact').css('border', '1px solid #ced4da')
     }
 
@@ -477,6 +487,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       $('#RiskProbability').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.RiskProbability').remove();
       $('#RiskProbability').css('border', '1px solid #ced4da')
     }
 
@@ -487,6 +498,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       _validate++;
     }
     else {
+      $('.Remarks').remove();
       $('#Remarks').css('border', '1px solid #ced4da')
     }
 
