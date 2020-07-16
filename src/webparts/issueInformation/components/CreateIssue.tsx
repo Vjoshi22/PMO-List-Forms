@@ -97,6 +97,19 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
 
     this.validateDate(e);
 
+    //on change of issueClosedOn change the status
+    if(e.target.name == "IssueClosedOn" && (e.target.value != "" || e.target.value != null)){
+      this.setState({
+        IssueStatus: "Resolved"
+      })
+    }
+    //on change of issue status need to change the IssueclosedOn
+    if(e.target.name == "IssueStatus" && (e.target.value != "Resolved" || e.target.value != null)){
+      this.setState({
+        IssueClosedOn:''
+      })
+    }
+    
     //functin to check the existing Id
     if (e.target.name == "ProjectID" && (e.target.value != 0 || e.target.value == "")) {
       this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl, e.target.value);
