@@ -10,4 +10,5 @@ export interface SPUpdateIssueForm{
     IssueReportedOn: string;
     IssueClosedOn: string;
     RequiredDate: string;
+    Modified: string;
 }
