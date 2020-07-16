@@ -185,7 +185,8 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
                   }
                   else {
                     alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-                    //window.history.back();
+                    let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                    window.open(winURL, '_self');
                   }
                   // if(ProjectIDValue != item.ProjectID && breakCondition){
                   //   $('.ProjectID').remove();
@@ -195,13 +196,20 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
               }
               else {
                 alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-                //window.history.back();
+                let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                window.open(winURL, '_self');
               }
             }, (err: any): void => {
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
+              alert("Something went wrong. Please try after sometime Redirecting...");
+              let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+              window.open(winURL, '_self');
             });
         } else {
           console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
+            alert("Something went wrong. Please try after sometime Redirecting...");
+            let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+            window.open(winURL, '_self');
         }
       });
   }
