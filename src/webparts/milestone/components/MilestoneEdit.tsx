@@ -168,7 +168,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
               <Form.Label className={styles.customlabel + " " + styles.required}>Actual Start</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="date" id="ActualStart" name="RiskIdActualStartentifiedOn" placeholder="Actual Start" onChange={this.handleChange} value={this.state.ActualStart} />
+              <Form.Control size="sm" type="date" id="ActualStart" name="ActualStart" placeholder="Actual Start" onChange={this.handleChange} value={this.state.ActualStart} />
               {/* <DatePicker selected={this.state.PlannedStart}  onChange={this.handleChange} />; */}
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
@@ -250,8 +250,8 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
       PlannedEnd: this.state.PlannedEnd,
       MilestoneStatus: this.state.MilestoneStatus,
       Remarks: this.state.Remarks,
-      ActualStart: this.state.ActualStart,
-      ActualEnd: this.state.ActualEnd
+      ActualStart: this.state.ActualStart == null ? "" : this.state.ActualStart,
+      ActualEnd: this.state.ActualEnd == null ? "" : this.state.ActualEnd
     } as ISPMilestoneFields;
 
     //validation
@@ -271,6 +271,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
       $('#Phase').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.Phase').remove();
       $('#Phase').css('border', '1px solid #ced4da')
     }
 
@@ -300,6 +301,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
       $('#MilestoneStatus').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.MilestoneStatus').remove();
       $('#MilestoneStatus').css('border', '1px solid #ced4da')
       if (requestData.MilestoneStatus == "Completed") {
         if (requestData.ActualEnd == null || requestData.ActualEnd.length < 1 || requestData.ActualEnd == "") {
@@ -308,6 +310,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
           _validate++;
         }
         else {
+          $('.ActualEnd').remove();
           $('#ActualEnd').css('border', '1px solid #ced4da')
         }
       }
@@ -330,6 +333,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
       _validate++;
     }
     else {
+      $('.ActualStart').remove();
       $('#ActualStart').css('border', '1px solid #ced4da')
     }
 

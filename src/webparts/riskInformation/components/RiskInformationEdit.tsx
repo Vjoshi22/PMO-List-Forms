@@ -399,6 +399,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       _validate++;
     }
     else {
+      $('.RiskDescription').remove();
       $('#RiskDescription').css('border', '1px solid #ced4da')
     }
     // Risk category mandatory 
@@ -407,6 +408,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       $('#RiskCategory').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.RiskCategory').remove();
       $('#RiskCategory').css('border', '1px solid #ced4da')
     }
     // Risk Closed On mandatory is status is closed
@@ -417,6 +419,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       _validate++;
     }
     else {
+      $('.RiskStatus').remove();
       $('#RiskStatus').css('border', '1px solid #ced4da');
       if (requestData.RiskStatus == "Closed") {
         if (requestData.RiskClosedOn == null || requestData.RiskClosedOn.length < 1 || requestData.RiskClosedOn == "") {
@@ -425,6 +428,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
           _validate++;
         }
         else {
+          $('.RiskClosedOn').remove();
           $('#RiskClosedOn').css('border', '1px solid #ced4da')
         }
       }
@@ -436,6 +440,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       _validate++;
     }
     else {
+      $('.RiskOwner').remove();
       $('#RiskOwner').css('border', '1px solid #ced4da')
     }
 
@@ -445,6 +450,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       $('#RiskResponse').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.RiskResponse').remove();
       $('#RiskResponse').css('border', '1px solid #ced4da')
     }
 
@@ -454,6 +460,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       $('#RiskImpact').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.RiskImpact').remove();
       $('#RiskImpact').css('border', '1px solid #ced4da')
     }
 
@@ -463,6 +470,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       $('#RiskProbability').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.RiskProbability').remove();
       $('#RiskProbability').css('border', '1px solid #ced4da')
     }
 
@@ -473,6 +481,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       _validate++;
     }
     else {
+      $('.Remarks').remove();
       $('#Remarks').css('border', '1px solid #ced4da')
     }
 

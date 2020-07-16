@@ -220,8 +220,8 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       PlannedEnd: this.state.PlannedEnd,
       MilestoneStatus: this.state.MilestoneStatus,
       Remarks: this.state.Remarks,
-      ActualStart: this.state.ActualStart,
-      ActualEnd: this.state.ActualEnd
+      ActualStart: this.state.ActualStart == null ? "" : this.state.ActualStart,
+      ActualEnd: this.state.ActualEnd == null ? "" : this.state.ActualEnd
     } as ISPMilestoneFields;
 
     //validation
@@ -241,6 +241,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       $('#Phase').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.Phase').remove();
       $('#Phase').css('border', '1px solid #ced4da')
     }
 
@@ -251,6 +252,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       _validate++;
     }
     else {
+      $('.PlannedStart').remove();
       $('#PlannedStart').css('border', '1px solid #ced4da')
     }
 
@@ -261,6 +263,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       _validate++;
     }
     else {
+      $('.PlannedEnd').remove();
       $('#PlannedEnd').css('border', '1px solid #ced4da')
     }
 
@@ -270,6 +273,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       $('#MilestoneStatus').css('border', '1px solid red');
       _validate++;
     } else {
+      $('.MilestoneStatus').remove();
       $('#MilestoneStatus').css('border', '1px solid #ced4da')
     }
 
