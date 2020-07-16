@@ -109,7 +109,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         $('.form-row').css('justify-content','center');
 
         //this._loadItems();
-        setInterval(() =>this._loadItems(), 1000);
+        setTimeout(() =>this._loadItems(), 1000);
         
         this._getAccessToken();
         timerID=setInterval(

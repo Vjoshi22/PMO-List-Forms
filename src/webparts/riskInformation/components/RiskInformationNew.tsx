@@ -19,7 +19,8 @@ SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootst
 
 let timerID;
 let newitem: boolean;
-let listGUID: any = "b94d8766-9e5a-41ae-afc6-b00a0bbe0149"; // Risk Information
+let listGUID: any = "b94d8766-9e5a-41ae-afc6-b00a0bbe0149"; // Risk Information;
+let ProjectlistGUID: any = "2c3ffd4e-1b73-4623-898d-8e3a1bb60b91" //Project Master List
 
 export default class RiskInformationNew extends React.Component<IRiskInformationProps, IRiskInformationState> {
   constructor(props: IRiskInformationProps, state: IRiskInformationState) {
@@ -318,7 +319,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   }
 
   private _checkExistingProjectId(siteColUrl, ProjectIDValue) {
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + ProjectlistGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -419,6 +420,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     if (requestData.RiskIdentifiedOn == null || requestData.RiskIdentifiedOn.length < 1 || requestData.RiskIdentifiedOn == "") {
       this._validationMessage("RiskIdentifiedOn", "RiskIdentifiedOn", "Risk Identified On cannot be empty");
       $('#RiskIdentifiedOn').css('border', '1px solid red');
+      _validate++;
     }
     else {
       $('#RiskIdentifiedOn').css('border', '1px solid #ced4da')
