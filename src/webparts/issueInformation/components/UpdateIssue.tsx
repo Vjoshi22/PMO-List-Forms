@@ -102,6 +102,18 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
 
     this.validateDate(e);
 
+    //on change of issueClosedOn change the status
+    if(e.target.name == "IssueClosedOn" && (e.target.value != "" || e.target.value != null)){
+      this.setState({
+        IssueStatus: "Resolved"
+      })
+    }
+    //on change of issue status need to change the IssueclosedOn
+    if(e.target.name == "IssueStatus" && (e.target.value != "Resolved" || e.target.value != null)){
+      this.setState({
+        IssueClosedOn:''
+      })
+    }
     //functin to check the existing Id
     if (e.target.name == "ProjectID" && (e.target.value != 0 || e.target.value == "")) {
       this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl, e.target.value);
@@ -110,6 +122,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
       $('#ProjectID').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Project Id cannot be 0</span>');
     }
   }
+
   private handleSubmit = (e) => {
     this.updateIssue(e);
   }
@@ -120,7 +133,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
       <div id="newItemDiv" className={styles["_main-div"]} >
         <div id="heading" className={styles.heading}><h3>Register an Issue</h3></div>
         <Form onSubmit={this.handleSubmit}>
-          <Form.Row>
+          <Form.Row className="mt-4">
             {/*-----------RMS ID------------------- */}
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Id</Form.Label>
@@ -136,14 +149,24 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Issue Category</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
+            <FormGroup className="col-9">
               <Form.Control size="sm" as="select" id="IssueCategory" name="IssueCategory" placeholder="Issue Category" onChange={this.handleChange} value={this.state.IssueCategory}>
                 <option value="">Select an Option</option>
               </Form.Control>
             </FormGroup>
-            <FormGroup className="col-6"></FormGroup>
+            {/* <FormGroup className="col-6"></FormGroup> */}
           </Form.Row>
           {/* ---------ROW 3---------------- */}
+          <Form.Row>
+            {/*-----------Issue Status------------------- */}
+            <FormGroup className="col-2">
+              <Form.Label className={styles.customlabel + " " + styles.required}>Issue Description</Form.Label>
+            </FormGroup>
+            <FormGroup className="col-9">
+              <Form.Control size="sm" as="textarea" rows={4} id="IssueDescription" name="IssueDescription" placeholder="Description about the Issue" onChange={this.handleChange} value={this.state.IssueDescription} />
+            </FormGroup>
+          </Form.Row>
+          {/* ---------ROW 4---------------- */}
           <Form.Row>
             {/*-----------Issue Status------------------- */}
             <FormGroup className="col-2">
@@ -165,7 +188,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
               </Form.Control>
             </FormGroup>
           </Form.Row>
-          {/* ---------ROW 4---------------- */}
+          {/* ---------ROW 5---------------- */}
           <Form.Row>
             {/*-----------Issue Status------------------- */}
             <FormGroup className="col-2">
@@ -183,7 +206,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
               <Form.Control size="sm" id="Assginedperson" type="text" name="Assginedperson" onChange={this.handleChange} value={this.state.Assginedperson} />
             </FormGroup>
           </Form.Row>
-          {/* ---------ROW 4---------------- */}
+          {/* ---------ROW 6---------------- */}
           <Form.Row>
             {/*-----------Issue Status------------------- */}
             <FormGroup className="col-2">
@@ -201,7 +224,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
               <Form.Control size="sm" id="IssueClosedOn" type="date" name="IssueClosedOn" onChange={this.handleChange} value={this.state.IssueClosedOn} />
             </FormGroup>
           </Form.Row>
-          {/* ---------ROW 5---------------- */}
+          {/* ---------ROW 7---------------- */}
           <Form.Row>
             {/*-----------Issue Status------------------- */}
             <FormGroup className="col-2">
@@ -218,17 +241,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
               <Form.Label>{this.state.Modified}</Form.Label>
             </FormGroup>
           </Form.Row>
-          {/* ---------ROW 6---------------- */}
-          <Form.Row>
-            {/*-----------Issue Status------------------- */}
-            <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Issue Description</Form.Label>
-            </FormGroup>
-            <FormGroup className="col-9">
-              <Form.Control size="sm" as="textarea" rows={4} id="IssueDescription" name="IssueDescription" placeholder="Description about the Issue" onChange={this.handleChange} value={this.state.IssueDescription} />
-            </FormGroup>
-          </Form.Row>
-          {/*-----------Issue Priority------------- */}
+          {/*-----------Issue 8------------- */}
           <Form.Row>
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Next Steps Or Resolutions</Form.Label>
@@ -378,7 +391,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
             IssueReportedOn: item.IssueReportedOn,
             IssueClosedOn: item.IssueClosedOn,
             RequiredDate: item.RequiredDate,
-            Modified: item.Modified
+            Modified: item.Modified.slice(0,10) //+ " T: " + item.Modified.slice(11,16)
           })
         });
     }
@@ -437,6 +450,9 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
           $('#IssueClosedOn').css('border', '1px solid #ced4da');
         }
       } else {
+        this.setState({
+          IssueClosedOn:''
+        })
         $('.IssueClosedOn').remove();
         $('#IssueClosedOn').css('border', '1px solid #ced4da');
       }
@@ -477,15 +493,6 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
       $('.IssueReportedOn').remove();
       $('#IssueReportedOn').css('border', '1px solid #ced4da');
     }
-    // //IssueClosedOn
-    // if(requestData.IssueClosedOn == null || requestData.IssueClosedOn == "" || requestData.IssueClosedOn.length < 1 ){
-    //   this._validationMessage("IssueClosedOn", "IssueClosedOn", "Issue Closed On cannot be empty");
-    //   $('#IssueClosedOn').css('border','1px solid red');
-    //   _validate++;
-    // }else{
-    //   $('.IssueClosedOn').remove();
-    //   $('#IssueClosedOn').css('border','1px solid #ced4da');
-    // }
     //requiredDate
     if (requestData.RequiredDate == null || requestData.RequiredDate == "" || requestData.RequiredDate.length < 1) {
       this._validationMessage("RequiredDate", "RequiredDate", "Required Date cannot be empty");
