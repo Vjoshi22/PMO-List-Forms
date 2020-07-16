@@ -30,6 +30,7 @@ export interface ICreateIssueState{
 }
 //declaring variables
 var listGUID: any = "A373C7C3-3379-49C9-B3B1-AC87C2166DC0";   //"47272d1e-57d9-447e-9cfd-4cff76241a93"; 
+var ProjectMasterListGuid: any = "2c3ffd4e-1b73-4623-898d-8e3a1bb60b91";
 var timerID;
 var allchoiceColumns: any[] = ["IssueCategory", "IssueStatus", "IssuePriority"]
 
@@ -51,28 +52,47 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
       RequiredDate: '',
       FormDigestValue:''
     }
+    this.handleChange=this.handleChange.bind(this);
   }
-//loading function when page gets loaded
-public componentDidMount() {
-  $('.webPartContainer').hide();
-  allchoiceColumns.forEach(elem => {
-    this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
-  })
-  _getListEntityName(this.props.currentContext, listGUID);
-  // $('.pickerText_4fe0caaf').css('border','0px');
-  // $('.pickerInput_4fe0caaf').addClass('form-control');
-  $('.form-row').css('justify-content','center');
+  //loading function when page gets loaded
+  public componentDidMount() {
+
+    $('.webPartContainer').hide();
+    allchoiceColumns.forEach(elem => {
+      this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
+    });
+
+    _getListEntityName(this.props.currentContext, listGUID);
+    // $('.pickerText_4fe0caaf').css('border','0px');
+    // $('.pickerInput_4fe0caaf').addClass('form-control');
+    $('.form-row').css('justify-content','center');
+    
+    this.getAccessToken();
+    timerID=setInterval(
+      () =>this.getAccessToken(),300000); 
+  }
+
+  public componentWillUnmount()
+  {
+  clearInterval(timerID);
   
-  this.getAccessToken();
-  timerID=setInterval(
-    () =>this.getAccessToken(),300000); 
-}
-private handleChange(e){
+  } 
+  private handleChange = (e) =>{
+    let newState = {};
+    newState[e.target.name] = e.target.value;
+    this.setState(newState);
 
-}
-private handleSubmit(e){
-
-}
+    //functin to check the existing Id
+    if(e.target.name == "ProjectID" && (e.target.value != 0 || e.target.value =="")){
+      this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl, e.target.value);
+    } else if(e.target.value == 0){
+      $('.ProjectID').remove();
+      $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Project Id cannot be 0</span>');
+    }
+  }
+  private handleSubmit = (e) =>{
+    this.saveIssue(e);
+  }
   public render(): React.ReactElement<IIssueInformationProps> {
     SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
     return (
@@ -146,7 +166,7 @@ private handleSubmit(e){
               <Form.Label className={styles.customlabel +" " + styles.required}>Issue Reported On</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="text" id="IssueReportedOn" name="IssueReportedOn" onChange={this.handleChange} value={this.state.IssueReportedOn}/>
+              <Form.Control size="sm" type="date" id="IssueReportedOn" name="IssueReportedOn" onChange={this.handleChange} value={this.state.IssueReportedOn}/>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             {/*-----------Issue Priority------------- */}
@@ -154,21 +174,21 @@ private handleSubmit(e){
                 <Form.Label className={styles.customlabel + " " + styles.required}>Issue Closed On</Form.Label>
               </FormGroup>
               <FormGroup className="col-3">
-                <Form.Control size="sm" id="IssueClosedOn" type="text" name="IssueClosedOn" onChange={this.handleChange} value={this.state.IssueClosedOn}/>
+                <Form.Control size="sm" id="IssueClosedOn" type="date" name="IssueClosedOn" onChange={this.handleChange} value={this.state.IssueClosedOn}/>
               </FormGroup>
           </Form.Row>
           {/* ---------ROW 5---------------- */}
           <Form.Row className="mt-3">
             {/*-----------Issue Status------------------- */}
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel +" " + styles.required}>Issue Reported On</Form.Label>
+              <Form.Label className={styles.customlabel +" " + styles.required}>Required Date</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="text" id="IssueReportedOn" name="IssueReportedOn" onChange={this.handleChange} value={this.state.IssueReportedOn}/>
+              <Form.Control size="sm" type="date" id="RequiredDate" name="RequiredDate" onChange={this.handleChange} value={this.state.RequiredDate}/>
             </FormGroup>
             <FormGroup className="col-6"></FormGroup>
           </Form.Row>
-          {/* ---------ROW 4---------------- */}
+          {/* ---------ROW 6---------------- */}
           <Form.Row className="mt-3">
             {/*-----------Issue Status------------------- */}
             <FormGroup className="col-2">
@@ -187,9 +207,104 @@ private handleSubmit(e){
                 <Form.Control size="sm" id="NextStepsOrResolution" as="textarea" rows={4} name="NextStepsOrResolution" placeholder="Next Steps and Resolutions for the Issue" onChange={this.handleChange} value={this.state.NextStepsOrResolution}/>
               </FormGroup>
           </Form.Row>
+          <Form.Row className={styles.buttonCLass}>
+            <FormGroup></FormGroup>
+              <div>
+                <Button id="submit" size="sm" variant="primary" type="submit">
+                  Submit
+                </Button> 
+              </div>  
+              <FormGroup className="col-.5"></FormGroup>  
+              <div>
+                <Button id="cancel" size="sm" variant="primary" onClick={this.closeForm}>
+                  Cancel
+                </Button>
+              </div>
+              {/* <div>
+                <Button id="reset" size="sm" variant="primary" onClick={this.resetform}>
+                  Reset
+                </Button>
+              </div> */}
+        </Form.Row>
         </Form>
       </div>
     );
+  }
+  //save issue to the list
+  private saveIssue(e){
+    e.preventDefault();
+    let _validate = 0;
+    
+    let requestData = {
+      __metadata:  
+      {  
+          type: listType
+      },  
+      ProjectID: this.state.ProjectID,
+      IssueCategory: this.state.IssueCategory,
+      IssueDescription: this.state.IssueDescription,
+      NextStepsOrResolution: this.state.NextStepsOrResolution,
+      IssueStatus: this.state.IssueStatus,
+      IssuePriority: this.state.IssuePriority,
+      Assignedteam: this.state.Assignedteam,
+      Assginedperson: this.state.Assginedperson,
+      IssueReportedOn: this.state.IssueReportedOn,
+      IssueClosedOn: this.state.IssueClosedOn,
+      RequiredDate: this.state.RequiredDate
+
+    };
+
+    this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl, this.state.ProjectID);
+
+
+    $.ajax({
+      url:this.props.currentContext.pageContext.web.absoluteUrl+ "/_api/web/lists('" + listGUID + "')/items",  
+        type: "POST",  
+        data: JSON.stringify(requestData),  
+        headers:  
+        {  
+            "Accept": "application/json;odata=verbose",  
+            "Content-Type": "application/json;odata=verbose",  
+            "X-RequestDigest": this.state.FormDigestValue,
+            "IF-MATCH": "*",
+            'X-HTTP-Method': 'POST' 
+        },  
+        success:(data, status, xhr) => 
+        {  
+          alert("Submitted successfully");
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+          window.open(winURL,'_self');
+        },  
+        error: (xhr, status, error)=>
+        {  
+          if(xhr.responseText.match('2130575169')){
+            alert("The Project Id you entered already exists, please try with a new Project Id")
+          }
+          //alert(JSON.stringify(xhr.responseText));
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+          //window.open(winURL,'_self');
+        }  
+    });
+    //clearing the fields
+    this.setState({
+      ProjectID: '',
+      IssueCategory: '',
+      IssueDescription: '',
+      NextStepsOrResolution: '',
+      IssueStatus: '',
+      IssuePriority: '',
+      Assignedteam: '',
+      Assginedperson: '',
+      IssueReportedOn: '',
+      IssueClosedOn: '',
+      RequiredDate: '',
+      FormDigestValue:''
+    })
+
+  }
+  //close the form on cancel button click
+  private closeForm(){
+
   }
   //function to get the choice column values
   private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
@@ -205,6 +320,40 @@ private handleSubmit(e){
               jsonResponse.value[0].Choices.forEach(dropdownValue => {
                 $('#' + dropdownId ).append('<option value="'+ dropdownValue +'">'+ dropdownValue +'</option>');
               });
+            }, (err: any): void => {
+              console.warn(`Failed to fulfill Promise\r\n\t${err}`);
+            });
+        } else {
+          console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
+        }
+      });
+  }
+
+  //function to check if ProjectId already exists or not
+  private _checkExistingProjectId(siteColUrl, ProjectIDValue){
+    const endPoint: string = `${siteColUrl}/_api/web/lists('`+ ProjectMasterListGuid +`')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
+    let breakCondition = false;
+    $('.ProjectID').remove();
+    this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
+      .then((response: HttpClientResponse) => {
+        if (response.ok) {
+          response.json()
+            .then((jsonResponse) => {
+              if(jsonResponse.value.length > 0){
+              jsonResponse.value.forEach( item => {
+              if(ProjectIDValue == item.ProjectID){
+                breakCondition = true;
+                
+              } 
+              // if(ProjectIDValue != item.ProjectID && breakCondition){
+              //   $('.ProjectID').remove();
+              // }
+              
+              });
+            }else{
+              breakCondition = false;
+              $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Project Id does not Exists</span>');
+            }
             }, (err: any): void => {
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
