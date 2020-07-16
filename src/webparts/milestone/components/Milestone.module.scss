@@ -1,6 +1,57 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
 
-.milestone {
+//customCss Start
+.customlabel{
+  padding-top: 6px;
+  font-weight: 700;
+}
+.disabledValue{
+  //background-color: lightgray;
+  padding-top: 6px;
+  //font-weight: 630;
+  display: flex;
+  // justify-content: center;
+  //border-radius: 0.2rem;
+}
+.required::after{
+  content:" *";
+  color:red;
+}
+.buttonCLass{
+  display: flex;
+  justify-content: center;
+  background-color: green($color: #2d9747);
+  margin-bottom: 10px;
+}
+.errorMessage{
+  padding-left: 5px;
+  color: red;
+  font-size: 9pt;
+}
+.heading{
+  display: flex;
+  justify-content: center;
+  background:#e7eff9;
+  background-image : linear-gradient(0deg, #e7eff9 0%, #cfd6e6 74%);
+}
+._main-div{
+  border: 1px solid grayscale($color: #d3cdcd);
+}
+.container_d99754c9{
+  display: none;
+}
+#cancel{
+  margin-left: 30px;
+}
+// #reset{
+//   margin-left: 50px;
+// }
+.heading form div{
+  justify-content: center;
+}
+//customCss End
+
+.pmoListForms {
   .container {
     max-width: 700px;
     margin: 0px auto;

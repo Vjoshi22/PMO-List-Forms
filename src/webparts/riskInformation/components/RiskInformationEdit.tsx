@@ -57,7 +57,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
 
     getListEntityName(this.props.currentContext, listGUID);
     // this.loadItems();
-    setInterval(() =>this.loadItems(), 1000);
+    setTimeout(() =>this.loadItems(), 1000);
 
     this.setFormDigest();
     timerID = setInterval(
@@ -175,7 +175,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Project ID</Form.Label>
             </FormGroup>
-            <FormGroup className={styles.disabledValue + " col-3"}>
+            <FormGroup className="col-3">
               <Form.Label>{this.state.ProjectID}</Form.Label>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
