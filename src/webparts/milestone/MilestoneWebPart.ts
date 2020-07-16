@@ -5,26 +5,38 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
-import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
+import { BaseClientSideWebPart,WebPartContext } from '@microsoft/sp-webpart-base';
 
 import * as strings from 'MilestoneWebPartStrings';
-import Milestone from './components/Milestone';
+import MilestoneNew from './components/MilestoneNew';
+import MilestoneEdit from './components/MilestoneEdit';
 import { IMilestoneProps } from './components/IMilestoneProps';
 
 export interface IMilestoneWebPartProps {
   description: string;
+  currentContext: WebPartContext;
 }
+
+export let allchoiceColumns: any[] = ["Phase", "MilestoneStatus"];
 
 export default class MilestoneWebPart extends BaseClientSideWebPart <IMilestoneWebPartProps> {
 
   public render(): void {
+    let renderPMOForm: any;
+    if((/edit/.test(window.location.href))){
+      renderPMOForm = MilestoneEdit
+    }
+    else{
+      renderPMOForm = MilestoneNew
+    }
+    
     const element: React.ReactElement<IMilestoneProps> = React.createElement(
-      Milestone,
+      renderPMOForm,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        currentContext: this.context
       }
     );
-
     ReactDom.render(element, this.domElement);
   }
 
