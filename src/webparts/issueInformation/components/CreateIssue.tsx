@@ -12,6 +12,7 @@ import { SPComponentLoader } from "@microsoft/sp-loader";
 import { SPCreateIssueForm } from "./ICreateIssueColumnFields";
 import * as $ from "jquery";
 import { _getListEntityName, listType } from '../../PMOListForms/components/getListEntityName';
+import { _logExceptionError } from "../../../ExceptionLogging";
 
 //declaring state
 export interface ICreateIssueState {
@@ -480,7 +481,8 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
     if (_validate > 0) {
       return false;
     }
-
+    let _formdigest = this.state.FormDigestValue;
+    let _projectID = this.state.ProjectID;
     $.ajax({
       url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/web/lists('" + listGUID + "')/items",
       type: "POST",
@@ -499,6 +501,8 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
         window.open(winURL, '_self');
       },
       error: (xhr, status, error) => {
+        //function to log error
+        _logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", xhr, _projectID )
         if (xhr.responseText.match('2130575169')) {
           alert("The Project Id you entered already exists, please try with a new Project Id")
         }
