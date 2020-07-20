@@ -11,6 +11,7 @@ import * as $ from "jquery";
 import { getListEntityName, listType } from './getListEntityName';
 import { ISPMilestoneFields } from './IMilestoneFields';
 import { IMilestoneState } from './IMilestoneState';
+import { _logExceptionError } from '../../../ExceptionLogging';
 
 require('./Milestone.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
@@ -235,6 +236,9 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
     }
   }
   private saveItem(e) {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     var itemId = GetParameterValues('id');
     let _validate = 0;
     e.preventDefault();
@@ -360,6 +364,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
         window.open(winURL, '_self');
       },
       error: (xhr, status, error) => {
+        _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem Milestone Edit: errlog", "Milestone", "saveitem", xhr, _projectID );
         alert(JSON.stringify(xhr.responseText));
         console.log(xhr.responseText + " | " + error);
         let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
@@ -392,6 +397,9 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
     $('#' + _id).closest('div').append('<span class="' + _classname + '" style="color:red;font-size:9pt">' + _message + '</span>');
   }
   private setFormDigest() {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     $.ajax({
       url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/contextinfo",
       type: "POST",
@@ -405,6 +413,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
+        _logExceptionError(this.props.currentContext, _formdigest, "inside setFormDigest Milestone Edit: errlog", "Milestone", "setFormDigest", jqXHR, _projectID );
       }
     });
   }
@@ -429,6 +438,9 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
     window.open(winURL, '_self');
   }
   private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -442,6 +454,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
+              _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField Milestone Edit: errlog", "Milestone", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {

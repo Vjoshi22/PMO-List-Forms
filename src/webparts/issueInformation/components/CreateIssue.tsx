@@ -481,8 +481,10 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
     if (_validate > 0) {
       return false;
     }
-    let _formdigest = this.state.FormDigestValue;
-    let _projectID = this.state.ProjectID;
+
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     $.ajax({
       url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/web/lists('" + listGUID + "')/items",
       type: "POST",
@@ -502,7 +504,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
       },
       error: (xhr, status, error) => {
         //function to log error
-        _logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", xhr, _projectID )
+        _logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", xhr, _projectID );
         if (xhr.responseText.match('2130575169')) {
           alert("The Project Id you entered already exists, please try with a new Project Id")
         }
@@ -550,8 +552,10 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
   }
   //function to get the choice column values
   private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
 
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {
         if (response.ok) {
@@ -563,6 +567,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
+              _logExceptionError(this.props.currentContext, _formdigest, "inside reterive choice fields from SP List: errlog", "IssueInformation", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {
@@ -573,6 +578,9 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
 
   //function to check if ProjectId already exists or not
   private _checkExistingProjectId(siteColUrl, ProjectIDValue) {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     const endPoint: string = `${siteColUrl}/_api/web/lists('` + ProjectMasterListGuid + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
@@ -604,12 +612,14 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
                 return false;
               }
             }, (err: any): void => {
+              _logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
               alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
               let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
               window.open(winURL, '_self');
             });
         } else {
+          //_logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", err, _projectID );
           console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
           alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
           let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
@@ -624,6 +634,9 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
   }
   //function to keep the request digest token active
   private getAccessToken() {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     $.ajax({
       url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/contextinfo",
       type: "POST",
@@ -637,6 +650,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
+        _logExceptionError(this.props.currentContext, _formdigest, "inside get access token: errlog", "IssueInformation", "getAccessToken", jqXHR, _projectID );
       }
     });
   }

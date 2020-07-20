@@ -11,6 +11,7 @@ import { SPComponentLoader } from "@microsoft/sp-loader";
 import { SPUpdateIssueForm } from "./IUpdateIssueColumnFields";
 import * as $ from "jquery";
 import { _getListEntityName, listType } from '../../PMOListForms/components/getListEntityName';
+import { _logExceptionError } from '../../../ExceptionLogging';
 
 //declaring state
 export interface IUpdateIssueState {
@@ -397,6 +398,9 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
     }
   }
   private updateIssue(e){
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     var itemId = _getParameterValues('id');
     let _validate = 0;
     e.preventDefault();
@@ -543,6 +547,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
          window.open(winURL, '_self');
       },
       error: (xhr, status, error) => {
+        _logExceptionError(this.props.currentContext, _formdigest, "inside update issue: errlog", "IssueInformation", "updateIssue", xhr, _projectID );
         alert(JSON.stringify(xhr.responseText));
         let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Project%20Issues%20Information/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=6fa77e6c-03b4-497a-8d11-8b2a41ddf978';
         window.open(winURL, '_self');
@@ -571,6 +576,9 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
   }
   //retrive choice column dropdown values
   private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -584,6 +592,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
+              _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField: errlog", "IssueInformation", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {
@@ -593,6 +602,9 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
   }
    //function to check if ProjectId already exists or not
    private _checkExistingProjectId(siteColUrl, ProjectIDValue) {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?Select=ID&$filter=ID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
@@ -624,6 +636,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
                 return false;
               }
             }, (err: any): void => {
+              _logExceptionError(this.props.currentContext, _formdigest, "inside _checkExistingProjectId: errlog", "IssueInformation", "_checkExistingProjectId", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
               alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
               let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
@@ -644,6 +657,9 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
   }
   //function to keep the request digest token active
   private getAccessToken() {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     $.ajax({
       url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/contextinfo",
       type: "POST",
@@ -657,6 +673,8 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
+        _logExceptionError(this.props.currentContext, _formdigest, "inside getAccessToken: errlog", "IssueInformation", "getAccessToken", jqXHR, _projectID );
+        
       }
     });
   }

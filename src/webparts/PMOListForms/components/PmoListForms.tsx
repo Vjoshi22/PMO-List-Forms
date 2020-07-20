@@ -12,6 +12,7 @@ import * as $ from "jquery";
 import { _getListEntityName, listType } from './getListEntityName';
 import { allchoiceColumns } from "../PmoListFormsWebPart";
 import { data } from 'jquery';
+import { _logExceptionError } from '../../../ExceptionLogging';
 
 
 require('./PmoListForms.module.scss');
@@ -417,6 +418,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
 }
   //function to check if ProjectId already exists or not
   private _checkExistingProjectId(siteColUrl, ProjectIDValue){
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     const endPoint: string = `${siteColUrl}/_api/web/lists('`+ listGUID +`')/items?select = ProjectID`;
     let breakCondition = false;
     $('.ProjectID').remove();
@@ -439,6 +443,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               
               });
             }, (err: any): void => {
+              _logExceptionError(this.props.currentContext, _formdigest, "inside _checkExistingProjectId pmonewitemform: errlog", "PMOListForms", "_checkExistingProjectId", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {
@@ -449,6 +454,10 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
 
   //fucntion to save the new entry in the list
   private createItem(e){
+    
+  let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+  let _projectID = this.state.ProjectID; //variable for errorlog function
+
   let _validate=0;
   e.preventDefault();
 
@@ -633,6 +642,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         },  
         error: (xhr, status, error)=>
         {  
+          _logExceptionError(this.props.currentContext, _formdigest, "inside createItem pmonewitemform: errlog", "PMOListForm", "createItems", xhr, _projectID );
           if(xhr.responseText.match('2130575169')){
             alert("The Project Id you entered already exists, please try with a new Project Id")
           }
@@ -672,6 +682,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
   }
     //   //function to keep the request digest token active
   private getAccessToken(){
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     $.ajax({  
         url: this.props.currentContext.pageContext.web.absoluteUrl+"/_api/contextinfo",  
         type: "POST",  
@@ -683,7 +696,8 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             FormDigestValue: resultData.d.GetContextWebInformation.FormDigestValue
           });  
         },  
-        error : (jqXHR, textStatus, errorThrown) =>{  
+        error : (jqXHR, textStatus, errorThrown) =>{ 
+          _logExceptionError(this.props.currentContext, _formdigest, "inside getaccessToken pmonewitem form: errlog", "PMOListform", "getaccessToken", jqXHR, _projectID );
         }  
     });  
   }
@@ -742,6 +756,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
   }
   //function to get the choice column values
   private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     const endPoint: string = `${siteColUrl}/_api/web/lists('`+ listGUID +`')/fields?$filter=EntityPropertyName eq '`+ columnName +`'`;
   
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -755,6 +772,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
                 $('#' + dropdownId ).append('<option value="'+ dropdownValue +'">'+ dropdownValue +'</option>');
               });
             }, (err: any): void => {
+              _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField pmonewitemform: errlog", "PMOListForm", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {
