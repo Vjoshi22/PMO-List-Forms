@@ -10,10 +10,9 @@ import { SPComponentLoader } from "@microsoft/sp-loader";
 import { SPProjectList } from "../components/IProjectListProps";
 import * as $ from "jquery";
 import { _getListEntityName, listType } from './getListEntityName';
-import { allchoiceColumns } from "../PmoListFormsWebPart";
 import { data } from 'jquery';
 
-
+export var allchoiceColumns: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Status", "Region"];
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
@@ -297,7 +296,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <Form.Label className={styles.customlabel}>Region</Form.Label>
           </FormGroup>
           <FormGroup className="col-3">
-            <Form.Control size="sm" type="text" id="Region" name="ProjectLocation" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}/>
+            <Form.Control size="sm" as="select" id="Region" name="ProjectLocation" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}>
+            <option value="">Select an Option</option>
+            </Form.Control>
           </FormGroup>
           <FormGroup className="col-1"></FormGroup>
           <FormGroup className="col-2"> 

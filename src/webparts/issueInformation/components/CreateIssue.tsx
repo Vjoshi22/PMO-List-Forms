@@ -104,10 +104,12 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
       })
     }
     //on change of issue status need to change the IssueclosedOn
-    if(e.target.name == "IssueStatus" && (e.target.value != "Resolved" || e.target.value != null)){
+    if(e.target.name == "IssueStatus" && (e.target.value != "Resolved" && e.target.value != null)){
       this.setState({
         IssueClosedOn:''
       })
+    }else if(e.target.name == "IssueStatus" && (e.target.value == "Resolved")){
+      this._validationMessage("IssueStatus", "IssueStatus", "Please fill the Issue Closed Date if issue is Resolved");
     }
 
     //functin to check the existing Id
@@ -212,7 +214,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
             <FormGroup className="col-1"></FormGroup>
             {/*-----------Issue Priority------------- */}
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Issue Closed On</Form.Label>
+              <Form.Label className={styles.customlabel}>Issue Closed On</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" id="IssueClosedOn" type="date" name="IssueClosedOn" onChange={this.handleChange} value={this.state.IssueClosedOn} />
@@ -315,7 +317,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
         $('.RequiredDate').text("");
         var date1 = $('#IssueReportedOn').val();
         var date2 = $('#RequiredDate').val()
-        if (date1 >= date2) {
+        if (date1 > date2) {
           $('#RequiredDate').val("")
           newState[e.target.name] = "";
           this.setState(newState);
@@ -336,7 +338,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
       $('.RequiredDate').text("");
       var date1 = $('#IssueReportedOn').val();
       var date2 = $('#RequiredDate').val()
-      if (date1 >= date2) {
+      if (date1 > date2) {
         $('#RequiredDate').val("")
         newState[e.target.name] = "";
         this.setState(newState);

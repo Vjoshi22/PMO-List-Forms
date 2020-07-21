@@ -356,7 +356,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
       success: (data, status, xhr) => {
         console.log("Submitted successfully");
         alert("Submitted successfully");
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
+        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
         window.open(winURL, '_self');
       },
       error: (xhr, status, error) => {

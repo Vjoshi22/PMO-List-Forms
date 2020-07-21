@@ -20,7 +20,7 @@ export interface IPmoListFormsWebPartProps {
   currentContext: WebPartContext;
 }
 var renderPMOForm: any;
-export var allchoiceColumns: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Status"];
+
 
 export default class PmoListFormsWebPart extends BaseClientSideWebPart <IPmoListFormsWebPartProps> {
   
