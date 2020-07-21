@@ -333,7 +333,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
         $('.RequiredDate').text("");
         var date1 = $('#IssueReportedOn').val();
         var date2 = $('#RequiredDate').val()
-        if (date1 >= date2) {
+        if (date1 > date2) {
           $('#RequiredDate').val("")
           newState[e.target.name] = "";
           this.setState(newState);
@@ -354,7 +354,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
       $('.RequiredDate').text("");
       var date1 = $('#IssueReportedOn').val();
       var date2 = $('#RequiredDate').val()
-      if (date1 >= date2) {
+      if (date1 > date2) {
         $('#RequiredDate').val("")
         newState[e.target.name] = "";
         this.setState(newState);
