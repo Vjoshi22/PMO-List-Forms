@@ -106,10 +106,13 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
     }
     //on change of issue status need to change the IssueclosedOn
     if(e.target.name == "IssueStatus" && (e.target.value != "Resolved" && e.target.value != null)){
+      $('.IssueStatus').remove();
+      $('#IssueClosedOn').css('border', '1px solid #ced4da');
       this.setState({
         IssueClosedOn:''
       })
     }else if(e.target.name == "IssueStatus" && (e.target.value == "Resolved")){
+      $('#IssueClosedOn').css('border', '1px solid red');
       this._validationMessage("IssueStatus", "IssueStatus", "Please fill the Issue Closed Date if issue is Resolved");
     }
 
