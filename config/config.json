@@ -33,6 +33,14 @@
           "manifest": "./src/webparts/milestone/MilestoneWebPart.manifest.json"
         }
       ]
+    },
+    "home-page-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/homePage/HomePageWebPart.js",
+          "manifest": "./src/webparts/homePage/HomePageWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -41,6 +49,7 @@
     "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
     "RiskInformationWebPartStrings": "lib/webparts/riskInformation/loc/{locale}.js",
     "IssueInformationWebPartStrings": "lib/webparts/issueInformation/loc/{locale}.js",
-    "MilestoneWebPartStrings": "lib/webparts/milestone/loc/{locale}.js"
+    "MilestoneWebPartStrings": "lib/webparts/milestone/loc/{locale}.js",
+    "HomePageWebPartStrings": "lib/webparts/homePage/loc/{locale}.js"
   }
 }
