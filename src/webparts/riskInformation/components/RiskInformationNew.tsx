@@ -13,6 +13,7 @@ import { getListEntityName, listType } from './getListEntityName';
 import { ISPRiskInformationFields } from './IRiskInformationFileds';
 import { IRiskInformationState } from './IRiskInformationState';
 import { allchoiceColumns } from "../RiskInformationWebPart";
+import { _logExceptionError } from '../../../ExceptionLogging';
 
 require('./RiskInformation.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
@@ -319,6 +320,9 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   }
 
   private _checkExistingProjectId(siteColUrl, ProjectIDValue) {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     const endPoint: string = `${siteColUrl}/_api/web/lists('` + ProjectlistGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
@@ -349,6 +353,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
               window.open(winURL, '_self');
             }
             }, (err: any): void => {
+              _logExceptionError(this.props.currentContext, _formdigest, "inside _checkExistingProjectId RiskInfo New: errlog", "RiskInformation", "_checkExistingProjectId", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
               alert("Something went wrong. Please try after sometime Redirecting...");
               let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
@@ -363,6 +368,9 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       });
   }
   private createItem(e) {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     let _validate = 0;
     e.preventDefault();
 
@@ -536,6 +544,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
         window.open(winURL, '_self');
       },
       error: (xhr, status, error) => {
+        _logExceptionError(this.props.currentContext, _formdigest, "inside createitem RiskInfo New: errlog", "RiskInformation", "createitem", xhr, _projectID );
         alert("Something went wrong, please try after sometime");
         console.log(xhr.responseText + " | " + error);
         // let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
@@ -569,6 +578,9 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     $('#' + _id).closest('div').append('<span class="' + _classname + '" style="color:red;font-size:9pt">' + _message + '</span>');
   }
   private setFormDigest() {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     $.ajax({
       url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/contextinfo",
       type: "POST",
@@ -582,6 +594,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
+        _logExceptionError(this.props.currentContext, _formdigest, "inside setFormDigest RiskInfo New: errlog", "RiskInformation", "setFormDigest", jqXHR, _projectID );
       }
     });
   }
@@ -610,6 +623,9 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     window.open(winURL, '_self');
   }
   private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
+    let _formdigest = this.state.FormDigestValue; //variable for errorlog function
+    let _projectID = this.state.ProjectID; //variable for errorlog function
+
     const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -623,6 +639,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
+              _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField RiskInfo New: errlog", "RiskInformation", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {
