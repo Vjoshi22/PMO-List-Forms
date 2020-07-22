@@ -1,5 +1,17 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
-
+.navTitle{
+  font-size: 1rem !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-height: 21px !important;     /* fallback */
+  max-height: 45px;      /* fallback */
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+.cardBodyBox{
+  max-height: 70px !important;
+}
 .homePage {
   .container {
     max-width: 700px;
