@@ -50,40 +50,44 @@ export function _populateGrid(results) {
       "createdCell": function (td, cellData, rowData, row, col) {
         if (cellData == "null") {
           //$(td).css('color', 'red');
-          $(td).html(cellData.replace('null','-'));
-        }        
+          $(td).html(cellData.replace('null', '-'));
+        }
       }
     }],
-    "searching": false,
+    //"searching": false,
     "lengthChange": false,
     "order": [[0, "desc"]]
   });
 
   $('#FilesTable th.search').css({ 'min-width': '130px' });
-  $('#FilesTable th.actionLink').css({ 'min-width': '70px' });
+  $('#FilesTable th.actionLink').css({ 'min-width': '130px' });
 
 
   $('.dataTables_filter input').addClass('form-control');
   $('.dataTables_length label').addClass('col-form-label');
 
   //$('#FilesTable thead').append('<tr id="columnSearch"></tr>');
-  $('#FilesTable thead th.search').each(function (index, th) {
-    var title = $(this).text();
-    //$('#columnSearch').append('<th><input type="text" class="colSearchInputs" id="' + title + '" placeholder="Search ' + title + '" /></th>');
-    $(th).append('<input type="text" class="colSearchInputs" id="' + title + '" placeholder="Search ' + title + '" />');
-  });
-  $('#FilesTable thead th.actionLink').each(function (index, th) {
-    var title = $(this).text();    
-    $(th).append('<label/>&nbsp;</label>');
-  });
 
-  //search for all columns
-  $('.colSearchInputs').on('keyup change', function () {
-    table
-      .column($(this).closest('th').index())
-      .search((<any>this).value)
-      .draw();
+  $('#FilesTable thead tr').clone(false).appendTo('#FilesTable thead');
+  $('#FilesTable thead tr:eq(1) th').removeClass("sorting");
+
+  //$('#FilesTable thead th.search').each(function (index, th) {
+  $('#FilesTable thead tr:eq(1) th.search').each(function (i) {
+    var title = $(this).text();
+    $(this).html('<input type="text" class="colSearchInputs" id="' + title + '" placeholder="Search ' + title + '" />');
+    $('.colSearchInputs').on('keyup change', function () {
+      if (table.column(i).search() !== (<any>(this)).value) {
+        table
+          .column($(this).closest('th').index())
+          .search((<any>(this)).value)
+          .draw();
+      }
+    });
   });
+$('#FilesTable thead tr:eq(1) th.actionLink').each(function (index, th) {
+    $(this).text("");    
+  });
+  
 }
 function GenerateTablefromJSON(data) {
   var tablecontent =
