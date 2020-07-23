@@ -80,6 +80,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     let newState = {};
     newState[e.target.name] = e.target.value;
     this.setState(newState);
+    
   }
 
   private handleSubmit = (e) => {
@@ -131,6 +132,23 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
             </FormGroup>
             <FormGroup className="col-3">
               <Form.Control size="sm" type="date" id="PlannedEnd" name="PlannedEnd" placeholder="Planned End" onChange={this.handleChange} value={this.state.PlannedEnd} />
+            </FormGroup>
+          </Form.Row>
+          
+          <Form.Row>
+            <FormGroup className="col-2">
+              <Form.Label className={styles.customlabel + " " + styles.required}>Actual Start</Form.Label>
+            </FormGroup>
+            <FormGroup className="col-3">
+              <Form.Control size="sm" type="date" id="ActualStart" name="ActualStart" placeholder="Actual Start" onChange={this.handleChange} value={this.state.ActualStart} />
+              {/* <DatePicker selected={this.state.PlannedStart}  onChange={this.handleChange} />; */}
+            </FormGroup>
+            <FormGroup className="col-1"></FormGroup>
+            <FormGroup className="col-2">
+              <Form.Label className={styles.customlabel}>Actual End</Form.Label>
+            </FormGroup>
+            <FormGroup className="col-3">
+              <Form.Control size="sm" type="date" id="ActualEnd" name="ActualEnd" placeholder="Actual End" onChange={this.handleChange} value={this.state.ActualEnd} />
             </FormGroup>
           </Form.Row>
 
@@ -275,6 +293,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       $('.Milestone').remove();
       $('#Milestone').css('border', '1px solid #ced4da')
     }
+
     // Planned Start mandatory
     if (requestData.PlannedStart == null || requestData.PlannedStart.length < 1 || requestData.PlannedStart == "") {
       this._validationMessage("PlannedStart", "PlannedStart", "Planned Start cannot be empty");
@@ -297,16 +316,47 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       $('#PlannedEnd').css('border', '1px solid #ced4da')
     }
 
-    // Milestone Status mandatory 
-    if (requestData.MilestoneStatus == null || requestData.MilestoneStatus.length < 1 || requestData.MilestoneStatus == "") {
-      this._validationMessage("MilestoneStatus", "MilestoneStatus", "Milestone Status cannot be empty");
-      $('#MilestoneStatus').css('border', '1px solid red');
-      _validate++;
-    } else {
-      $('.MilestoneStatus').remove();
-      $('#MilestoneStatus').css('border', '1px solid #ced4da')
-    }
+    // // Milestone Status mandatory 
+    // if (requestData.MilestoneStatus == null || requestData.MilestoneStatus.length < 1 || requestData.MilestoneStatus == "") {
+    //   this._validationMessage("MilestoneStatus", "MilestoneStatus", "Milestone Status cannot be empty");
+    //   $('#MilestoneStatus').css('border', '1px solid red');
+    //   _validate++;
+    // } else {
+    //   $('.MilestoneStatus').remove();
+    //   $('#MilestoneStatus').css('border', '1px solid #ced4da')
+    // } //commented  VJ
 
+    // Milestone Status mandatory & Actual End
+   if (requestData.MilestoneStatus == null || requestData.MilestoneStatus.length < 1 || requestData.MilestoneStatus == "") {
+    this._validationMessage("MilestoneStatus", "MilestoneStatus", "Milestone Status cannot be empty");
+    $('#MilestoneStatus').css('border', '1px solid red');
+    _validate++;
+  } else {
+    $('.MilestoneStatus').remove();
+    $('#MilestoneStatus').css('border', '1px solid #ced4da')
+    if (requestData.MilestoneStatus == "Completed") {
+      if (requestData.ActualEnd == null || requestData.ActualEnd.length < 1 || requestData.ActualEnd == "") {
+        this._validationMessage("ActualEnd", "ActualEnd", "Actual End cannot be empty if status is Completed");
+        $('#ActualEnd').css('border', '1px solid red');
+        _validate++;
+      }
+      else {
+        $('.ActualEnd').remove();
+        $('#ActualEnd').css('border', '1px solid #ced4da')
+      }
+    }
+  }
+
+   // Actual Start mandatory
+   if (requestData.ActualStart == null || requestData.ActualStart.length < 1 || requestData.ActualStart == "") {
+    this._validationMessage("ActualStart", "ActualStart", "Actual Start cannot be empty");
+    $('#ActualStart').css('border', '1px solid red');
+    _validate++;
+  }
+  else {
+    $('.ActualStart').remove();
+    $('#ActualStart').css('border', '1px solid #ced4da')
+  }
     // // Remarks mandatory
     // if (requestData.Remarks.length < 1) {
     //   this._validationMessage("Remarks", "Remarks", "Remarks cannot be empty");

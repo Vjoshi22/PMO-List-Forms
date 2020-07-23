@@ -15,8 +15,8 @@ export interface SPProjectListEditForm {
   Progress: number;
   Actual_x0020_Start: string;
   Actual_x0020_End: string;
-  Revised_x0020_Budget: string;
-  Total_x0020_Cost: string;
+  Revised_x0020_Budget: number;
+  Total_x0020_Cost: number;
   Invoiced_x0020_amount: number;
   Scope: string;
   Schedule: string;

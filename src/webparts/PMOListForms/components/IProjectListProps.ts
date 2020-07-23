@@ -12,7 +12,7 @@ export interface SPProjectList{
     Planned_x0020_End: string;
     Project_x0020_Description: string;
     Region: string;
-    Project_x0020_Budget: string;
+    Project_x0020_Budget: number;
     Status: string;
     Progress: number;
   }

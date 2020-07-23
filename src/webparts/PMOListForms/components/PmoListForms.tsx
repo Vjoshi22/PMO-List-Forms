@@ -30,7 +30,7 @@ export interface IreactState {
   PlannedCompletion: string;
   ProjectDescription: string;
   ProjectLocation: string;
-  ProjectBudget: string;
+  ProjectBudget: number;
   ProjectStatus: string;
   ProjectProgress: number;
   //peoplepicker
@@ -67,7 +67,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       PlannedCompletion: '',
       ProjectDescription: '',
       ProjectLocation: '',
-      ProjectBudget: '',
+      ProjectBudget: 0,
       ProjectProgress: 0,
       ProjectStatus: '',
       DeliveryManager: '',
@@ -418,7 +418,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       this.setState({
         //disable_plannedCompletion: true
         // PlannedCompletion: '',
-        ProjectStatus: ""
+        //ProjectStatus: ""
       })
     }
 
@@ -587,6 +587,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       this._validationMessage("Status", "Status", "Project Status cannot be empty");
       $('#Status').css('border', '1px solid red');
       _validate++;
+    } else if ((requestData.Progress != null) && requestData.Progress < 100 && requestData.Status == "Completed") {
+      this._validationMessage("Status", "Status", "Status cannot be Completed, if Project Progress is less than 100");
+      _validate++;
     } else {
       $('.Status').remove();
       $('#Status').css('border', '1px solid #ced4da')
@@ -615,24 +618,38 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     // }else{
     //   $('#DeliveryManager').css('border','1px solid #ced4da')
     // }
-    if (requestData.Project_x0020_Budget == null || requestData.Project_x0020_Budget.length < 1 || requestData.Project_x0020_Budget == "") {
+    if (this.state.ProjectBudget.toLocaleString().length == 0) {
       this._validationMessage("BudgetSOW", "BudgetSOW", "Project Budget cannot be empty");
       $('#BudgetSOW').css('border', '1px solid red');
       _validate++;
-    } else if ((requestData.Project_x0020_Budget != "" || requestData.Project_x0020_Budget != null) && requestData.Project_x0020_Budget == "0") {
-      //$('.ProjectID').remove();
-      $('#BudgetSOW').css('border', '1px solid red');
-      this._validationMessage("BudgetSOW", "BudgetSOW", "Budget as per SOW cannot be 0");
+    } 
+    // else if ((requestData.Project_x0020_Budget != null) && requestData.Project_x0020_Budget == 0) {
+    //   //$('.ProjectID').remove();
+    //   $('#BudgetSOW').css('border', '1px solid red');
+    //   this._validationMessage("BudgetSOW", "BudgetSOW", "Budget as per SOW cannot be 0");
+    //   _validate++;
+    // } 
+    else if((requestData.Project_x0020_Budget !=null && requestData.Project_x0020_Budget < 0)) {
+      this._validationMessage("BudgetSOW", "BudgetSOW", "Budget as per SOW cannot be less than 0");
       _validate++;
-    } else {
+    }else{
       $('.BudgetSOW').remove();
-      $('#BudgetSOW').css('border', '1px solid #ced4da')
+      $('#BudgetSOW').css('border', '1px solid #ced4da');
     }
+    
     if (this.state.ProjectProgress.toLocaleString().length == 0) {
       this._validationMessage("ProjectProgress", "ProjectProgress", "Project Progress cannot be empty");
       $('#ProjectProgress').css('border', '1px solid red');
       _validate++;
-    } else if ((requestData.Progress != null) && requestData.Progress < 0) {
+    } else if ((requestData.Progress != null) && requestData.Progress < 100 && requestData.Status == "Completed") {
+      this._validationMessage("Status", "Status", "Status cannot be Completed, if Project Progress is less than 100");
+      _validate++;
+
+    } else{
+      $('.ProjectProgress').remove();
+      $('#ProjectProgress').css('border', '1px solid #ced4da');
+    }
+    if ((requestData.Progress != null) && requestData.Progress < 0) {
       //$('.ProjectID').remove();
       $('#ProjectProgress').css('border', '1px solid red');
       this._validationMessage("ProjectProgress", "ProjectProgress", "Project Progress cannot be less than 0");
@@ -640,7 +657,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     }
     else {
       $('.ProjectProgress').remove();
-      $('#ProjectProgress').css('border', '1px solid #ced4da')
+      $('#ProjectProgress').css('border', '1px solid #ced4da');
     }
     if (requestData.Project_x0020_Description.length < 1 || requestData.Project_x0020_Description == null || requestData.Project_x0020_Description == "") {
       this._validationMessage("ProjectDescription", "ProjectDescription", "Project Description cannot be empty");
@@ -696,7 +713,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       PlannedCompletion: '',
       ProjectDescription: '',
       ProjectLocation: '',
-      ProjectBudget: '',
+      ProjectBudget: 0,
       ProjectStatus: '',
       ProjectProgress: 0,
       startDate: '',
@@ -775,7 +792,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       PlannedCompletion: '',
       ProjectDescription: '',
       ProjectLocation: '',
-      ProjectBudget: '',
+      ProjectBudget: 0,
       ProjectStatus: '',
       ProjectProgress: 0,
       startDate: '',
