@@ -28,7 +28,8 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     this.state = {
       ID: "",
       ProjectID: "",
-      Phase: "",
+      //Phase: "",
+      Milestone:"", //adding milestone instead of Phase
       PlannedStart: "",
       PlannedEnd: "",
       MilestoneStatus: "",
@@ -106,28 +107,30 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
 
           <Form.Row>
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Phase</Form.Label>
+              {/* ##CR:Renamed Phase to Milestone and changign the dropdown to text */}
+              <Form.Label className={styles.customlabel + " " + styles.required}>Milestone</Form.Label>
             </FormGroup>
             <FormGroup className="col-9">
-              <Form.Control size="sm" id="Phase" as="select" name="Phase" onChange={this.handleChange} value={this.state.Phase}>
+              {/* <Form.Control size="sm" id="Phase" as="select" name="Phase" onChange={this.handleChange} value={this.state.Phase}>
                 <option value="">Select an Option</option>
-              </Form.Control>
+              </Form.Control> */}
+              <Form.Control size="sm" type="text" id="Milestone" name="Milestone" placeholder="Milestone" onChange={this.handleChange} value={this.state.Milestone} />
             </FormGroup>
           </Form.Row>
 
           <Form.Row>
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Tentative Start</Form.Label>
+              <Form.Label className={styles.customlabel + " " + styles.required}>Planned Start</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="date" id="PlannedStart" name="PlannedStart" placeholder="Tentative Start" onChange={this.handleChange} value={this.state.PlannedStart} />
+              <Form.Control size="sm" type="date" id="PlannedStart" name="PlannedStart" placeholder="Planned Start" onChange={this.handleChange} value={this.state.PlannedStart} />
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Tentative End</Form.Label>
+              <Form.Label className={styles.customlabel + " " + styles.required}>Planned End</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="date" id="PlannedEnd" name="PlannedEnd" placeholder="Tentative End" onChange={this.handleChange} value={this.state.PlannedEnd} />
+              <Form.Control size="sm" type="date" id="PlannedEnd" name="PlannedEnd" placeholder="Planned End" onChange={this.handleChange} value={this.state.PlannedEnd} />
             </FormGroup>
           </Form.Row>
 
@@ -231,7 +234,8 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
         type: listType
       },
       ProjectID: this.state.ProjectID,
-      Phase: this.state.Phase,
+      // Phase: this.state.Phase,
+      Milestone: this.state.Milestone,
       PlannedStart: this.state.PlannedStart,
       PlannedEnd: this.state.PlannedEnd,
       MilestoneStatus: this.state.MilestoneStatus,
@@ -251,19 +255,29 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     //   $('#ProjectID').css('border', '1px solid #ced4da')
     // }
 
+    //----replaced with Milestone----
     // Phase mandatory 
-    if (requestData.Phase == null || requestData.Phase.length < 1 || requestData.Phase == "") {
-      this._validationMessage("Phase", "Phase", "Phase cannot be empty");
-      $('#Phase').css('border', '1px solid red');
+    // if (requestData.Phase == null || requestData.Phase.length < 1 || requestData.Phase == "") {
+    //   this._validationMessage("Phase", "Phase", "Phase cannot be empty");
+    //   $('#Phase').css('border', '1px solid red');
+    //   _validate++;
+    // } else {
+    //   $('.Phase').remove();
+    //   $('#Phase').css('border', '1px solid #ced4da')
+    // }
+
+    // Milestone mandatory 
+    if (requestData.Milestone == null || requestData.Milestone.length < 1 || requestData.Milestone == "") {
+      this._validationMessage("Milestone", "Milestone", "Milestone cannot be empty");
+      $('#Milestone').css('border', '1px solid red');
       _validate++;
     } else {
-      $('.Phase').remove();
-      $('#Phase').css('border', '1px solid #ced4da')
+      $('.Milestone').remove();
+      $('#Milestone').css('border', '1px solid #ced4da')
     }
-
-    // Tentative Start mandatory
+    // Planned Start mandatory
     if (requestData.PlannedStart == null || requestData.PlannedStart.length < 1 || requestData.PlannedStart == "") {
-      this._validationMessage("PlannedStart", "PlannedStart", "Tentative Start cannot be empty");
+      this._validationMessage("PlannedStart", "PlannedStart", "Planned Start cannot be empty");
       $('#PlannedStart').css('border', '1px solid red');
       _validate++;
     }
@@ -272,9 +286,9 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       $('#PlannedStart').css('border', '1px solid #ced4da')
     }
 
-    // Tentative End mandatory
+    // Planned End mandatory
     if (requestData.PlannedEnd == null || requestData.PlannedEnd.length < 1 || requestData.PlannedEnd == "") {
-      this._validationMessage("PlannedEnd", "PlannedEnd", "Tentative End cannot be empty");
+      this._validationMessage("PlannedEnd", "PlannedEnd", "Planned End cannot be empty");
       $('#PlannedEnd').css('border', '1px solid red');
       _validate++;
     }
@@ -385,7 +399,8 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     this.state = {
       ID: "",
       ProjectID: "",
-      Phase: "",
+      //Phase: "",
+      Milestone: "",
       PlannedStart: "",
       PlannedEnd: "",
       MilestoneStatus: "",

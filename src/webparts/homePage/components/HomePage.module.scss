@@ -11,6 +11,11 @@
 }
 .cardBodyBox{
   max-height: 70px !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 1px;
+}
+.tileTitle{
+  color: black !important;
 }
 .homePage {
   .container {

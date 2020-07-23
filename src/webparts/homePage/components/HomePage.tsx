@@ -71,9 +71,9 @@ export default class HomePage extends React.Component<IHomePageProps, Inavigatio
                 <Card.Link href={item.LinkURL}>
                   <Card.Img style={{maxHeight:'170px', height:'200px'}} variant="top" src={item.BackgroundImageURL} />
                 </Card.Link>
-                <Card.Body>
-                  <Card.Title data-toggle="tooltip" data-placement="top" title={item.Title}>
-                  <Card.Link href={item.LinkURL} >{item.Title}</Card.Link></Card.Title>
+                <Card.Body className={styles.cardBodyBox}>
+                  <Card.Title className={styles.navTitle} data-toggle="tooltip" data-placement="top" title={item.Title}>
+                  <Card.Link className={styles.tileTitle} href={item.LinkURL} >{item.Title}</Card.Link></Card.Title>
                 </Card.Body>
               </Card>
             </div>
