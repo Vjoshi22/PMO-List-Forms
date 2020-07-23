@@ -101,7 +101,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     }
     public componentDidMount() {
         $('.webPartContainer').hide();
-        $('#ActualEndDate').closest('div').append('<span class="ActualEndDate" style="color:red;font-size:9pt">Enter End date when Status is Completed</span>')
+        $('#ActualEndDate').closest('div').append('<span class="ActualEndDate_Note" style="color:red;font-size:9pt">Enter End date when Status is Completed</span>')
         //calling function to fetch dropdown values form sp choice coluns
         //window.addEventListener('load', this.handleload)
         allchoiceColumnsEditForm.forEach(colName => {
@@ -351,11 +351,11 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         </FormGroup>
                     </Form.Row> */}
                     <Form.Row>
-                        <FormGroup className="col-2">
-                            <Form.Label className={styles.customlabel}>Project Progress</Form.Label>
+                    <FormGroup className="col-2">
+                            <Form.Label className={styles.customlabel + " " + styles.required}>Revised Budget</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="number" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress} />
+                            <Form.Control size="sm" type="number" min="1" id="RevisedBudget" name="RevisedBudget" placeholder="Revised Budget" onChange={this.handleChange} value={this.state.RevisedBudget} />
                         </FormGroup>
                         <FormGroup className="col-1"></FormGroup>
                         <FormGroup className="col-2">
@@ -402,11 +402,11 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         </FormGroup>
                     </Form.Row>
                     <Form.Row className="mb-4">
-                        <FormGroup className="col-2">
-                            <Form.Label className={styles.customlabel + " " + styles.required}>Revised Budget</Form.Label>
+                    <FormGroup className="col-2">
+                            <Form.Label className={styles.customlabel}>Project Progress</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="number" min="1" id="RevisedBudget" name="RevisedBudget" placeholder="Revised Budget" onChange={this.handleChange} value={this.state.RevisedBudget} />
+                            <Form.Control size="sm" type="number" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress} />
                         </FormGroup>
                         <FormGroup className="col-1"></FormGroup>
                         <FormGroup className="col-2">
@@ -757,7 +757,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             $('#ActualEndDate').css('border', '1px solid #ced4da');
         }
         //Project Phase
-        if (requestData.Project_x0020_Phase.length < 1 || requestData.Project_x0020_Phase == null || requestData.Project_x0020_Phase == "") {
+        if (requestData.Project_x0020_Phase == null || requestData.Project_x0020_Phase == "") {
             this._validationMessage("ProjectPhase", "ProjectPhase", "Project Phase cannot be empty");
             $('#ProjectPhase').css('border', '1px solid red');
             _validate++;
