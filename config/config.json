@@ -33,14 +33,32 @@
           "manifest": "./src/webparts/milestone/MilestoneWebPart.manifest.json"
         }
       ]
+    },
+    "projects-grid-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/projectsGrid/ProjectsGridWebPart.js",
+          "manifest": "./src/webparts/projectsGrid/ProjectsGridWebPart.manifest.json"
+        }
+      ]
     }
   },
-  "externals": {},
+  "externals": {
+    "jquery": {
+      "path": "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js",
+      "globalName": "jQuery"
+    },
+    "bootstrap": {
+      "path": "node_modules/bootstrap/dist/js/bootstrap.min.js",
+      "globalName": "bootstrap"
+    }
+  },
   "localizedResources": {
     "PmoListFormsWebPartStrings": "lib/webparts/pmoListForms/loc/{locale}.js",
     "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
     "RiskInformationWebPartStrings": "lib/webparts/riskInformation/loc/{locale}.js",
     "IssueInformationWebPartStrings": "lib/webparts/issueInformation/loc/{locale}.js",
-    "MilestoneWebPartStrings": "lib/webparts/milestone/loc/{locale}.js"
+    "MilestoneWebPartStrings": "lib/webparts/milestone/loc/{locale}.js",
+    "ProjectsGridWebPartStrings": "lib/webparts/projectsGrid/loc/{locale}.js"
   }
 }
