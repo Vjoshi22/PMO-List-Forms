@@ -600,6 +600,12 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         ProjectProgress: item.Progress,
                         disable_RMSID: true
                     })
+                    //checking Status on Load
+                    if(item.Status == "Completed" && item.Progress == 100){
+                        this.setState({
+                            disable_plannedCompletion: false
+                        })
+                    }
                     // console.log(this.state.PlannedStart + " " + this.state.PlannedCompletion) ;
                 });
         }
@@ -648,32 +654,6 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
 
         };
         //validation
-        // if (requestData.ProjectID.length < 1){
-        //     $('#ProjectId').css('border','1px solid red');
-        //     _validate++;
-        // }else{
-        //     $('#ProjectId').css('border','1px solid #ced4da')
-        // }
-        //projectId validation
-        // if (requestData.ProjectID == null ||  requestData.ProjectID == "" || requestData.ProjectID.length < 1){
-        //     $('#ProjectId').css('border','1px solid red');
-        //     this._validationMessage("ProjectId", "ProjectID", "Project Id cannot be empty");
-        //     _validate++;
-        // }else if ((requestData.ProjectID != "" || requestData.ProjectID != null) && requestData.ProjectID == "0"){
-        //     //$('.ProjectID').remove();
-        //     $('#ProjectId').css('border','1px solid red');
-        //     this._validationMessage("ProjectId", "ProjectID", "Project Id cannot be 0");
-        //     _validate++;
-        // }else{
-        //     $('.ProjectID').remove();
-        //     $('#ProjectId').css('border','1px solid #ced4da')
-        // }
-        // if( requestData.Project_x0020_Name.length < 1){
-        //     $('#ProjectName').css('border','1px solid red');
-        //     _validate++;
-        // }else{
-        //     $('#ProjectName').css('border','1px solid #ced4da')
-        // }
         //delivery manager 
         if (requestData.Delivery_x0020_Manager == null || requestData.Delivery_x0020_Manager == "") {
             this._validationMessage("DeliveryManager", "DeliveryManager", "Delivery Manager cannot be empty");
@@ -743,7 +723,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             $('.ActualStartDate').remove();
             $('#ActualStartDate').css('border', '1px solid #ced4da');
         }
-        if (requestData.Progress == 100 && (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "")) {
+        if (requestData.Status == "Completed" && requestData.Progress == 100 && (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "")) {
             this._validationMessage("ActualEndDate", "ActualEndDate", "Actual End Date cannot be empty");
             $('#ActualEndDate').css('border', '1px solid red');
             _validate++;
@@ -860,33 +840,6 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
                 window.open(winURL, '_self');
             }
-        });
-
-        this.setState({
-            ProjectID: '',
-            ProjectName: '',
-            ClientName: '',
-            DeliveryManager: '',
-            ProjectManager: '',
-            ProjectType: '',
-            ProjectMode: '',
-            ProjectDescription: '',
-            ProjectLocation: '',
-            ProjectStatus: '',
-            ActualStartDate: '',
-            ActualEndDate: '',
-            RevisedBudget: 0,
-            TotalCost: 0,
-            InvoicedAmount: 0,
-            ProjectScope: '',
-            ProjectSchedule: '',
-            ProjectResource: '',
-            ProjectCost: '',
-            startDate: '',
-            disable_plannedCompletion: true,
-            endDate: '',
-            focusedInput: '',
-            FormDigestValue: ''
         });
     }
 

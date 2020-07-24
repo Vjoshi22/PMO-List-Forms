@@ -41,6 +41,14 @@
           "manifest": "./src/webparts/homePage/HomePageWebPart.manifest.json"
         }
       ]
+    },
+    "tile-navigaiton-pmo-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/tileNavigaitonPmo/TileNavigaitonPmoWebPart.js",
+          "manifest": "./src/webparts/tileNavigaitonPmo/TileNavigaitonPmoWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -50,6 +58,7 @@
     "RiskInformationWebPartStrings": "lib/webparts/riskInformation/loc/{locale}.js",
     "IssueInformationWebPartStrings": "lib/webparts/issueInformation/loc/{locale}.js",
     "MilestoneWebPartStrings": "lib/webparts/milestone/loc/{locale}.js",
-    "HomePageWebPartStrings": "lib/webparts/homePage/loc/{locale}.js"
+    "HomePageWebPartStrings": "lib/webparts/homePage/loc/{locale}.js",
+    "TileNavigaitonPmoWebPartStrings": "lib/webparts/tileNavigaitonPmo/loc/{locale}.js"
   }
 }

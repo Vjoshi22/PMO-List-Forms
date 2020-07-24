@@ -46,7 +46,8 @@ export interface IreactState {
 
 var listGUID: any = "2c3ffd4e-1b73-4623-898d-8e3a1bb60b91";   //"47272d1e-57d9-447e-9cfd-4cff76241a93"; 
 var timerID;
-var newitem: boolean;
+let breakCondition = false;
+//var newitem: boolean;
 
 export default class PmoListForms extends React.Component<IPmoListFormsProps, IreactState> {
   constructor(props: IPmoListFormsProps, state: IreactState) {
@@ -121,11 +122,12 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     this.setState(newState);
 
     //functin to check the existing Id
-    if (e.target.name == "ProjectID" && (e.target.value != 0 || e.target.value == "")) {
-      this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl, e.target.value);
-    } else if (e.target.value == 0) {
+    let _value = e.target.value;
+    if (e.target.name == "ProjectID" && (e.target.value.trim() != 0 || e.target.value.trim() != "") && _value.trim().match(/^[a-zA-Z1-9][A-Za-z0-9_]*$/) != null) {
+      this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl, e.target.value.trim().toLowerCase());
+    } else if (e.target.name == "ProjectID" && (_value.trim().match(/^[a-zA-Z1-9][A-Za-z0-9_]*$/) == null || _value.trim() == "")) {
       $('.ProjectID').remove();
-      $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Project Id cannot be 0</span>');
+      $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Cannot start with 0 or special charachters</span>');
     }
     this.validateDate(e);
     this._validateProgress(e);
@@ -439,28 +441,35 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
   private _checkExistingProjectId(siteColUrl, ProjectIDValue) {
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
+    
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?select = ProjectID`;
-    let breakCondition = false;
+    //const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?select = ProjectID`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     $('.ProjectID').remove();
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {
         if (response.ok) {
           response.json()
             .then((jsonResponse) => {
+              if (jsonResponse.value.length > 0) {
               jsonResponse.value.forEach(item => {
-                if (ProjectIDValue == item.ProjectID && !breakCondition) {
-                  this.setState({
-                    ProjectID: ''
-                  })
+                if (ProjectIDValue == item.ProjectID.toLowerCase()) {
+                  // this.setState({
+                  //   ProjectID: ''
+                  // })
                   $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Project Id already Exists</span>');
                   breakCondition = true;
+                }else{
+                  breakCondition = false;
                 }
                 // if(ProjectIDValue != item.ProjectID && breakCondition){
                 //   $('.ProjectID').remove();
                 // }
 
               });
+            }else{
+              breakCondition = false;
+            }
             }, (err: any): void => {
               _logExceptionError(this.props.currentContext, _formdigest, "inside _checkExistingProjectId pmonewitemform: errlog", "PMOListForms", "_checkExistingProjectId", err, _projectID);
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
@@ -509,10 +518,14 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       $('#ProjectId').css('border', '1px solid red');
       this._validationMessage("ProjectId", "ProjectID", "Project Id cannot be empty");
       _validate++;
-    } else if ((requestData.ProjectID != "" || requestData.ProjectID != null) && requestData.ProjectID == "0") {
+    } else if ((requestData.ProjectID != "" || requestData.ProjectID != null) && this.state.ProjectID.match(/^[a-zA-Z1-9][A-Za-z0-9_]*$/) == null) {
       //$('.ProjectID').remove();
       $('#ProjectId').css('border', '1px solid red');
-      this._validationMessage("ProjectId", "ProjectID", "Project Id cannot be 0");
+      this._validationMessage("ProjectId", "ProjectID", "Cannot start with 0 or special charachters");
+      _validate++;
+    } else if(breakCondition){
+      $('#ProjectId').css('border', '1px solid red');
+      this._validationMessage("ProjectId", "ProjectID", "Project Id already Exists");
       _validate++;
     } else {
       $('.ProjectID').remove();
@@ -699,29 +712,6 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         location.reload();
       }
     });
-
-    this.setState({
-      ProjectID: '',
-      CRM_Id: '',
-      ProjectName: '',
-      ClientName: '',
-      DeliveryManager: '',
-      ProjectManager: '',
-      ProjectType: '',
-      ProjectMode: '',
-      PlannedStart: '',
-      PlannedCompletion: '',
-      ProjectDescription: '',
-      ProjectLocation: '',
-      ProjectBudget: 0,
-      ProjectStatus: '',
-      ProjectProgress: 0,
-      startDate: '',
-      endDate: '',
-      focusedInput: '',
-      FormDigestValue: ''
-    });
-
   }
   private _validationMessage(_id, _classname, _message) {
     $('.' + _classname).remove();
