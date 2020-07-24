@@ -17,7 +17,7 @@ import { _logExceptionError } from '../../../ExceptionLogging';
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
-var allchoiceColumnsEditForm: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Project_x0020_Cost", "Status", "Scope", "Resource", "Schedule"];
+var allchoiceColumnsEditForm: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Project_x0020_Cost", "Project_x0020_Phase","Status", "Scope", "Resource", "Schedule"];
 
 export interface IreactState {
     ProjectID: string,
@@ -26,18 +26,19 @@ export interface IreactState {
     ProjectManager: string;
     ProjectType: string;
     ProjectMode: string;
+    ProjectPhase: string;
     PlannedStart: string;
     PlannedCompletion: string;
     ProjectDescription: string;
     ProjectLocation: string;
     // ProjectBudget: string;
     ProjectStatus: string;
-    ProjectProgress: string;
+    ProjectProgress: number;
     ActualStartDate: string; //edit only
     ActualEndDate: string; //edit only
-    RevisedBudget: string; //edit only
-    TotalCost: string; //edit only
-    InvoicedAmount: string; //edit only
+    RevisedBudget: number; //edit only
+    TotalCost: number; //edit only
+    InvoicedAmount: number; //edit only
     ProjectScope: string; // Project Scope edit only
     ProjectSchedule: string; //project scheduled edit only
     ProjectResource: string;
@@ -68,17 +69,18 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             ProjectManager: '',
             ProjectType: '',
             ProjectMode: '',
+            ProjectPhase: '',
             ProjectDescription: '',
             PlannedStart: '',
             PlannedCompletion: '',
             ProjectLocation: '',
-            ProjectProgress: '',
+            ProjectProgress: 0,
             ProjectStatus: '',
             ActualStartDate: '',
             ActualEndDate: '',
-            RevisedBudget: '',
-            TotalCost: '',
-            InvoicedAmount: '',
+            RevisedBudget: 0,
+            TotalCost: 0,
+            InvoicedAmount: 0,
             ProjectScope: '',
             ProjectSchedule: '',
             ProjectResource: '',
@@ -99,6 +101,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     }
     public componentDidMount() {
         $('.webPartContainer').hide();
+        $('#ActualEndDate').closest('div').append('<span class="ActualEndDate_Note" style="color:grey;font-size:9pt">End Date can be added when Status is Completed</span><br>');
         //calling function to fetch dropdown values form sp choice coluns
         //window.addEventListener('load', this.handleload)
         allchoiceColumnsEditForm.forEach(colName => {
@@ -272,7 +275,25 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                     </Form.Row>
                     <Form.Row>
                         <FormGroup className="col-2">
-                            <Form.Label className={styles.customlabel}>Tentative Start Date</Form.Label>
+                            <Form.Label className={styles.customlabel + " " + styles.required}>Project Phase</Form.Label>
+                        </FormGroup>
+                        <FormGroup className="col-3">
+                            <Form.Control size="sm" id="ProjectPhase" as="select" name="ProjectPhase" onChange={this.handleChange} value={this.state.ProjectPhase}>
+                                <option value="">Select an Option</option>
+                            </Form.Control>
+                        </FormGroup>
+                        <FormGroup className="col-1"></FormGroup>
+                        <FormGroup className="col-2">
+                            <Form.Label className={styles.customlabel}>Region</Form.Label>
+                        </FormGroup>
+                        <FormGroup className={styles.disabledValue + " col-3"}>
+                            {/* <Form.Control size="sm" type="text" id="Region" name="Region" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}/> */}
+                            <Form.Label>{this.state.ProjectLocation}</Form.Label>
+                        </FormGroup>
+                    </Form.Row>
+                    <Form.Row>
+                        <FormGroup className="col-2">
+                            <Form.Label className={styles.customlabel}>Planned Start Date</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
                             {/* <Form.Control size="sm" type="date" id="PlannedStart" name="PlannedStart" placeholder="Planned Start Date" onChange={this.handleChange} value={this.state.PlannedStart}/> */}
@@ -281,7 +302,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         </FormGroup>
                         <FormGroup className="col-1"></FormGroup>
                         <FormGroup className="col-2">
-                            <Form.Label className={styles.customlabel}>Tentative End Date</Form.Label>
+                            <Form.Label className={styles.customlabel}>Planned End Date</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
                             {/* <Form.Control size="sm" type="date" disabled={this.state.disable_plannedCompletion} id="PlannedCompletion" name="PlannedCompletion" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.PlannedCompletion}/> */}
@@ -290,7 +311,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                     </Form.Row>
                     <Form.Row>
                         <FormGroup className="col-2">
-                            <Form.Label className={styles.customlabel}>Actual Start Date</Form.Label>
+                            <Form.Label className={styles.customlabel + " " + styles.required}>Actual Start Date</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
                             <Form.Control size="sm" type="date" id="ActualStartDate" name="ActualStartDate" placeholder="Actual Start Date" onChange={this.handleChange} value={this.state.ActualStartDate} />
@@ -301,7 +322,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                             <Form.Label className={styles.customlabel}>Actual End Date</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="date" disabled={this.state.disable_plannedCompletion} id="ActualEndDate" name="ActualEndDate" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.ActualEndDate} />
+                            <Form.Control size="sm" type="date" data-toggle="tooltip" data-placement="right" title="End Date can be added when Status is Completed" disabled={this.state.disable_plannedCompletion} id="ActualEndDate" name="ActualEndDate" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.ActualEndDate} />
                         </FormGroup>
                     </Form.Row>
                     {/* Project Description */}
@@ -314,12 +335,11 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         </FormGroup>
                     </Form.Row>
                     {/* Next Row */}
-                    <Form.Row>
+                    {/* <Form.Row>
                         <FormGroup className="col-2">
                             <Form.Label className={styles.customlabel}>Region</Form.Label>
                         </FormGroup>
                         <FormGroup className={styles.disabledValue + " col-3"}>
-                            {/* <Form.Control size="sm" type="text" id="Region" name="Region" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}/> */}
                             <Form.Label>{this.state.ProjectLocation}</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-1"></FormGroup>
@@ -329,13 +349,13 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         <FormGroup className="col-3">
                             <Form.Control size="sm" type="number" min="1" id="RevisedBudget" name="RevisedBudget" placeholder="Revised Budget" onChange={this.handleChange} value={this.state.RevisedBudget} />
                         </FormGroup>
-                    </Form.Row>
+                    </Form.Row> */}
                     <Form.Row>
-                        <FormGroup className="col-2">
-                            <Form.Label className={styles.customlabel}>Project Progress</Form.Label>
+                    <FormGroup className="col-2">
+                            <Form.Label className={styles.customlabel}>Revised Budget</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="number" min="1" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress} />
+                            <Form.Control size="sm" type="number" id="RevisedBudget" name="RevisedBudget" placeholder="Revised Budget" onChange={this.handleChange} value={this.state.RevisedBudget} />
                         </FormGroup>
                         <FormGroup className="col-1"></FormGroup>
                         <FormGroup className="col-2">
@@ -349,12 +369,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                     </Form.Row>
                     <Form.Row>
                         <FormGroup className="col-2">
-                            <Form.Label className={styles.customlabel + " " + styles.required}>Project Schedule</Form.Label>
+                            <Form.Label className={styles.customlabel}>Invoiced Amount</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="text" as="select" id="Schedule" name="ProjectSchedule" placeholder="Project Schedule" onChange={this.handleChange} value={this.state.ProjectSchedule}>
-                                <option value="">Select an Option</option>
-                            </Form.Control>
+                            <Form.Control size="sm" type="number" id="InvoicedAmount" name="InvoicedAmount" placeholder="Invoiced Amount" onChange={this.handleChange} value={this.state.InvoicedAmount} />
                         </FormGroup>
                         <FormGroup className="col-1"></FormGroup>
                         <FormGroup className="col-2">
@@ -368,10 +386,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                     </Form.Row>
                     <Form.Row>
                         <FormGroup className="col-2">
-                            <Form.Label className={styles.customlabel}>Invoiced Amount</Form.Label>
+                            <Form.Label className={styles.customlabel}>Total Cost</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="number" id="InvoicedAmount" name="InvoicedAmount" placeholder="Invoiced Amount" onChange={this.handleChange} value={this.state.InvoicedAmount} />
+                            <Form.Control size="sm" type="text" id="TotalCost" name="TotalCost" placeholder="Total Cost" onChange={this.handleChange} value={this.state.TotalCost} />
                         </FormGroup>
                         <FormGroup className="col-1"></FormGroup>
                         <FormGroup className="col-2">
@@ -384,13 +402,21 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         </FormGroup>
                     </Form.Row>
                     <Form.Row className="mb-4">
-                        <FormGroup className="col-2">
-                            <Form.Label className={styles.customlabel}>Total Cost</Form.Label>
+                    <FormGroup className="col-2">
+                            <Form.Label className={styles.customlabel}>Project Progress</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="text" id="TotalCost" name="TotalCost" placeholder="Total Cost" onChange={this.handleChange} value={this.state.TotalCost} />
+                            <Form.Control size="sm" type="number" id="ProjectProgress" name="ProjectProgress" placeholder="Project Progress (%)" onChange={this.handleChange} value={this.state.ProjectProgress} />
                         </FormGroup>
-                        <FormGroup className="col-6"></FormGroup>
+                        <FormGroup className="col-1"></FormGroup>
+                        <FormGroup className="col-2">
+                            <Form.Label className={styles.customlabel + " " + styles.required}>Project Schedule</Form.Label>
+                        </FormGroup>
+                        <FormGroup className="col-3">
+                            <Form.Control size="sm" type="text" as="select" id="Schedule" name="ProjectSchedule" placeholder="Project Schedule" onChange={this.handleChange} value={this.state.ProjectSchedule}>
+                                <option value="">Select an Option</option>
+                            </Form.Control>
+                        </FormGroup>
                     </Form.Row>
                     <Form.Row className={styles.buttonCLass}>
                         <FormGroup></FormGroup>
@@ -419,7 +445,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     private _validateDate(e) {
         let newState = {};
         //validation for date
-        if ((e.target.name == "ActualStartDate" && e.target.value != "") && (this.state.ProjectProgress == "100")) {
+        if ((e.target.name == "ActualStartDate" && e.target.value != "") && (this.state.ProjectProgress == 100)) {
             this.setState({
                 disable_plannedCompletion: false
             })
@@ -437,7 +463,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                     $('.ActualEndDate').remove();
                 }
             }
-        } else if ((e.target.name == "ActualStartDate" && e.target.value == "") && (this.state.ProjectProgress == "100")) {
+        } else if ((e.target.name == "ActualStartDate" && e.target.value == "") && (this.state.ProjectProgress == 100)) {
             this.setState({
                 ActualEndDate: "",
                 //disable_plannedCompletion: true
@@ -463,7 +489,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     private _validateProgress(e) {
 
         if (e.target.name == "ProjectProgress" && e.target.value != "") {
-            e.target.value > 100 ? this.setState({ ProjectProgress: "100" }) : e.target.value;
+            e.target.value > 100 ? this.setState({ ProjectProgress: 100 }) : e.target.value;
         }
         if (e.target.name == "ProjectProgress" && e.target.value >= 100) {
             this.setState({
@@ -473,19 +499,19 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         } else if (e.target.name == "ProjectProgress" && e.target.value != 100) {
             this.setState({
                 disable_plannedCompletion: true,
-                ActualEndDate: '',
-                ProjectStatus: ""
+                ActualEndDate: ''
+                //ProjectStatus: (this.state.stat)
             })
         }
 
         if (e.target.name == "ProjectStatus" && e.target.value == "Completed") {
             this.setState({
-                ProjectProgress: "100",
+                ProjectProgress: 100,
                 disable_plannedCompletion: false
             })
         } else if (e.target.name == "ProjectStatus" && e.target.value != "Completed") {
             this.setState({
-                ProjectProgress: (this.state.ProjectProgress == "100" ? "" : this.state.ProjectProgress),
+                ProjectProgress: (this.state.ProjectProgress == 100 ? 0 : this.state.ProjectProgress),
                 ActualEndDate: '',
                 disable_plannedCompletion: true
             })
@@ -494,7 +520,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
 
     //function to check if ProjectId already exists or not
     private _checkExistingProjectId(siteColUrl, ProjectIDValue) {
-        
+
         let _formdigest = this.state.FormDigestValue; //variable for errorlog function
         let _projectID = this.state.ProjectID; //variable for errorlog function
 
@@ -520,7 +546,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
 
                             });
                         }, (err: any): void => {
-                            _logExceptionError(this.props.currentContext, _formdigest, "inside PMOLIstEditForm: errlog", "PMOLisForm", "_checkExistingProjectId", err, _projectID );
+                            _logExceptionError(this.props.currentContext, _formdigest, "inside PMOLIstEditForm: errlog", "PMOLisForm", "_checkExistingProjectId", err, _projectID);
                             console.warn(`Failed to fulfill Promise\r\n\t${err}`);
                         });
                 } else {
@@ -556,6 +582,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         ProjectManager: item.Project_x0020_Manager,
                         ProjectType: item.Project_x0020_Type,
                         ProjectMode: item.Project_x0020_Mode,
+                        ProjectPhase: item.Project_x0020_Phase,
                         PlannedStart: item.PlannedStart,
                         PlannedCompletion: item.Planned_x0020_End,
                         ActualStartDate: item.Actual_x0020_Start,
@@ -573,6 +600,12 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         ProjectProgress: item.Progress,
                         disable_RMSID: true
                     })
+                    //checking Status on Load
+                    if(item.Status == "Completed" && item.Progress == 100){
+                        this.setState({
+                            disable_plannedCompletion: false
+                        })
+                    }
                     // console.log(this.state.PlannedStart + " " + this.state.PlannedCompletion) ;
                 });
         }
@@ -604,6 +637,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             Project_x0020_Manager: this.state.ProjectManager,
             Project_x0020_Type: this.state.ProjectType,
             Project_x0020_Mode: this.state.ProjectMode,
+            Project_x0020_Phase: this.state.ProjectPhase,
             Actual_x0020_Start: this.state.ActualStartDate,
             Actual_x0020_End: this.state.ActualEndDate,
             Project_x0020_Description: this.state.ProjectDescription,
@@ -620,32 +654,6 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
 
         };
         //validation
-        // if (requestData.ProjectID.length < 1){
-        //     $('#ProjectId').css('border','1px solid red');
-        //     _validate++;
-        // }else{
-        //     $('#ProjectId').css('border','1px solid #ced4da')
-        // }
-        //projectId validation
-        // if (requestData.ProjectID == null ||  requestData.ProjectID == "" || requestData.ProjectID.length < 1){
-        //     $('#ProjectId').css('border','1px solid red');
-        //     this._validationMessage("ProjectId", "ProjectID", "Project Id cannot be empty");
-        //     _validate++;
-        // }else if ((requestData.ProjectID != "" || requestData.ProjectID != null) && requestData.ProjectID == "0"){
-        //     //$('.ProjectID').remove();
-        //     $('#ProjectId').css('border','1px solid red');
-        //     this._validationMessage("ProjectId", "ProjectID", "Project Id cannot be 0");
-        //     _validate++;
-        // }else{
-        //     $('.ProjectID').remove();
-        //     $('#ProjectId').css('border','1px solid #ced4da')
-        // }
-        // if( requestData.Project_x0020_Name.length < 1){
-        //     $('#ProjectName').css('border','1px solid red');
-        //     _validate++;
-        // }else{
-        //     $('#ProjectName').css('border','1px solid #ced4da')
-        // }
         //delivery manager 
         if (requestData.Delivery_x0020_Manager == null || requestData.Delivery_x0020_Manager == "") {
             this._validationMessage("DeliveryManager", "DeliveryManager", "Delivery Manager cannot be empty");
@@ -673,32 +681,38 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         //     $('.RevisedBudget').remove();
         //     $('#RevisedBudget').css('border','1px solid #ced4da')
         // }
-        if (requestData.Revised_x0020_Budget == null || requestData.Revised_x0020_Budget.length < 1 || requestData.Revised_x0020_Budget == "") {
-            this._validationMessage("RevisedBudget", "RevisedBudget", "Revised Budget cannot be empty");
-            $('#RevisedBudget').css('border', '1px solid red');
+        // if ((requestData.Revised_x0020_Budget != null) && requestData.Revised_x0020_Budget == 0) {
+        //     //$('.ProjectID').remove();
+        //     $('#RevisedBudget').css('border', '1px solid red');
+        //     this._validationMessage("RevisedBudget", "RevisedBudget", "Revised Budget cannot be 0");
+        //     _validate++;
+        // } else 
+        if(requestData.Revised_x0020_Budget != null && requestData.Revised_x0020_Budget < 0){
+            this._validationMessage("RevisedBudget", "RevisedBudget", "Revised Budget cannot be less than 0");
             _validate++;
-        } else if ((requestData.Revised_x0020_Budget != "" || requestData.Revised_x0020_Budget != null) && requestData.Revised_x0020_Budget == "0") {
-            //$('.ProjectID').remove();
-            $('#RevisedBudget').css('border', '1px solid red');
-            this._validationMessage("RevisedBudget", "RevisedBudget", "Revised Budget cannot be 0");
-            _validate++;
-        } else {
+        }else{
             $('.RevisedBudget').remove();
             $('#RevisedBudget').css('border', '1px solid #ced4da')
         }
-        //progress
-        if (requestData.Progress.length < 1 || requestData.Progress == null || requestData.Progress == "") {
-            this._validationMessage("ProjectProgress", "ProjectProgress", "Project Progress cannot be empty");
-            $('#ProjectProgress').css('border', '1px solid red');
-            _validate++;
-        } else if ((requestData.Progress != "" || requestData.Progress != null) && requestData.Progress == "0") {
+        //Total Cost
+        if ((requestData.Total_x0020_Cost != null) && requestData.Total_x0020_Cost < 0) {
             //$('.ProjectID').remove();
-            $('#ProjectProgress').css('border', '1px solid red');
-            this._validationMessage("ProjectProgress", "ProjectProgress", "Project Progress cannot be 0");
+            $('#TotalCost').css('border', '1px solid red');
+            this._validationMessage("TotalCost", "TotalCost", "Total Cost cannot be less than 0");
             _validate++;
         } else {
-            $('.ProjectProgress').remove();
-            $('#ProjectProgress').css('border', '1px solid #ced4da')
+            $('.TotalCost').remove();
+            $('#TotalCost').css('border', '1px solid #ced4da')
+        }
+        //invoiced amount
+        if ((requestData.Invoiced_x0020_amount != null) && requestData.Invoiced_x0020_amount < 0) {
+            //$('.ProjectID').remove();
+            $('#InvoicedAmount').css('border', '1px solid red');
+            this._validationMessage("InvoicedAmount", "InvoicedAmount", "Invoiced Amount cannot be less than 0");
+            _validate++;
+        } else {
+            $('.InvoicedAmount').remove();
+            $('#InvoicedAmount').css('border', '1px solid #ced4da')
         }
         //actual start
         if (requestData.Actual_x0020_Start == null || requestData.Actual_x0020_Start == "") {
@@ -709,7 +723,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             $('.ActualStartDate').remove();
             $('#ActualStartDate').css('border', '1px solid #ced4da');
         }
-        if (requestData.Progress == "100" && (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "")) {
+        if (requestData.Status == "Completed" && requestData.Progress == 100 && (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "")) {
             this._validationMessage("ActualEndDate", "ActualEndDate", "Actual End Date cannot be empty");
             $('#ActualEndDate').css('border', '1px solid red');
             _validate++;
@@ -717,6 +731,16 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             $('.ActualEndDate').remove();
             $('#ActualEndDate').css('border', '1px solid #ced4da');
         }
+        //Project Phase
+        if (requestData.Project_x0020_Phase == null || requestData.Project_x0020_Phase == "") {
+            this._validationMessage("ProjectPhase", "ProjectPhase", "Project Phase cannot be empty");
+            $('#ProjectPhase').css('border', '1px solid red');
+            _validate++;
+        } else {
+            $('.ProjectPhase').remove();
+            $('#ProjectPhase').css('border', '1px solid #ced4da')
+        }
+        //Project Scope
         if (requestData.Scope == null || requestData.Scope == "") {
             this._validationMessage("Scope", "Scope", "Project Scope cannot be empty");
             $('#Scope').css('border', '1px solid red');
@@ -725,14 +749,37 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             $('.Scope').remove();
             $('#Scope').css('border', '1px solid #ced4da')
         }
+        //handling status in sync with project progress
         if (requestData.Status == null || requestData.Status == "" || requestData.Status.length < 1) {
             this._validationMessage("Status", "Status", "Project Status cannot be empty");
             $('#Status').css('border', '1px solid red');
             _validate++;
-        } else {
+        }else if ((requestData.Progress != null) && requestData.Progress < 100 && requestData.Status == "Completed") {
+            this._validationMessage("Status", "Status", "Status cannot be Completed, if Project Progress is less than 100");
+            _validate++;
+          } else {
+            $('.Status').remove();
+            $('#Status').css('border', '1px solid #ced4da')
+          }
+        //project progress in sync with status
+        if ((requestData.Progress != null) && requestData.Progress < 0) {
+            //$('.ProjectID').remove();
+            $('#ProjectProgress').css('border', '1px solid red');
+            this._validationMessage("ProjectProgress", "ProjectProgress", "Project Progress cannot be less than 0");
+            _validate++;
+        } else{
+            $('.ProjectProgress').remove();
+            $('#ProjectProgress').css('border', '1px solid #ced4da')
+        } 
+        if ((requestData.Progress != null) && requestData.Progress <100 && requestData.Status == "Completed") {
+           
+            this._validationMessage("Status","Status","Status cannot be Completed, if Project Progress is less than 100");
+            _validate++;
+           }else{
             $('.Status').remove();
             $('#Status').css('border', '1px solid #ced4da')
         }
+        //schedule
         if (requestData.Schedule == null || requestData.Schedule == "") {
             this._validationMessage("Schedule", "Schedule", "Project Schedule cannot be empty");
             $('#Schedule').css('border', '1px solid red');
@@ -788,38 +835,11 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 window.open(winURL, '_self');
             },
             error: (xhr, status, error) => {
-                _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem pmoeditform: errlog", "PmoListForm", "saveitem", xhr, _projectID );
+                _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem pmoeditform: errlog", "PmoListForm", "saveitem", xhr, _projectID);
                 alert(JSON.stringify(xhr.responseText));
                 let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
                 window.open(winURL, '_self');
             }
-        });
-
-        this.setState({
-            ProjectID: '',
-            ProjectName: '',
-            ClientName: '',
-            DeliveryManager: '',
-            ProjectManager: '',
-            ProjectType: '',
-            ProjectMode: '',
-            ProjectDescription: '',
-            ProjectLocation: '',
-            ProjectStatus: '',
-            ActualStartDate: '',
-            ActualEndDate: '',
-            RevisedBudget: '',
-            TotalCost: '',
-            InvoicedAmount: '',
-            ProjectScope: '',
-            ProjectSchedule: '',
-            ProjectResource: '',
-            ProjectCost: '',
-            startDate: '',
-            disable_plannedCompletion: true,
-            endDate: '',
-            focusedInput: '',
-            FormDigestValue: ''
         });
     }
 
@@ -829,7 +849,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     }
     //function to keep the request digest token active
     private _getAccessToken() {
-        
+
         let _formdigest = this.state.FormDigestValue; //variable for errorlog function
         let _projectID = this.state.ProjectID; //variable for errorlog function
 
@@ -846,7 +866,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 });
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                _logExceptionError(this.props.currentContext, _formdigest, "inside getaccesstoken Pmoeditform: errlog", "PmoListForm", "getaccesstoken", jqXHR, _projectID );
+                _logExceptionError(this.props.currentContext, _formdigest, "inside getaccesstoken Pmoeditform: errlog", "PmoListForm", "getaccesstoken", jqXHR, _projectID);
             }
         });
     }
@@ -889,7 +909,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     private _retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
         let _formdigest = this.state.FormDigestValue; //variable for errorlog function
         let _projectID = this.state.ProjectID; //variable for errorlog function
-        
+
         const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
         this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -903,7 +923,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
                             });
                         }, (err: any): void => {
-                            _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField pmoeditform: errlog", "PMOListForm", "retrieveAllChoicesFromListField", err, _projectID );
+                            _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField pmoeditform: errlog", "PMOListForm", "retrieveAllChoicesFromListField", err, _projectID);
                             console.warn(`Failed to fulfill Promise\r\n\t${err}`);
                         });
                 } else {

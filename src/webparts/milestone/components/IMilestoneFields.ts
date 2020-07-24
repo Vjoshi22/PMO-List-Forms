@@ -1,7 +1,8 @@
 export interface ISPMilestoneFields{
     ID?:string;
     ProjectID: string;    
-    Phase: string;
+    //Phase: string;
+    Milestone: string;
     PlannedStart: string;
     PlannedEnd:string;
     MilestoneStatus: string;

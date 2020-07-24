@@ -26,7 +26,8 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
     this.state = {
       ID: "",
       ProjectID: "",
-      Phase: "",
+      //Phase: "",
+      Milestone:"", //adding milestone instead of Phase
       PlannedStart: "",
       PlannedEnd: "",
       MilestoneStatus: "",
@@ -100,29 +101,32 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
           </Form.Row>
           <Form.Row>
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Phase</Form.Label>
+              {/* ##CR:Renamed Phase to Milestone and changign the dropdown to text */}
+              <Form.Label className={styles.customlabel + " " + styles.required}>Milestone</Form.Label>
             </FormGroup>
             <FormGroup className="col-9">
               {/* <Form.Control size="sm" id="Phase" as="select" name="Phase" onChange={this.handleChange} value={this.state.Phase}>
                 <option value="">Select an Option</option>
               </Form.Control> */}
-              <Form.Label>{this.state.Phase}</Form.Label>
+              {/* below field is replaced with Milestone */}
+              {/* <Form.Label>{this.state.Phase}</Form.Label> */}
+              <Form.Label>{this.state.Milestone}</Form.Label>
             </FormGroup>
           </Form.Row>
           <Form.Row>
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Tentative Start</Form.Label>
+              <Form.Label className={styles.customlabel + " " + styles.required}>Planned Start</Form.Label>
             </FormGroup>
             <FormGroup className={styles.disabledValue + " col-3"}>
-              {/* <Form.Control size="sm" type="date" id="PlannedStart" name="PlannedStart" placeholder="Tentative Start" onChange={this.handleChange} value={this.state.PlannedStart} /> */}
+              {/* <Form.Control size="sm" type="date" id="PlannedStart" name="PlannedStart" placeholder="Planned Start" onChange={this.handleChange} value={this.state.PlannedStart} /> */}
               <Form.Label>{this.state.PlannedStart}</Form.Label>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Tentative End</Form.Label>
+              <Form.Label className={styles.customlabel + " " + styles.required}>Planned End</Form.Label>
             </FormGroup>
             <FormGroup className={styles.disabledValue + " col-3"}>
-              {/* <Form.Control size="sm" type="date" id="PlannedEnd" name="PlannedEnd" placeholder="Tentative End" onChange={this.handleChange} value={this.state.PlannedEnd} /> */}
+              {/* <Form.Control size="sm" type="date" id="PlannedEnd" name="PlannedEnd" placeholder="Planned End" onChange={this.handleChange} value={this.state.PlannedEnd} /> */}
               <Form.Label>{this.state.PlannedEnd}</Form.Label>
             </FormGroup>
           </Form.Row>
@@ -222,7 +226,8 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
           this.setState({
             ID: item.ID,
             ProjectID: item.ProjectID,
-            Phase: item.Phase,
+            //Phase: item.Phase,
+            Milestone: item.Milestone,
             PlannedStart: item.PlannedStart,
             PlannedEnd: item.PlannedEnd,
             MilestoneStatus: item.MilestoneStatus,
@@ -249,7 +254,8 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
         type: listType
       },
       ProjectID: this.state.ProjectID,
-      Phase: this.state.Phase,
+      // Phase: this.state.Phase,
+      Milestone: this.state.Milestone,
       PlannedStart: this.state.PlannedStart,
       PlannedEnd: this.state.PlannedEnd,
       MilestoneStatus: this.state.MilestoneStatus,
@@ -279,9 +285,9 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
       $('#Phase').css('border', '1px solid #ced4da')
     }
 
-    // // Tentative Start mandatory
+    // // Planned Start mandatory
     // if (requestData.PlannedStart == null || requestData.PlannedStart.length < 1 || requestData.PlannedStart == "") {
-    //   this._validationMessage("PlannedStart", "PlannedStart", "Tentative Start cannot be empty");
+    //   this._validationMessage("PlannedStart", "PlannedStart", "Planned Start cannot be empty");
     //   $('#PlannedStart').css('border', '1px solid red');
     //   _validate++;
     // }
@@ -289,9 +295,9 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
     //   $('#PlannedStart').css('border', '1px solid #ced4da')
     // }
 
-    // // Tentative End mandatory
+    // // Planned End mandatory
     // if (requestData.PlannedEnd == null || requestData.PlannedEnd.length < 1 || requestData.PlannedEnd == "") {
-    //   this._validationMessage("PlannedEnd", "PlannedEnd", "Tentative End cannot be empty");
+    //   this._validationMessage("PlannedEnd", "PlannedEnd", "Planned End cannot be empty");
     //   $('#PlannedEnd').css('border', '1px solid red');
     //   _validate++;
     // }
@@ -423,7 +429,8 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
     this.state = {
       ID: "",
       ProjectID: "",
-      Phase: "",
+      //Phase: "",
+      Milestone: "",
       PlannedStart: "",
       PlannedEnd: "",
       MilestoneStatus: "",

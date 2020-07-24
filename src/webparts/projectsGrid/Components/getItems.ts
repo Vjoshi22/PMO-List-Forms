@@ -67,7 +67,7 @@ export function _populateGrid(results) {
   $('.dataTables_length label').addClass('col-form-label');
 
   $('#FilesTable thead tr').clone(false).appendTo('#FilesTable thead');
-  $('#FilesTable thead tr:eq(1) th').removeClass("sorting");
+  $('#FilesTable thead tr:eq(1) th').removeClass("sorting sorting_desc");
 
   $('#FilesTable thead tr:eq(1) th.search').each(function (i) {
     var title = $(this).text();

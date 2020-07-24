@@ -7,11 +7,12 @@ export interface SPProjectList{
     Project_x0020_Manager: string;
     Project_x0020_Type: string;
     Project_x0020_Mode: string;
+    Project_x0020_Phase:string;
     PlannedStart: string;
     Planned_x0020_End: string;
     Project_x0020_Description: string;
     Region: string;
-    Project_x0020_Budget: string;
+    Project_x0020_Budget: number;
     Status: string;
-    Progress: string;
+    Progress: number;
   }
