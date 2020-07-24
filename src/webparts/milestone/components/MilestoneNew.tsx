@@ -48,8 +48,9 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
   public componentDidMount() {
     //Retrive Project ID
     let itemId = GetParameterValues('ProjectID');
-    let isNumber = parseInt(itemId);
-    if (itemId == null || itemId == "" || isNaN(isNumber)) {
+    //let isNumber = parseInt(itemId);
+    //if (itemId == null || itemId == "" || isNaN(isNumber)) {
+      if (itemId == null || itemId == "") {
       alert("Incorrect URL.Redirecting...");
       window.history.back();
     }

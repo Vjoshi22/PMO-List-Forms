@@ -59,9 +59,10 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
   public componentDidMount() {
     //Retrive Project ID
     let itemId = _getParameterValues('ProjectID');
-    let isNumber = parseInt(itemId);
+    //let isNumber = parseInt(itemId);
 
-    if (itemId == null || itemId == "" || isNaN(isNumber)) {
+    //if (itemId == null || itemId == "" || isNaN(isNumber)) {
+    if (itemId == null || itemId == "") {
       alert("Incorrect URL.Redirecting...");
       window.history.back();
     }
