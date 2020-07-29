@@ -11,7 +11,7 @@ import * as strings from 'RisksGridWebPartStrings';
 import { _getallItems, _populateGrid } from './components/getItemsRisk';
 import { _customStyle } from "./components/customCssRisk";
 
-let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css";
+let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css";
 SPComponentLoader.loadCss(cssURL);
 
 export interface IRiskInformationList {

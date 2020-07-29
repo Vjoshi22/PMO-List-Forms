@@ -17,7 +17,7 @@ import "datatables.net-responsive";
 //import styles from './ProjectsGridWebPart.module.scss';
 //import * as strings from 'ProjectsGridWebPartStrings';
 
-let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css";
+let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css";
 SPComponentLoader.loadCss(cssURL);
 //SPComponentLoader.loadCss("https://ajax.aspnetcdn.com/ajax/4.0/1/MicrosoftAjax.js");
 

@@ -16,6 +16,9 @@ import { allchoiceColumns } from "../RiskInformationWebPart";
 import { _logExceptionError } from '../../../ExceptionLogging';
 
 require('./RiskInformation.module.scss');
+
+let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css";
+SPComponentLoader.loadCss(cssURL);
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
 let timerID;

@@ -10,7 +10,7 @@ import styles from './MilestonesGridWebPart.module.scss';
 import * as strings from 'MilestonesGridWebPartStrings';
 import { _getallItems, _populateGrid } from './components/getItemsMilestone';
 
-let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css";
+let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css";
 SPComponentLoader.loadCss(cssURL);
 
 export interface ISPMilestoneList{

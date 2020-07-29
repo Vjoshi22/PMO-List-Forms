@@ -19,12 +19,13 @@ export interface IIssueInformationWebPartProps {
 }
 var renderIssueForm: any;
 
-let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css";
+let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css";
 SPComponentLoader.loadCss(cssURL);
-SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
+
 export default class IssueInformationWebPart extends BaseClientSideWebPart <IIssueInformationWebPartProps> {
 
   public render(): void {
+    //SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.css");
     if((/edit/.test(window.location.href))){
       renderIssueForm = UpdateIssue 
     }
