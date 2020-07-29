@@ -129,7 +129,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
     this.saveIssue(e);
   }
   public render(): React.ReactElement<IIssueInformationProps> {
-    SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
+    //SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
     return (
       <div id="newItemDiv" className={styles["_main-div"]} >
         <div id="heading" className={styles.heading}><h3>Register an Issue</h3></div>

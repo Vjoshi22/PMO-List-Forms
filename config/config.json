@@ -57,6 +57,30 @@
           "manifest": "./src/webparts/projectsGrid/ProjectsGridWebPart.manifest.json"
         }
       ]
+    },
+    "issues-grid-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/issuesGrid/IssuesGridWebPart.js",
+          "manifest": "./src/webparts/issuesGrid/IssuesGridWebPart.manifest.json"
+        }
+      ]
+    },
+    "risks-grid-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/risksGrid/RisksGridWebPart.js",
+          "manifest": "./src/webparts/risksGrid/RisksGridWebPart.manifest.json"
+        }
+      ]
+    },
+    "milestones-grid-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/milestonesGrid/MilestonesGridWebPart.js",
+          "manifest": "./src/webparts/milestonesGrid/MilestonesGridWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -77,6 +101,9 @@
     "MilestoneWebPartStrings": "lib/webparts/milestone/loc/{locale}.js",
     "HomePageWebPartStrings": "lib/webparts/homePage/loc/{locale}.js",
     "TileNavigaitonPmoWebPartStrings": "lib/webparts/tileNavigaitonPmo/loc/{locale}.js",
-    "ProjectsGridWebPartStrings": "lib/webparts/projectsGrid/loc/{locale}.js"
+    "ProjectsGridWebPartStrings": "lib/webparts/projectsGrid/loc/{locale}.js",
+    "IssuesGridWebPartStrings": "lib/webparts/issuesGrid/loc/{locale}.js",
+    "RisksGridWebPartStrings": "lib/webparts/risksGrid/loc/{locale}.js",
+    "MilestonesGridWebPartStrings": "lib/webparts/milestonesGrid/loc/{locale}.js"
   }
 }

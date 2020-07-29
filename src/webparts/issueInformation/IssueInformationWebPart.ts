@@ -11,6 +11,7 @@ import * as strings from 'IssueInformationWebPartStrings';
 import CreateIssue from './components/CreateIssue';
 import UpdateIssue from './components/UpdateIssue';
 import { IIssueInformationProps } from './components/IIssueInformationProps';
+import { SPComponentLoader } from "@microsoft/sp-loader";
 
 export interface IIssueInformationWebPartProps {
   description: string;
@@ -18,6 +19,9 @@ export interface IIssueInformationWebPartProps {
 }
 var renderIssueForm: any;
 
+let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css";
+SPComponentLoader.loadCss(cssURL);
+SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 export default class IssueInformationWebPart extends BaseClientSideWebPart <IIssueInformationWebPartProps> {
 
   public render(): void {
