@@ -3,7 +3,8 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
-  PropertyPaneTextField
+  PropertyPaneTextField,
+  PropertyPaneToggle
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart, WebPartContext } from '@microsoft/sp-webpart-base';
 
@@ -18,6 +19,7 @@ import { SPHttpClient, ISPHttpClientOptions,
 export interface IPmoListFormsWebPartProps {
   description: string;
   currentContext: WebPartContext;
+  customGridRequired: string;
 }
 var renderPMOForm: any;
 
@@ -40,7 +42,8 @@ export default class PmoListFormsWebPart extends BaseClientSideWebPart <IPmoList
       renderPMOForm,
       {
         description: this.properties.description,
-        currentContext: this.context
+        currentContext: this.context,
+        customGridRequired: this.properties.customGridRequired
       }
     );
 
@@ -88,6 +91,14 @@ export default class PmoListFormsWebPart extends BaseClientSideWebPart <IPmoList
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                })
+              ]
+            },
+            {
+              groupName: "Custom Required",
+              groupFields: [
+                PropertyPaneToggle('customGridRequired', {
+                  label: "Custom Grid"
                 })
               ]
             }

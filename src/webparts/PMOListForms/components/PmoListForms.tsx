@@ -698,6 +698,13 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       },
       success: (data, status, xhr) => {
         alert("Submitted successfully");
+      //   {if(this.props.customGridRequired){
+      //     let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Issue-Grid.aspx?FilterField1=ProjectID&FilterValue1=" + this.state.ProjectID
+      //     window.open(winUrl, '_self');
+      // }else{
+      //     let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Project%20Issues%20Information/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=6fa77e6c-03b4-497a-8d11-8b2a41ddf978';
+      //     window.open(winUrl, '_self');
+      // }}
         let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
         window.open(winURL, '_self');
       },

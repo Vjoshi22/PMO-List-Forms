@@ -3,7 +3,8 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
-  PropertyPaneTextField
+  PropertyPaneTextField,
+  PropertyPaneToggle
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart,WebPartContext } from '@microsoft/sp-webpart-base';
 
@@ -15,6 +16,7 @@ import { IMilestoneProps } from './components/IMilestoneProps';
 export interface IMilestoneWebPartProps {
   description: string;
   currentContext: WebPartContext;
+  customGridRequired: string;
 }
 
 export let allchoiceColumns: any[] = ["Phase", "MilestoneStatus"];
@@ -34,7 +36,8 @@ export default class MilestoneWebPart extends BaseClientSideWebPart <IMilestoneW
       renderPMOForm,
       {
         description: this.properties.description,
-        currentContext: this.context
+        currentContext: this.context,
+        customGridRequired: this.properties.customGridRequired
       }
     );
     ReactDom.render(element, this.domElement);
@@ -48,6 +51,10 @@ export default class MilestoneWebPart extends BaseClientSideWebPart <IMilestoneW
     return Version.parse('1.0');
   }
 
+  protected get disableReactivePropertyChanges(): boolean {
+    return true;
+  }
+  
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
       pages: [
@@ -61,6 +68,14 @@ export default class MilestoneWebPart extends BaseClientSideWebPart <IMilestoneW
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                })
+              ]
+            },
+            {
+              groupName: "Custom Grid",
+              groupFields: [
+                PropertyPaneToggle('customGridRequired', {
+                  label: "Custom Grid Required"
                 })
               ]
             }

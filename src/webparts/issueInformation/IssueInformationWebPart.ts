@@ -3,7 +3,8 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
-  PropertyPaneTextField
+  PropertyPaneTextField,
+  PropertyPaneToggle
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart, WebPartContext } from '@microsoft/sp-webpart-base';
 
@@ -16,6 +17,8 @@ import { SPComponentLoader } from "@microsoft/sp-loader";
 export interface IIssueInformationWebPartProps {
   description: string;
   currentContext: WebPartContext;
+  customGridRequired: string;
+
 }
 var renderIssueForm: any;
 
@@ -36,7 +39,8 @@ export default class IssueInformationWebPart extends BaseClientSideWebPart <IIss
       renderIssueForm,
       {
         description: this.properties.description,
-        currentContext: this.context
+        currentContext: this.context,
+        customGridRequired: this.properties.customGridRequired
         
       }
     );
@@ -52,6 +56,10 @@ export default class IssueInformationWebPart extends BaseClientSideWebPart <IIss
     return Version.parse('1.0');
   }
 
+  protected get disableReactivePropertyChanges(): boolean {
+    return true;
+  }
+  
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
       pages: [
@@ -65,6 +73,14 @@ export default class IssueInformationWebPart extends BaseClientSideWebPart <IIss
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                })
+              ]
+            },
+            {
+              groupName: "Custom Grid",
+              groupFields: [
+                PropertyPaneToggle('customGridRequired', {
+                  label: "Custom Grid Required"
                 })
               ]
             }

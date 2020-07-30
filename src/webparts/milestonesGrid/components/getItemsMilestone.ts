@@ -119,12 +119,12 @@ function GenerateTablefromJSON(data) {
     '<tbody>';
 
   for (var i = 0; i < data.length; i++) {
-    let IssueDetails = `https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Track-Issues.aspx?type=edit,id=` + data[i].Id 
+    let MilestoneDetails = `https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Track-Milestone.aspx?page=edit,id=` + data[i].Id 
 
     tablecontent += '<tr id="' + data[i].Id + 'row">';
     tablecontent += "<td class='" + data[i].Id + "rowItem'><a id=IssueDetails" + data[i].Id +
-      "' target='_blank' style='color: teal' class='confirmEditFileLink' href=" + IssueDetails + ">" +
-      "<i class='glyphicon glyphicon-pencil' title='Edit File'></i></a>&nbsp&nbsp&nbsp;&nbsp;</a></td>";
+      "' target='_blank' style='color: teal' class='confirmEditFileLink' href=" + MilestoneDetails + ">" +
+      "<i class='fa fa-pencil' aria-hidden='true'></i></a>&nbsp&nbsp&nbsp;&nbsp;</a></td>";
 
     // tablecontent += '<tr id="' + data[i].Id + 'row">';
     // tablecontent += '<td class="' + data[i].ProjectID + 'rowItem">' + data[i].Id + "</td>";

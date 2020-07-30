@@ -387,8 +387,14 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       success: (data, status, xhr) => {
         console.log("Submitted successfully");
         alert("Submitted successfully");
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
-        window.open(winURL, '_self');
+        {if(this.props.customGridRequired){
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+          window.open(winURL, '_self');
+        }else{
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+          window.open(winURL, '_self');
+        }}
+        
       },
       error: (xhr, status, error) => {
         _logExceptionError(this.props.currentContext, _formdigest, "inside createItem Milestone New: errlog", "Milestone", "createItem", xhr, _projectID );
@@ -446,7 +452,13 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
   }
 
   private closeform() {
-    let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+    {if(this.props.customGridRequired){
+      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+      window.open(winURL, '_self');
+    }else{
+      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+      window.open(winURL, '_self');
+    }}
     this.state = {
       ID: "",
       ProjectID: "",
@@ -463,7 +475,6 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       focusedInput: "",
       FormDigestValue: ""
     };
-    window.open(winURL, '_self');
   }
   private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
 

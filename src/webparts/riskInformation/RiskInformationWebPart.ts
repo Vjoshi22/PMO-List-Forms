@@ -3,7 +3,8 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
-  PropertyPaneTextField
+  PropertyPaneTextField,
+  PropertyPaneToggle
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart,WebPartContext } from '@microsoft/sp-webpart-base';
 
@@ -15,6 +16,7 @@ import { IRiskInformationProps } from './components/IRiskInformationProps';
 export interface IRiskInformationWebPartProps {
   description: string;
   currentContext: WebPartContext;
+  customGridRequired: string;
 }
 
 export var allchoiceColumns: any[] = ["RiskCategory", "RiskStatus", "RiskResponse", "RiskImpact", "RiskProbability"];
@@ -33,7 +35,8 @@ export default class RiskInformationWebPart extends BaseClientSideWebPart <IRisk
       renderPMOForm,
       {
         description: this.properties.description,
-        currentContext: this.context
+        currentContext: this.context,
+        customGridRequired: this.properties.customGridRequired
       }
     );
     ReactDom.render(element, this.domElement);    
@@ -47,6 +50,10 @@ export default class RiskInformationWebPart extends BaseClientSideWebPart <IRisk
     return Version.parse('1.0');
   }
 
+  protected get disableReactivePropertyChanges(): boolean {
+    return true;
+  }
+  
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
       pages: [
@@ -60,6 +67,14 @@ export default class RiskInformationWebPart extends BaseClientSideWebPart <IRisk
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                })
+              ]
+            },
+            {
+              groupName: "Custom Grid",
+              groupFields: [
+                PropertyPaneToggle('customGridRequired', {
+                  label: "Custom Grid Required"
                 })
               ]
             }

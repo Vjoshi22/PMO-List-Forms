@@ -3,7 +3,7 @@
   "solution": {
     "name": "pmo-list-forms",
     "id": "a2c9a0be-45db-4da1-9e29-205a8b6b3033",
-    "version": "1.5.2.0",
+    "version": "1.5.5.0",
     "includeClientSideAssets": true,
     "isDomainIsolated": false
   },

@@ -8,8 +8,7 @@ import { escape } from '@microsoft/sp-lodash-subset';
 import { SPComponentLoader } from "@microsoft/sp-loader";
 import styles from './ProjectGridWebPart.module.scss';
 import * as strings from 'ProjectsGridWebPartStrings';
-import { _getallItems, _populateGrid } from "./Components/getItems";
-import { _customStyle } from "./Components/customCss"
+import { _getallItems, _populateGrid } from "./Components/getItemsProject";
 
 import "datatables.net";
 import "datatables.net-dt";
@@ -17,7 +16,7 @@ import "datatables.net-responsive";
 //import styles from './ProjectsGridWebPart.module.scss';
 //import * as strings from 'ProjectsGridWebPartStrings';
 
-let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css";
+let cssURL = "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
 SPComponentLoader.loadCss(cssURL);
 //SPComponentLoader.loadCss("https://ajax.aspnetcdn.com/ajax/4.0/1/MicrosoftAjax.js");
 

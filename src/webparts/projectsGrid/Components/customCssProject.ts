@@ -1,7 +1,7 @@
 import * as myJQuery from 'jquery'
 import { SPComponentLoader } from "@microsoft/sp-loader";
 import { DateTimeFieldFormatType } from 'sp-pnp-js';
-import { table } from "./getItems";
+import { table } from "./getItemsProject";
 
 
 SPComponentLoader.loadCss("//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css");

@@ -16,9 +16,6 @@ import { allchoiceColumns } from "../RiskInformationWebPart";
 import { _logExceptionError } from '../../../ExceptionLogging';
 
 require('./RiskInformation.module.scss');
-
-let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css";
-SPComponentLoader.loadCss(cssURL);
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
 let timerID;
@@ -544,8 +541,13 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       success: (data, status, xhr) => {
         console.log("Submitted successfully");
         alert("Submitted successfully");
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
-        window.open(winURL, '_self');
+        {if(this.props.customGridRequired){
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+          window.open(winURL, '_self');
+        }else{
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
+          window.open(winURL, '_self');
+        }}
       },
       error: (xhr, status, error) => {
         _logExceptionError(this.props.currentContext, _formdigest, "inside createitem RiskInfo New: errlog", "RiskInformation", "createitem", xhr, _projectID );
@@ -604,7 +606,13 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   }
 
   private closeform() {
-    let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+    {if(this.props.customGridRequired){
+      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+      window.open(winURL, '_self');
+    }else{
+      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
+      window.open(winURL, '_self');
+    }}
     this.state = {
       Title: "",
       RiskID: "",
@@ -624,7 +632,6 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       focusedInput: "",
       FormDigestValue: ""
     };
-    window.open(winURL, '_self');
   }
   private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function

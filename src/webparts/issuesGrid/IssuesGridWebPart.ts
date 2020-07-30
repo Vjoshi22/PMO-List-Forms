@@ -11,7 +11,7 @@ import * as strings from 'IssuesGridWebPartStrings';
 import { _getallItems, _populateGrid } from './components/getItemsIssues';
 // import { _getParameterValues } from '../PMOListForms/components/getQueryString';
 
-let cssURL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css";
+let cssURL = "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
 SPComponentLoader.loadCss(cssURL);
 
 export interface ISPIssueInformationList{
