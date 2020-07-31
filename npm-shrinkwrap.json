@@ -2837,6 +2837,16 @@
         "@types/jquery": "*"
       }
     },
+    "@types/datatables.net-fixedheader": {
+      "version": "3.1.4",
+      "resolved": "https://registry.npmjs.org/@types/datatables.net-fixedheader/-/datatables.net-fixedheader-3.1.4.tgz",
+      "integrity": "sha512-x4PRTwJ6LAlrG+XeRyc8SDiODv32Hr36rV4wpJJOEUOWb2i9LBmIp//VvZ8ogWX9ID3at19xa5BuHQ7DzN/FrA==",
+      "dev": true,
+      "requires": {
+        "@types/datatables.net": "*",
+        "@types/jquery": "*"
+      }
+    },
     "@types/es6-promise": {
       "version": "0.0.33",
       "resolved": "https://registry.npmjs.org/@types/es6-promise/-/es6-promise-0.0.33.tgz",
@@ -6250,6 +6260,16 @@
       "integrity": "sha512-WN2UFDn/i/6NAXMjyfd67Yfwm5lIdP8e1N1rBqQ30izZ8IituJKDFffVTi0y5S3SiwZzCpKFRvdLEehFtCaQng==",
       "requires": {
         "datatables.net": "^1.10.15",
+        "jquery": ">=1.7"
+      }
+    },
+    "datatables.net-fixedheader-dt": {
+      "version": "3.1.7",
+      "resolved": "https://registry.npmjs.org/datatables.net-fixedheader-dt/-/datatables.net-fixedheader-dt-3.1.7.tgz",
+      "integrity": "sha512-BTWifl8uv5+Mb65s2kzet28ANc/pnO1XmskD2kZYOcfXl13rZQIEMkb9CFppvgCYAl9J1znFb+7SUYhMDJd4gw==",
+      "requires": {
+        "datatables.net-dt": "^1.10.15",
+        "datatables.net-fixedheader": "3.1.7",
         "jquery": ">=1.7"
       }
     },

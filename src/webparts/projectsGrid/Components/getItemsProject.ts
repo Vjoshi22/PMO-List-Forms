@@ -1,6 +1,8 @@
 import "datatables.net";
 import "datatables.net-dt";
 import "datatables.net-responsive";
+import "datatables.net-fixedheader";
+import "datatables.net-fixedheader-dt";
 import { SPComponentLoader } from "@microsoft/sp-loader";
 import {
   SPHttpClient,
@@ -57,7 +59,10 @@ export function _populateGrid(results) {
     //"dom": 'lftrip',//(l)ength,(f)iltering,(t)able,(i)nformation,(p)aging, P(r)ocessing
     "dom": "<<t>ip>",
     //"lengthChange": false,   
-    "order": [[0, "desc"]]
+    "order": [[0, "desc"]],
+    "fixedHeader": {
+      header:true
+    }
   });
 
   $('#FilesTable th.search').css({ 'min-width': '130px' });
