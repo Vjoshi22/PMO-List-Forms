@@ -81,6 +81,14 @@
           "manifest": "./src/webparts/milestonesGrid/MilestonesGridWebPart.manifest.json"
         }
       ]
+    },
+    "welcome-page-wp-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/welcomePageWp/WelcomePageWpWebPart.js",
+          "manifest": "./src/webparts/welcomePageWp/WelcomePageWpWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -104,6 +112,7 @@
     "ProjectsGridWebPartStrings": "lib/webparts/projectsGrid/loc/{locale}.js",
     "IssuesGridWebPartStrings": "lib/webparts/issuesGrid/loc/{locale}.js",
     "RisksGridWebPartStrings": "lib/webparts/risksGrid/loc/{locale}.js",
-    "MilestonesGridWebPartStrings": "lib/webparts/milestonesGrid/loc/{locale}.js"
+    "MilestonesGridWebPartStrings": "lib/webparts/milestonesGrid/loc/{locale}.js",
+    "WelcomePageWpWebPartStrings": "lib/webparts/welcomePageWp/loc/{locale}.js"
   }
 }
