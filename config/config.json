@@ -34,14 +34,6 @@
         }
       ]
     },
-    "home-page-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/homePage/HomePageWebPart.js",
-          "manifest": "./src/webparts/homePage/HomePageWebPart.manifest.json"
-        }
-      ]
-    },
     "tile-navigaiton-pmo-web-part": {
       "components": [
         {
@@ -79,14 +71,6 @@
         {
           "entrypoint": "./lib/webparts/milestonesGrid/MilestonesGridWebPart.js",
           "manifest": "./src/webparts/milestonesGrid/MilestonesGridWebPart.manifest.json"
-        }
-      ]
-    },
-    "welcome-page-wp-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/welcomePageWp/WelcomePageWpWebPart.js",
-          "manifest": "./src/webparts/welcomePageWp/WelcomePageWpWebPart.manifest.json"
         }
       ]
     }

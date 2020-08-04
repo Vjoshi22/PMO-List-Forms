@@ -831,14 +831,28 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             },
             success: (data, status, xhr) => {
                 alert("Submitted successfully");
-                let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
-                window.open(winURL, '_self');
+                {if(this.props.customGridRequired){
+                    let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master-Grid.aspx";
+                  window.open(winUrl, '_self');
+                }else{
+                  let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                  window.open(winUrl, '_self');
+                }}
+                // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                // window.open(winURL, '_self');
             },
             error: (xhr, status, error) => {
                 _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem pmoeditform: errlog", "PmoListForm", "saveitem", xhr, _projectID);
                 alert(JSON.stringify(xhr.responseText));
-                let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
-                window.open(winURL, '_self');
+                {if(this.props.customGridRequired){
+                    let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master-Grid.aspx";
+                  window.open(winUrl, '_self');
+                }else{
+                  let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                  window.open(winUrl, '_self');
+                }}
+                // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                // window.open(winURL, '_self');
             }
         });
     }
@@ -873,7 +887,14 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     //function to close the form and redirect to the Grid page
     private _closeform(e) {
         e.preventDefault();
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        {if(this.props.customGridRequired){
+            let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master-Grid.aspx";
+          window.open(winUrl, '_self');
+        }else{
+          let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+          window.open(winUrl, '_self');
+        }}
+        //let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
         // this.setState({
         //     ProjectID : '',
         //     ProjectName: '',
@@ -903,7 +924,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         //     focusedInput: '',
         //     FormDigestValue:''
         // });
-        window.open(winURL, '_self');
+        //window.open(winURL, '_self');
     }
     //function to load choice column values in the dropdown
     private _retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
