@@ -97,6 +97,7 @@
     "IssuesGridWebPartStrings": "lib/webparts/issuesGrid/loc/{locale}.js",
     "RisksGridWebPartStrings": "lib/webparts/risksGrid/loc/{locale}.js",
     "MilestonesGridWebPartStrings": "lib/webparts/milestonesGrid/loc/{locale}.js",
-    "WelcomePageWpWebPartStrings": "lib/webparts/welcomePageWp/loc/{locale}.js"
+    "WelcomePageWpWebPartStrings": "lib/webparts/welcomePageWp/loc/{locale}.js",
+    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js"
   }
 }

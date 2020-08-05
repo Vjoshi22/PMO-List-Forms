@@ -10,6 +10,7 @@
     "@microsoft/sp-property-pane": "1.10.0",
     "@microsoft/sp-webpart-base": "1.10.0",
     "@pnp/spfx-controls-react": "^1.19.0",
+    "@pnp/spfx-property-controls": "1.19.0",
     "@types/bootstrap": "^4.5.0",
     "@types/datatables.net": "^1.10.19",
     "@types/es6-promise": "0.0.33",
