@@ -82,19 +82,6 @@ export default class TileNavigaitonPmoWebPart extends BaseClientSideWebPart<
             {
               groupName: "Select the Navigation",
               groupFields: [
-                PropertyFieldListPicker("lists", {
-                  label: "Select a list",
-                  selectedList: this.properties.lists,
-                  includeHidden: false,
-                  orderBy: PropertyFieldListPickerOrderBy.Title,
-                  disabled: false,
-                  onPropertyChange: this.onPropertyPaneFieldChanged.bind(this),
-                  properties: this.properties,
-                  context: this.context,
-                  onGetErrorMessage: null,
-                  deferredValidationTime: 0,
-                  key: "listPickerFieldId",
-                }),
                 PropertyPaneDropdown("tileName", {
                   label: "Select Tile Name",
                   options: this.parentItemDropdownOptions,

@@ -11,9 +11,9 @@ import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration, SPHttpCl
 let imageURL;
 export let arr_tileNavigaiton:any = [];
 export var arr_distinctParentVal:any =[];
-//var navigationListGUID = "3dfdae3b-3905-460d-8abb-06800cf4874f";
+var navigationListGUID = "3dfdae3b-3905-460d-8abb-06800cf4874f";
 //passing the list guid from property pane
-var navigationListGUID;
+//var navigationListGUID;
 
 
 //declare state
@@ -30,9 +30,9 @@ export default class TileNavigaitonPmo extends React.Component<ITileNavigaitonPm
     }
   }
   public componentWillMount(){
-    this.loadList().then((items):void =>{
-      console.log(items);
-    })
+    // this.loadList().then((items):void =>{
+    //   console.log(items);
+    // })
     this.loadImages().then((items): void => {
       console.log(items);
       //clearing the array
@@ -90,7 +90,7 @@ export default class TileNavigaitonPmo extends React.Component<ITileNavigaitonPm
   }
   
   private loadImages(): Promise<any> {
-    const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.lists}')/items?$orderby=TileOrder asc`;
+    const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${navigationListGUID}')/items?$orderby=TileOrder asc`;
 
     return this.props.currentContext.spHttpClient.get(url,
       SPHttpClient.configurations.v1)

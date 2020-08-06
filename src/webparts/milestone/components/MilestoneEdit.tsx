@@ -12,6 +12,7 @@ import { getListEntityName, listType } from './getListEntityName';
 import { ISPMilestoneFields } from './IMilestoneFields';
 import { IMilestoneState } from './IMilestoneState';
 import { _logExceptionError } from '../../../ExceptionLogging';
+import { inputfieldLength } from "../../PMOListForms/components/PmoListForms";
 
 require('./Milestone.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
@@ -148,7 +149,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
               <Form.Label className={styles.customlabel}>Remarks</Form.Label>
             </FormGroup>
             <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" as="textarea" rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
+              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
             </FormGroup>
           </Form.Row>
 
@@ -366,8 +367,15 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
       success: (data, status, xhr) => {
         console.log("Submitted successfully");
         alert("Submitted successfully");
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
-        window.open(winURL, '_self');
+        {if(this.props.customGridRequired){
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+          window.open(winURL, '_self');
+        }else{
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+          window.open(winURL, '_self');
+        }}
+        // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+        // window.open(winURL, '_self');
       },
       error: (xhr, status, error) => {
         _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem Milestone Edit: errlog", "Milestone", "saveitem", xhr, _projectID );
@@ -425,7 +433,14 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
   }
 
   private closeform() {
-    let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+    {if(this.props.customGridRequired){
+      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+      window.open(winURL, '_self');
+    }else{
+      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+      window.open(winURL, '_self');
+    }}
+    //let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
     this.state = {
       ID: "",
       ProjectID: "",
@@ -442,7 +457,8 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
       focusedInput: "",
       FormDigestValue: ""
     };
-    window.open(winURL, '_self');
+    
+    // window.open(winURL, '_self');
   }
   private retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function

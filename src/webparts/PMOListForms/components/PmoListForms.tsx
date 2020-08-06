@@ -13,7 +13,9 @@ import { _getListEntityName, listType } from './getListEntityName';
 import { data } from 'jquery';
 import { _logExceptionError } from '../../../ExceptionLogging';
 
+
 export var allchoiceColumns: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Status", "Project_x0020_Phase", "Region"];
+export var inputfieldLength = 500;
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
@@ -310,7 +312,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Description</Form.Label>
             </FormGroup>
             <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" as="textarea" rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription} />
+              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription} />
             </FormGroup>
           </Form.Row>
           {/* Next Row */}

@@ -124,7 +124,7 @@ function GenerateTablefromJSON(data) {
 
     tablecontent += '<tr id="' + data[i].Id + 'row">';
     tablecontent += "<td class='" + data[i].Id + "rowItem'><a id=IssueDetails" + data[i].Id +
-      "' target='_blank' style='color: teal' class='confirmEditFileLink' href=" + IssueDetails + ">" +
+      "' target='_blank' style='color: teal' class='confirmEditFileLink' href=" + IssueDetails + " data-interception='off'>" +
       "<i class='fa fa-pencil' aria-hidden='true'></i></a>&nbsp&nbsp&nbsp;&nbsp;</a></td>";
 
     // tablecontent += '<tr id="' + data[i].Id + 'row">';

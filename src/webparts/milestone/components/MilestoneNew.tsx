@@ -12,6 +12,7 @@ import { getListEntityName, listType } from './getListEntityName';
 import { ISPMilestoneFields } from './IMilestoneFields';
 import { IMilestoneState } from './IMilestoneState';
 import { _logExceptionError } from '../../../ExceptionLogging';
+import { inputfieldLength } from '../../PMOListForms/components/PmoListForms';
 
 require('./Milestone.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
@@ -81,6 +82,49 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     let newState = {};
     newState[e.target.name] = e.target.value;
     this.setState(newState);
+
+    //checking planned start and planned end less than today's date or not
+    if (e.target.name == "PlannedStart" || e.target.name == "PlannedEnd") {
+      //Should not be future date
+      let todaysdate = new Date();
+      let date1 = new Date($('#PlannedStart').val().toString());
+      let date2 = new Date($('#PlannedEnd').val().toString());
+      if (e.target.name == "PlannedStart") {
+        $('.PlannedStart').remove();
+        if (todaysdate < date1) {
+          this.setState({
+            ActualStart:''
+          })//$('#PlannedStart').closest('div').append(`<span class="PlannedStart" style="color:red;font-size:9pt">Can't be greater than today's date</span>`)
+        } else {
+          this.setState({
+            ActualStart: $('#PlannedStart').val().toString()
+          })
+          //$('.errRiskIdentifiedOn').remove();
+        }
+      }
+      if (e.target.name == "PlannedEnd") {
+        $('.PlannedEnd').remove();
+        if (todaysdate < date2) {
+          this.setState({
+            ActualEnd: ''
+          })//$('#RiskClosedOn').closest('div').append(`<span class="errRiskClosedOn" style="color:red;font-size:9pt">Can't be greater than today's date</span>`)
+        } else {
+          this.setState({
+            ActualEnd: $('#PlannedEnd').val().toString()
+          })
+          $('.PlannedEnd').remove();
+          if (date1 > date2) {
+            this.setState({
+              PlannedEnd:'',
+              ActualEnd:''
+            })
+            $('#PlannedEnd').closest('div').append(`<span class="PlannedEnd" style="color:red;font-size:9pt">Must be greater than Planned Start</span>`)
+          } else {
+            $('.PlannedEnd').remove();
+          }
+        }
+      }
+    }
     
   }
 
@@ -169,7 +213,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
               <Form.Label className={styles.customlabel}>Remarks</Form.Label>
             </FormGroup>
             <FormGroup className="col-9">
-              <Form.Control size="sm" as="textarea" rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
+              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
             </FormGroup>
           </Form.Row>
 
@@ -387,13 +431,10 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       success: (data, status, xhr) => {
         console.log("Submitted successfully");
         alert("Submitted successfully");
-        {if(this.props.customGridRequired){
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+       
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
           window.open(winURL, '_self');
-        }else{
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
-          window.open(winURL, '_self');
-        }}
+        
         
       },
       error: (xhr, status, error) => {
@@ -452,13 +493,9 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
   }
 
   private closeform() {
-    {if(this.props.customGridRequired){
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
       window.open(winURL, '_self');
-    }else{
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
-      window.open(winURL, '_self');
-    }}
+    
     this.state = {
       ID: "",
       ProjectID: "",
