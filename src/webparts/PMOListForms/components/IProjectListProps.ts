@@ -15,4 +15,8 @@ export interface SPProjectList{
     Project_x0020_Budget: number;
     Status: string;
     Progress: number;
+    PMId:string;
+    DMId:string;
+    Previous_PM:string;
+    Previous_DM:string;
   }

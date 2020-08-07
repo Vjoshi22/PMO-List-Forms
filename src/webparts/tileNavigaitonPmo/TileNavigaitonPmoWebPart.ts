@@ -24,7 +24,7 @@ import {
 export interface ITileNavigaitonPmoWebPartProps {
   description: string;
   currentContext: WebPartContext;
-  lists: string | string[];
+  listGUID: string;
   tileName: string;
 }
 
@@ -40,7 +40,7 @@ export default class TileNavigaitonPmoWebPart extends BaseClientSideWebPart<
       {
         description: this.properties.description,
         currentContext: this.context,
-        lists: this.properties.lists,
+        listGUID: this.properties.listGUID,
         tileName: this.properties.tileName,
       }
     );
@@ -55,7 +55,9 @@ export default class TileNavigaitonPmoWebPart extends BaseClientSideWebPart<
   protected get dataVersion(): Version {
     return Version.parse("1.0");
   }
-
+  protected get disableReactivePropertyChanges(): boolean {
+    return true;
+  }
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     if (this.parentItemDropdownOptions.length <= 0) {
       let _count = 0;
@@ -77,7 +79,10 @@ export default class TileNavigaitonPmoWebPart extends BaseClientSideWebPart<
                 PropertyPaneTextField("description", {
                   label: strings.DescriptionFieldLabel,
                 }),
-              ],
+                PropertyPaneTextField("listGUID", {
+                  label: 'Enter the List GUID',
+                })
+              ]
             },
             {
               groupName: "Select the Navigation",

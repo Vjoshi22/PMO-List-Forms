@@ -80,7 +80,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
       allchoiceColumns.forEach(elem => {
         this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
       });
-      _getListEntityName(this.props.currentContext, listGUID);
+      _getListEntityName(this.props.currentContext, this.props.listGUID);
       // $('.pickerText_4fe0caaf').css('border','0px');
       // $('.pickerInput_4fe0caaf').addClass('form-control');
       $('.form-row').css('justify-content', 'center');
@@ -377,7 +377,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
       let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
       window.open(winURL, '_self');
     } else {
-      const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items(${itemId})`;
+      const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items(${itemId})`;
       return this.props.currentContext.spHttpClient.get(url, SPHttpClient.configurations.v1,
         {
           headers: {
@@ -538,7 +538,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
     }
 
     $.ajax({
-      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items(${itemId})`,
+      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items(${itemId})`,
       type: "POST",
       data: JSON.stringify(requestData),
       headers:
@@ -600,7 +600,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {
@@ -626,7 +626,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?Select=ID&$filter=ID eq '${ProjectIDValue}'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/items?Select=ID&$filter=ID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)

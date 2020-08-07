@@ -25,7 +25,6 @@ export interface IreactState {
     ProjectID: string,
     ProjectName: string;
     ClientName: string;
-    ProjectManager: string;
     ProjectType: string;
     ProjectMode: string;
     ProjectPhase: string;
@@ -46,7 +45,13 @@ export interface IreactState {
     ProjectResource: string;
     ProjectCost: string; //only in edit
     //peoplepicker
+    ProjectManager: string;
     DeliveryManager: string;
+    PM:number;
+    DM:number;
+    //Previous PM and Previous DM used for ms flow to chekc permssion
+    Previous_PM:number;
+    Previous_DM:number;
     //date
     startDate: any;
     disable_RMSID: boolean;
@@ -56,11 +61,12 @@ export interface IreactState {
     FormDigestValue: string;
 }
 
-var listGUID: any = "2c3ffd4e-1b73-4623-898d-8e3a1bb60b91";   //"47272d1e-57d9-447e-9cfd-4cff76241a93"; 
+var listGUID; //any = "2c3ffd4e-1b73-4623-898d-8e3a1bb60b91";   //"47272d1e-57d9-447e-9cfd-4cff76241a93"; 
 var timerID;
 var newitem: boolean;
 
 export default class PmoListEditForm extends React.Component<IPmoListFormsProps, IreactState> {
+    listGUID = this.props.listGUID;
     constructor(props: IPmoListFormsProps, state: IreactState) {
         super(props);
 
@@ -88,6 +94,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             ProjectResource: '',
             ProjectCost: '',
             DeliveryManager: '',
+            PM:0,
+            DM:0,
+            Previous_PM:0,
+            Previous_DM:0,
             startDate: '',
             endDate: '',
             disable_RMSID: false,
@@ -109,7 +119,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         allchoiceColumnsEditForm.forEach(colName => {
             this._retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, colName);
         });
-        _getListEntityName(this.props.currentContext, listGUID);
+        _getListEntityName(this.props.currentContext, this.props.listGUID);
         $('.pickerText_4fe0caaf').css('border', '0px');
         $('.pickerInput_4fe0caaf').addClass('form-control');
         $('.form-row').css('justify-content', 'center');
@@ -153,11 +163,17 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     }
     private _getProjectManager = (items: any[]) => {
         console.log('Items:', items);
-        this.setState({ ProjectManager: items[0].text });
+        this.setState({ 
+            ProjectManager: items[0].text,
+            PM: items[0].id
+        });
     }
     private _getDeliveryManager = (items: any[]) => {
         console.log('Items:', items);
-        this.setState({ DeliveryManager: items[0].text });
+        this.setState({ 
+            DeliveryManager: items[0].text,
+            DM: items[0].id
+        });
     }
 
     public render(): React.ReactElement<IPmoListFormsProps> {
@@ -526,7 +542,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         let _formdigest = this.state.FormDigestValue; //variable for errorlog function
         let _projectID = this.state.ProjectID; //variable for errorlog function
 
-        const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?select = ProjectID`;
+        const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/items?select = ProjectID`;
         let breakCondition = false;
         $('.ProjectID').remove();
         this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -565,7 +581,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
             window.open(winURL, '_self');
         } else {
-            const url = this.props.currentContext.pageContext.web.absoluteUrl + `/_api/web/lists('` + listGUID + `')/items(` + itemId + `)`;
+            const url = this.props.currentContext.pageContext.web.absoluteUrl + `/_api/web/lists('` + this.props.listGUID + `')/items(` + itemId + `)`;
             return this.props.currentContext.spHttpClient.get(url, SPHttpClient.configurations.v1,
                 {
                     headers: {
@@ -600,7 +616,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         ProjectResource: item.Resource,
                         ProjectCost: item.Project_x0020_Cost,
                         ProjectProgress: item.Progress,
-                        disable_RMSID: true
+                        disable_RMSID: true,
+                        Previous_PM: item.PMId,
+                        Previous_DM: item.DMId
+
                     })
                     //checking Status on Load
                     if(item.Status == "Completed" && item.Progress == 100){
@@ -652,7 +671,11 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             Scope: this.state.ProjectScope,
             Schedule: this.state.ProjectSchedule,
             Resource: this.state.ProjectResource,
-            Project_x0020_Cost: this.state.ProjectCost
+            Project_x0020_Cost: this.state.ProjectCost,
+            PMId: this.state.PM,
+            DMId: this.state.DM,
+            Previous_PMId: this.state.Previous_PM,
+            Previous_DMId: this.state.Previous_DM
 
         };
         //validation
@@ -820,7 +843,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
 
 
         $.ajax({
-            url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/web/lists('" + listGUID + "')/items(" + itemId + ")",
+            url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/web/lists('" + this.props.listGUID + "')/items(" + itemId + ")",
             type: "POST",
             data: JSON.stringify(requestData),
             headers:
@@ -933,7 +956,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         let _formdigest = this.state.FormDigestValue; //variable for errorlog function
         let _projectID = this.state.ProjectID; //variable for errorlog function
 
-        const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+        const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
         this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
             .then((response: HttpClientResponse) => {

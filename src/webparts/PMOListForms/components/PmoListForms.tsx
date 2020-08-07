@@ -37,6 +37,8 @@ export interface IreactState {
   ProjectProgress: number;
   //peoplepicker
   DeliveryManager: string;
+  PM:number;
+  DM:number;
   //date
   startDate: any;
   disable_RMSID: boolean;
@@ -74,6 +76,8 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       ProjectProgress: 0,
       ProjectStatus: '',
       DeliveryManager: '',
+      PM:0,
+      DM:0,
       startDate: '',
       endDate: '',
       disable_RMSID: false,
@@ -92,7 +96,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     allchoiceColumns.forEach(elem => {
       this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
     })
-    _getListEntityName(this.props.currentContext, listGUID);
+    _getListEntityName(this.props.currentContext, this.props.listGUID);
     $('.pickerText_4fe0caaf').css('border', '0px');
     $('.pickerInput_4fe0caaf').addClass('form-control');
     $('.form-row').css('justify-content', 'center');
@@ -145,11 +149,17 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
   }
   private _getProjectManager = (items: any[]) => {
     console.log('Items:', items);
-    this.setState({ ProjectManager: items[0].text });
+    this.setState({ 
+      ProjectManager: items[0].text,
+      PM: items[0].id
+    });
   }
   private _getDeliveryManager = (items: any[]) => {
     console.log('Items:', items);
-    this.setState({ DeliveryManager: items[0].text });
+    this.setState({ 
+      DeliveryManager: items[0].text,
+      DM: items[0].id
+     });
   }
   private _getdropdownValues(e) {
     // this.retrieveAllChoicesFromListField(e);
@@ -446,7 +456,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     
 
     //const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?select = ProjectID`;
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     $('.ProjectID').remove();
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {
@@ -510,8 +520,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       Region: this.state.ProjectLocation,
       Project_x0020_Budget: this.state.ProjectBudget,
       Status: this.state.ProjectStatus,
-      Progress: this.state.ProjectProgress
-
+      Progress: this.state.ProjectProgress,
+      PMId: this.state.PM,
+      DMId:this.state.DM
     };
 
     //validation
@@ -687,7 +698,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     }
 
     $.ajax({
-      url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/web/lists('" + listGUID + "')/items",
+      url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/web/lists('" + this.props.listGUID + "')/items",
       type: "POST",
       data: JSON.stringify(requestData),
       headers:
@@ -820,7 +831,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {

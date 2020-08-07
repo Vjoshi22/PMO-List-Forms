@@ -20,6 +20,7 @@ export interface IPmoListFormsWebPartProps {
   description: string;
   currentContext: WebPartContext;
   customGridRequired: string;
+  listGUID: string;
 }
 var renderPMOForm: any;
 
@@ -43,7 +44,8 @@ export default class PmoListFormsWebPart extends BaseClientSideWebPart <IPmoList
       {
         description: this.properties.description,
         currentContext: this.context,
-        customGridRequired: this.properties.customGridRequired
+        customGridRequired: this.properties.customGridRequired,
+        listGUID: this.properties.listGUID
       }
     );
 
@@ -95,6 +97,9 @@ export default class PmoListFormsWebPart extends BaseClientSideWebPart <IPmoList
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+                PropertyPaneTextField('listGUID', {
+                  label: 'Enter the List GUID'
                 })
               ]
             },

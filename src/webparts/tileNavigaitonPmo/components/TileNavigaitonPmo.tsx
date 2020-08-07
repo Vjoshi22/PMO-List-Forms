@@ -90,7 +90,7 @@ export default class TileNavigaitonPmo extends React.Component<ITileNavigaitonPm
   }
   
   private loadImages(): Promise<any> {
-    const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${navigationListGUID}')/items?$orderby=TileOrder asc`;
+    const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items?$orderby=TileOrder asc`;
 
     return this.props.currentContext.spHttpClient.get(url,
       SPHttpClient.configurations.v1)
@@ -102,7 +102,7 @@ export default class TileNavigaitonPmo extends React.Component<ITileNavigaitonPm
       })
   }
   private loadList(): Promise<any>{
-    const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.lists}')/items?Select=Title`;
+    const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items?Select=Title`;
 
     return this.props.currentContext.spHttpClient.get(url,
       SPHttpClient.configurations.v1)

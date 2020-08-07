@@ -78,7 +78,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
       allchoiceColumns.forEach(elem => {
         this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
       });
-      _getListEntityName(this.props.currentContext, listGUID);
+      _getListEntityName(this.props.currentContext, this.props.listGUID);
       // $('.pickerText_4fe0caaf').css('border','0px');
       // $('.pickerInput_4fe0caaf').addClass('form-control');
       $('.form-row').css('justify-content', 'center');
@@ -493,7 +493,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
     $.ajax({
-      url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/web/lists('" + listGUID + "')/items",
+      url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/web/lists('" + this.props.listGUID + "')/items",
       type: "POST",
       data: JSON.stringify(requestData),
       headers:
@@ -565,7 +565,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {
         if (response.ok) {
@@ -591,7 +591,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + ProjectMasterListGuid + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.ProjectMasterGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)

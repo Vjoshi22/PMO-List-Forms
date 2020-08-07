@@ -18,6 +18,8 @@ export interface IIssueInformationWebPartProps {
   description: string;
   currentContext: WebPartContext;
   customGridRequired: string;
+  listGUID:string;
+  ProjectMasterGUID:string;
 
 }
 var renderIssueForm: any;
@@ -40,7 +42,9 @@ export default class IssueInformationWebPart extends BaseClientSideWebPart <IIss
       {
         description: this.properties.description,
         currentContext: this.context,
-        customGridRequired: this.properties.customGridRequired
+        customGridRequired: this.properties.customGridRequired,
+        listGUID: this.properties.listGUID,
+        ProjectMasterGUID:this.properties.ProjectMasterGUID
         
       }
     );
@@ -73,6 +77,12 @@ export default class IssueInformationWebPart extends BaseClientSideWebPart <IIss
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+                PropertyPaneTextField('listGUID', {
+                  label: 'Enter the list GUID'
+                }),
+                PropertyPaneTextField('ProjectMasterGUID', {
+                  label: 'Enter the Project Master List GUID'
                 })
               ]
             },
