@@ -17,6 +17,8 @@ export interface IRiskInformationWebPartProps {
   description: string;
   currentContext: WebPartContext;
   customGridRequired: string;
+  listGUID:string;
+  ProjectMasterGUID:string;
 }
 
 export var allchoiceColumns: any[] = ["RiskCategory", "RiskStatus", "RiskResponse", "RiskImpact", "RiskProbability"];
@@ -36,7 +38,9 @@ export default class RiskInformationWebPart extends BaseClientSideWebPart <IRisk
       {
         description: this.properties.description,
         currentContext: this.context,
-        customGridRequired: this.properties.customGridRequired
+        customGridRequired: this.properties.customGridRequired,
+        listGUID:this.properties.listGUID,
+        ProjectMasterGUID:this.properties.ProjectMasterGUID
       }
     );
     ReactDom.render(element, this.domElement);    
@@ -67,6 +71,12 @@ export default class RiskInformationWebPart extends BaseClientSideWebPart <IRisk
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+                PropertyPaneTextField('listGUID', {
+                  label: 'Enter the list GUID'
+                }),
+                PropertyPaneTextField('ProjectMasterGUID', {
+                  label: 'Enter the Project Master GUID'
                 })
               ]
             },

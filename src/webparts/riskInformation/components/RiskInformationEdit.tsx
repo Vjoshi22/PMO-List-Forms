@@ -57,7 +57,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
     });
 
-    getListEntityName(this.props.currentContext, listGUID);
+    getListEntityName(this.props.currentContext, this.props.listGUID);
     // this.loadItems();
     setTimeout(() =>this.loadItems(), 1000);
 
@@ -335,7 +335,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
       window.open(winURL, '_self');
     } else {
-      const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items(${itemId})`;
+      const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items(${itemId})`;
       return this.props.currentContext.spHttpClient.get(url, SPHttpClient.configurations.v1,
         {
           headers: {
@@ -495,7 +495,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     }
 
     $.ajax({
-      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items(${itemId})`,
+      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items(${itemId})`,
       type: "POST",
       data: JSON.stringify(requestData),
       headers:
@@ -603,7 +603,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {

@@ -15,7 +15,7 @@ import { _logExceptionError } from '../../../ExceptionLogging';
 
 
 export var allchoiceColumns: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Status", "Project_x0020_Phase", "Region"];
-export var inputfieldLength = 500;
+export var inputfieldLength = 100;
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 

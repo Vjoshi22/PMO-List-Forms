@@ -67,7 +67,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
         this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
       });
 
-      getListEntityName(this.props.currentContext, listGUID);
+      getListEntityName(this.props.currentContext, this.props.listGUID);
       this.setFormDigest();
       timerID = setInterval(
         () => this.setFormDigest(), 300000);
@@ -240,7 +240,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + projectListGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.ProjectMasterGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -417,7 +417,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     }
 
     $.ajax({
-      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items`,
+      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items`,
       type: "POST",
       data: JSON.stringify(requestData),
       headers:
@@ -518,7 +518,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {
