@@ -441,8 +441,8 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
         _logExceptionError(this.props.currentContext, _formdigest, "inside createItem Milestone New: errlog", "Milestone", "createItem", xhr, _projectID );
         alert("Something went wrong, please try after sometime");
         console.log(xhr.responseText + " | " + error);
-        // let winURL = 'https://ytpl.sharepoint.com/sites/yashpmo/SitePages/Projects.aspx';
-        // window.open(winURL, '_self');
+        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        window.open(winURL, '_self');
       }
     });
 

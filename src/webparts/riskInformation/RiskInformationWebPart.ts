@@ -12,6 +12,7 @@ import * as strings from 'RiskInformationWebPartStrings';
 import RiskInformationNew from './components/RiskInformationNew';
 import RiskInformationEdit from './components/RiskInformationEdit';
 import { IRiskInformationProps } from './components/IRiskInformationProps';
+import CheckBrowser from '../../checkBrowser';
 
 export interface IRiskInformationWebPartProps {
   description: string;
@@ -27,12 +28,24 @@ export default class RiskInformationWebPart extends BaseClientSideWebPart <IRisk
 
   public render(): void {
     let renderPMOForm: any;
-    if((/edit/.test(window.location.href))){
-      renderPMOForm = RiskInformationEdit 
+
+    let userAgentString = navigator.userAgent;
+    let IExplorerAgent =
+      userAgentString.indexOf("MSIE") > -1 ||
+      userAgentString.indexOf("rv:") > -1;
+    //checking the current browser is IE, if IE then asking the user to use modern browsers
+    if (IExplorerAgent) {
+      renderPMOForm = CheckBrowser;
+    } else {
+      if((/edit/.test(window.location.href))){
+        renderPMOForm = RiskInformationEdit 
+      }
+      if((/new/.test(window.location.href))){
+        renderPMOForm = RiskInformationNew
+      }
     }
-    if((/new/.test(window.location.href))){
-      renderPMOForm = RiskInformationNew
-    }
+
+    
     const element: React.ReactElement<IRiskInformationProps> = React.createElement(
       renderPMOForm,
       {

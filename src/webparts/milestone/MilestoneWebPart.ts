@@ -12,6 +12,7 @@ import * as strings from 'MilestoneWebPartStrings';
 import MilestoneNew from './components/MilestoneNew';
 import MilestoneEdit from './components/MilestoneEdit';
 import { IMilestoneProps } from './components/IMilestoneProps';
+import CheckBrowser from '../../checkBrowser';
 
 export interface IMilestoneWebPartProps {
   description: string;
@@ -27,12 +28,23 @@ export default class MilestoneWebPart extends BaseClientSideWebPart <IMilestoneW
 
   public render(): void {
     let renderPMOForm: any;
-    if((/edit/.test(window.location.href))){
-      renderPMOForm = MilestoneEdit
+    
+    let userAgentString = navigator.userAgent;
+    let IExplorerAgent =
+      userAgentString.indexOf("MSIE") > -1 ||
+      userAgentString.indexOf("rv:") > -1;
+    //checking the current browser is IE, if IE then asking the user to use modern browsers
+    if (IExplorerAgent) {
+      renderPMOForm = CheckBrowser;
+    } else {
+      if((/edit/.test(window.location.href))){
+        renderPMOForm = MilestoneEdit
+      }
+      else{
+        renderPMOForm = MilestoneNew
+      }
     }
-    else{
-      renderPMOForm = MilestoneNew
-    }
+    
     
     const element: React.ReactElement<IMilestoneProps> = React.createElement(
       renderPMOForm,

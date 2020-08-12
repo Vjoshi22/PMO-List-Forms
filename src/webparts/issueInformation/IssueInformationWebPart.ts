@@ -13,6 +13,7 @@ import CreateIssue from './components/CreateIssue';
 import UpdateIssue from './components/UpdateIssue';
 import { IIssueInformationProps } from './components/IIssueInformationProps';
 import { SPComponentLoader } from "@microsoft/sp-loader";
+import CheckBrowser from '../../checkBrowser';
 
 export interface IIssueInformationWebPartProps {
   description: string;
@@ -31,11 +32,21 @@ export default class IssueInformationWebPart extends BaseClientSideWebPart <IIss
 
   public render(): void {
     //SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.css");
-    if((/edit/.test(window.location.href))){
-      renderIssueForm = UpdateIssue 
-    }
-    if((/new/.test(window.location.href))){
-      renderIssueForm = CreateIssue
+    
+    let userAgentString = navigator.userAgent;
+    let IExplorerAgent =
+      userAgentString.indexOf("MSIE") > -1 ||
+      userAgentString.indexOf("rv:") > -1;
+    //checking the current browser is IE, if IE then asking the user to use modern browsers
+    if (IExplorerAgent) {
+      renderIssueForm = CheckBrowser;
+    } else {
+      if((/edit/.test(window.location.href))){
+        renderIssueForm = UpdateIssue 
+      }
+      if((/new/.test(window.location.href))){
+        renderIssueForm = CreateIssue
+      }
     }
     const element: React.ReactElement<IIssueInformationProps> = React.createElement(
       renderIssueForm,
