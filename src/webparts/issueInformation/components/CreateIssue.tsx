@@ -518,7 +518,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
         }
         //alert(JSON.stringify(xhr.responseText));
         let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
-        //window.open(winURL,'_self');
+        window.open(winURL,'_self');
       }
     });
     //clearing the fields

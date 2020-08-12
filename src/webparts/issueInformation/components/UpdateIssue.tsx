@@ -562,8 +562,13 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
       error: (xhr, status, error) => {
         _logExceptionError(this.props.currentContext, _formdigest, "inside update issue: errlog", "IssueInformation", "updateIssue", xhr, _projectID );
         alert(JSON.stringify(xhr.responseText));
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Project%20Issues%20Information/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=6fa77e6c-03b4-497a-8d11-8b2a41ddf978';
-        window.open(winURL, '_self');
+        {if(this.props.customGridRequired){
+          let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Issue-Grid.aspx?FilterField1=ProjectID&FilterValue1=" + this.state.ProjectID;
+          window.open(winURL, '_self');
+        }else{
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Project%20Issues%20Information/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=6fa77e6c-03b4-497a-8d11-8b2a41ddf978';
+          window.open(winURL, '_self');
+        }}
       }
     });
   }

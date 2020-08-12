@@ -5,7 +5,7 @@ export default class CheckBrowser extends React.Component<{}, {}> {
   public render(): React.ReactElement<{}> {
     return (
         <div>
-            <h5>This browser is out of date and may not be compitable with our website, please use Chrome or other modern browsers</h5>
+            <h5>This browser version is not compitable with our website, please use latest version of the browsers</h5>
         </div>
     );
   }
