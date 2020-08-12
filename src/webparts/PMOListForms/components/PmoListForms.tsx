@@ -13,7 +13,9 @@ import { _getListEntityName, listType } from './getListEntityName';
 import { data } from 'jquery';
 import { _logExceptionError } from '../../../ExceptionLogging';
 
+
 export var allchoiceColumns: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Status", "Project_x0020_Phase", "Region"];
+export var inputfieldLength = 500;
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
@@ -310,7 +312,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Description</Form.Label>
             </FormGroup>
             <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" as="textarea" rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription} />
+              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription} />
             </FormGroup>
           </Form.Row>
           {/* Next Row */}
@@ -348,7 +350,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             </div>
             <FormGroup className="col-.5"></FormGroup>
             <div>
-              <Button id="cancel" size="sm" variant="primary" onClick={this.closeform}>
+              <Button id="cancel" size="sm" variant="primary" onClick={() => { this.closeform() }}>
                 Cancel
               </Button>
             </div>
@@ -698,15 +700,15 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       },
       success: (data, status, xhr) => {
         alert("Submitted successfully");
-      //   {if(this.props.customGridRequired){
-      //     let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Issue-Grid.aspx?FilterField1=ProjectID&FilterValue1=" + this.state.ProjectID
-      //     window.open(winUrl, '_self');
-      // }else{
-      //     let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Project%20Issues%20Information/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=6fa77e6c-03b4-497a-8d11-8b2a41ddf978';
-      //     window.open(winUrl, '_self');
-      // }}
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
-        window.open(winURL, '_self');
+        {if(this.props.customGridRequired){
+          let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master-Grid.aspx";
+        window.open(winUrl, '_self');
+      }else{
+        let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        window.open(winUrl, '_self');
+      }}
+        // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        // window.open(winURL, '_self');
       },
       error: (xhr, status, error) => {
         _logExceptionError(this.props.currentContext, _formdigest, "inside createItem pmonewitemform: errlog", "PMOListForm", "createItems", xhr, _projectID);
@@ -714,9 +716,16 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
           alert("The Project Id you entered already exists, please try with a new Project Id")
         }
         //alert(JSON.stringify(xhr.responseText));
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        {if(this.props.customGridRequired){
+          let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master-Grid.aspx";
+        window.open(winUrl, '_self');
+      }else{
+        let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        window.open(winUrl, '_self');
+      }}
+        //let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
         //window.open(winURL,'_self');
-        location.reload();
+        //location.reload();
       }
     });
   }
@@ -747,9 +756,16 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     });
   }
   //function to close the form and redirect to the Grid page
-  private closeform(e) {
-    e.preventDefault();
-    let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+  private closeform() {
+    //e.preventDefault();
+    {if(this.props.customGridRequired){
+      let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master-Grid.aspx";
+    window.open(winUrl, '_self');
+  }else{
+    let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+    window.open(winUrl, '_self');
+  }}
+    //let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
     // this.setState({
     //   ProjectID : '',
     //   CRM_Id :'',
@@ -771,7 +787,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     //   focusedInput: '',
     //   FormDigestValue:''
     // });
-    window.open(winURL, '_self');
+   // window.open(winURL, '_self');
   }
   //function to reset the form. Currently disabled
   private resetform(e) {

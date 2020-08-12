@@ -1,6 +1,8 @@
 import "datatables.net";
 import "datatables.net-dt";
 import "datatables.net-responsive";
+import "datatables.net-fixedheader";
+import "datatables.net-fixedheader-dt";
 import { SPComponentLoader } from "@microsoft/sp-loader";
 import {
   SPHttpClient,
@@ -57,7 +59,10 @@ export function _populateGrid(results) {
     //"dom": 'lftrip',//(l)ength,(f)iltering,(t)able,(i)nformation,(p)aging, P(r)ocessing
     "dom": "<<t>ip>",
     //"lengthChange": false,   
-    "order": [[0, "desc"]]
+    "order": [[0, "desc"]],
+    "fixedHeader": {
+      header:true
+    }
   });
 
   $('#FilesTable th.search').css({ 'min-width': '130px' });
@@ -153,31 +158,31 @@ function GenerateTablefromJSON(data) {
     tablecontent += '<td class="' + data[i].ProjectID + 'rowItem">' + data[i].Client_x0020_Name + "</td>";
 
     tablecontent += "<td class='" + data[i].ProjectID + "rowItem'><a id=UpdateDetails'" + data[i].Id +
-      "' target='_blank' style='color: teal' class='confirmEditFileLink' href=" + projectUpdateLink + ">" +
+      "' target='_blank' style='color: teal' class='confirmEditFileLink' href=" + projectUpdateLink + " data-interception='off'>" +
       "<i class='fa fa-pencil' aria-hidden='true'></i></a>&nbsp&nbsp&nbsp;&nbsp;</a></td>";
 
     tablecontent += "<td class='" + data[i].ProjectID + "rowItem'><a id='" + data[i].Id +
-      "' target='_blank' style='color: orange' class='confirmEditFileLink' href=" + createIssuesLink + ">" +
+      "' target='_blank' style='color: orange' class='confirmEditFileLink' href=" + createIssuesLink + " data-interception='off'>" +
       "<i class='fa fa-plus' aria-hidden='true'></i></a>&nbsp&nbsp&nbsp;&nbsp;</a></td>";
 
     tablecontent += "<td class='" + data[i].ProjectID + "rowItem'><a id='" + data[i].Id +
-      "' target='_blank' style='color: orange' class='confirmEditFileLink' href=" + viewIssuesLink + ">" +
+      "' target='_blank' style='color: orange' class='confirmEditFileLink' href=" + viewIssuesLink + " data-interception='off'>" +
       "<i class='fa fa-list-alt' aria-hidden='true'></i></a>&nbsp&nbsp&nbsp;&nbsp;</a></td>";
 
     tablecontent += "<td class='" + data[i].ProjectID + "rowItem'><a id='" + data[i].Id +
-      "' target='_blank' style='color: red' class='confirmEditFileLink' href=" + createRisksLink + ">" +
+      "' target='_blank' style='color: red' class='confirmEditFileLink' href=" + createRisksLink + " data-interception='off'>" +
       "<i class='fa fa-plus' aria-hidden='true'></i></a>&nbsp&nbsp&nbsp;&nbsp;</a></td>";
 
     tablecontent += "<td class='" + data[i].ProjectID + "rowItem'><a id='" + data[i].Id +
-      "' target='_blank' style='color: red' class='confirmEditFileLink' href=" + viewRisksLink + ">" +
+      "' target='_blank' style='color: red' class='confirmEditFileLink' href=" + viewRisksLink + " data-interception='off'>" +
       "<i class='fa fa-list-alt' aria-hidden='true'></i></a>&nbsp&nbsp&nbsp;&nbsp;</a></td>";
 
     tablecontent += "<td class='" + data[i].ProjectID + "rowItem'><a id='" + data[i].Id +
-      "' target='_blank' style='color: blue' class='confirmEditFileLink' href=" + creatMlestoneLink + ">" +
+      "' target='_blank' style='color: blue' class='confirmEditFileLink' href=" + creatMlestoneLink + " data-interception='off'>" +
       "<i class='fa fa-plus' aria-hidden='true'></i></a>&nbsp&nbsp&nbsp;&nbsp;</a></td>";
 
     tablecontent += "<td class='" + data[i].ProjectID + "rowItem'><a id='" + data[i].Id +
-      "' target='_blank' style='color: blue' class='confirmEditFileLink' href=" + viewMilestoneLink + ">" +
+      "' target='_blank' style='color: blue' class='confirmEditFileLink' href=" + viewMilestoneLink + " data-interception='off'>" +
       "<i class='fa fa-list-alt' aria-hidden='true'></i></a>&nbsp&nbsp&nbsp;&nbsp;</a></td>";
 
     tablecontent += '<td class="' + data[i].ProjectID + 'rowItem">' + data[i].Project_x0020_Description + "</td>";

@@ -19,7 +19,7 @@ SPComponentLoader.loadCss(
   "https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"
 );
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
-SPComponentLoader.loadCss("https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css");
+//SPComponentLoader.loadCss("https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css");
 SPComponentLoader.loadCss("https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css");
 SPComponentLoader.loadCss("https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js");
 SPComponentLoader.loadCss("https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.min.css");
@@ -123,7 +123,7 @@ function GenerateTablefromJSON(data) {
 
     tablecontent += '<tr id="' + data[i].Id + 'row">';
     tablecontent += "<td class='" + data[i].Id + "rowItem'><a id=IssueDetails" + data[i].Id +
-      "' target='_blank' style='color: teal' class='confirmEditFileLink' href=" + MilestoneDetails + ">" +
+      "' target='_blank' style='color: teal' class='confirmEditFileLink' href=" + MilestoneDetails + " data-interception='off'>" +
       "<i class='fa fa-pencil' aria-hidden='true'></i></a>&nbsp&nbsp&nbsp;&nbsp;</a></td>";
 
     // tablecontent += '<tr id="' + data[i].Id + 'row">';

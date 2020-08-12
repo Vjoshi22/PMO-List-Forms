@@ -14,6 +14,7 @@ import { ISPRiskInformationFields } from './IRiskInformationFileds';
 import { IRiskInformationState } from './IRiskInformationState';
 import { allchoiceColumns } from "../RiskInformationWebPart";
 import { _logExceptionError } from '../../../ExceptionLogging';
+import { inputfieldLength } from '../../PMOListForms/components/PmoListForms';
 
 require('./RiskInformation.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
@@ -202,7 +203,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
               <Form.Label className={styles.customlabel + " " + styles.required}>Risk Description</Form.Label>
             </FormGroup>
             <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" as="textarea" rows={3} type="text" id="RiskDescription" name="RiskDescription" placeholder="Risk Description" onChange={this.handleChange} value={this.state.RiskDescription} />
+              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={3} type="text" id="RiskDescription" name="RiskDescription" placeholder="Risk Description" onChange={this.handleChange} value={this.state.RiskDescription} />
             </FormGroup>
           </Form.Row>
 
@@ -298,7 +299,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
               <Form.Label className={styles.customlabel + " " + styles.required}>Remarks</Form.Label>
             </FormGroup>
             <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" as="textarea" rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
+              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
             </FormGroup>
           </Form.Row>
 

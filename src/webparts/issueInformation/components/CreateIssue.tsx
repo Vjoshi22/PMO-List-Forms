@@ -13,6 +13,7 @@ import { SPCreateIssueForm } from "./ICreateIssueColumnFields";
 import * as $ from "jquery";
 import { _getListEntityName, listType } from '../../PMOListForms/components/getListEntityName';
 import { _logExceptionError } from "../../../ExceptionLogging";
+import { inputfieldLength } from '../../PMOListForms/components/PmoListForms';
 
 //declaring state
 export interface ICreateIssueState {
@@ -164,7 +165,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>Issue Description</Form.Label>
             </FormGroup>
             <FormGroup className="col-9">
-              <Form.Control size="sm" as="textarea" rows={4} id="IssueDescription" name="IssueDescription" placeholder="Description about the Issue" onChange={this.handleChange} value={this.state.IssueDescription} />
+              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={4} id="IssueDescription" name="IssueDescription" placeholder="Description about the Issue" onChange={this.handleChange} value={this.state.IssueDescription} />
             </FormGroup>
           </Form.Row>
           {/* ---------ROW 4---------------- */}
@@ -242,7 +243,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>Next Steps Or Resolutions</Form.Label>
             </FormGroup>
             <FormGroup className="col-9">
-              <Form.Control size="sm" id="NextStepsOrResolution" as="textarea" rows={4} name="NextStepsOrResolution" placeholder="Next Steps and Resolutions for the Issue" onChange={this.handleChange} value={this.state.NextStepsOrResolution} />
+              <Form.Control size="sm" maxLength={inputfieldLength} id="NextStepsOrResolution" as="textarea" rows={4} name="NextStepsOrResolution" placeholder="Next Steps and Resolutions for the Issue" onChange={this.handleChange} value={this.state.NextStepsOrResolution} />
             </FormGroup>
           </Form.Row>
           <Form.Row className={styles.buttonCLass}>
@@ -505,13 +506,9 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
       },
       success: (data, status, xhr) => {
         alert("Submitted successfully");
-        {if(this.props.customGridRequired){
-          let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Issue-Grid.aspx?FilterField1=ProjectID&FilterValue1=" + this.state.ProjectID;
-          window.open(winURL, '_self');
-        }else{
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Project%20Issues%20Information/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=6fa77e6c-03b4-497a-8d11-8b2a41ddf978';
-          window.open(winURL, '_self');
-        }}
+       let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        window.open(winURL, '_self');
+        
       },
       error: (xhr, status, error) => {
         //function to log error
@@ -521,7 +518,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
         }
         //alert(JSON.stringify(xhr.responseText));
         let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
-        //window.open(winURL,'_self');
+        window.open(winURL,'_self');
       }
     });
     //clearing the fields
@@ -543,13 +540,9 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
   }
   //close the form on cancel button click
   private closeForm() {
-    {if(this.props.customGridRequired){
-      let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Issue-Grid.aspx?FilterField1=ProjectID&FilterValue1=" + this.state.ProjectID;
+    
+    let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
     window.open(winUrl, '_self');
-  }else{
-    let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Project%20Issues%20Information/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=6fa77e6c-03b4-497a-8d11-8b2a41ddf978';
-    window.open(winUrl, '_self');
-  }}
     //clearing the fields
     this.setState({
       ProjectID: '',

@@ -34,14 +34,6 @@
         }
       ]
     },
-    "home-page-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/homePage/HomePageWebPart.js",
-          "manifest": "./src/webparts/homePage/HomePageWebPart.manifest.json"
-        }
-      ]
-    },
     "tile-navigaiton-pmo-web-part": {
       "components": [
         {
@@ -104,6 +96,8 @@
     "ProjectsGridWebPartStrings": "lib/webparts/projectsGrid/loc/{locale}.js",
     "IssuesGridWebPartStrings": "lib/webparts/issuesGrid/loc/{locale}.js",
     "RisksGridWebPartStrings": "lib/webparts/risksGrid/loc/{locale}.js",
-    "MilestonesGridWebPartStrings": "lib/webparts/milestonesGrid/loc/{locale}.js"
+    "MilestonesGridWebPartStrings": "lib/webparts/milestonesGrid/loc/{locale}.js",
+    "WelcomePageWpWebPartStrings": "lib/webparts/welcomePageWp/loc/{locale}.js",
+    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js"
   }
 }

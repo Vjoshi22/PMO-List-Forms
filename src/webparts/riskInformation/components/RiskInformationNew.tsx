@@ -14,6 +14,7 @@ import { ISPRiskInformationFields } from './IRiskInformationFileds';
 import { IRiskInformationState } from './IRiskInformationState';
 import { allchoiceColumns } from "../RiskInformationWebPart";
 import { _logExceptionError } from '../../../ExceptionLogging';
+import { inputfieldLength } from "../../PMOListForms/components/PmoListForms";
 
 require('./RiskInformation.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
@@ -198,7 +199,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
               <Form.Label className={styles.customlabel + " " + styles.required}>Risk Description</Form.Label>
             </FormGroup>
             <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" as="textarea" rows={3} type="text" id="RiskDescription" name="RiskDescription" placeholder="Risk Description" onChange={this.handleChange} value={this.state.RiskDescription} />
+              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={3} type="text" id="RiskDescription" name="RiskDescription" placeholder="Risk Description" onChange={this.handleChange} value={this.state.RiskDescription} />
             </FormGroup>
           </Form.Row>
 
@@ -292,7 +293,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
               <Form.Label className={styles.customlabel + " " + styles.required}>Remarks</Form.Label>
             </FormGroup>
             <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" as="textarea" rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
+              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
             </FormGroup>
           </Form.Row>
 
@@ -541,13 +542,10 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
       success: (data, status, xhr) => {
         console.log("Submitted successfully");
         alert("Submitted successfully");
-        {if(this.props.customGridRequired){
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+        
+          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
           window.open(winURL, '_self');
-        }else{
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
-          window.open(winURL, '_self');
-        }}
+        
       },
       error: (xhr, status, error) => {
         _logExceptionError(this.props.currentContext, _formdigest, "inside createitem RiskInfo New: errlog", "RiskInformation", "createitem", xhr, _projectID );
@@ -606,13 +604,9 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
   }
 
   private closeform() {
-    {if(this.props.customGridRequired){
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+     let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
       window.open(winURL, '_self');
-    }else{
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
-      window.open(winURL, '_self');
-    }}
+    
     this.state = {
       Title: "",
       RiskID: "",

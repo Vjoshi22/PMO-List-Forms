@@ -12,6 +12,8 @@ import * as $ from "jquery";
 import { _getListEntityName, listType } from './getListEntityName';
 import { data } from 'jquery';
 import { _logExceptionError } from '../../../ExceptionLogging';
+//import variable for max lenth
+import { inputfieldLength } from "../components/PmoListForms";
 
 
 require('./PmoListForms.module.scss');
@@ -331,7 +333,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                             <Form.Label className={styles.customlabel + " " + styles.required}>Project Description</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-9 mb-3">
-                            <Form.Control size="sm" as="textarea" rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription} />
+                            <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription} />
                         </FormGroup>
                     </Form.Row>
                     {/* Next Row */}
@@ -427,7 +429,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         </div>
                         <FormGroup className="col-.5"></FormGroup>
                         <div>
-                            <Button id="cancel" size="sm" variant="primary" onClick={this._closeform}>
+                            <Button id="cancel" size="sm" variant="primary"  onClick={() => { this._closeform() }}>
                                 Cancel
                 </Button>
                         </div>
@@ -831,14 +833,28 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             },
             success: (data, status, xhr) => {
                 alert("Submitted successfully");
-                let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
-                window.open(winURL, '_self');
+                {if(this.props.customGridRequired){
+                    let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+                  window.open(winUrl, '_self');
+                }else{
+                  let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                  window.open(winUrl, '_self');
+                }}
+                // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                // window.open(winURL, '_self');
             },
             error: (xhr, status, error) => {
                 _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem pmoeditform: errlog", "PmoListForm", "saveitem", xhr, _projectID);
                 alert(JSON.stringify(xhr.responseText));
-                let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
-                window.open(winURL, '_self');
+                {if(this.props.customGridRequired){
+                    let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+                  window.open(winUrl, '_self');
+                }else{
+                  let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                  window.open(winUrl, '_self');
+                }}
+                // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                // window.open(winURL, '_self');
             }
         });
     }
@@ -871,9 +887,16 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         });
     }
     //function to close the form and redirect to the Grid page
-    private _closeform(e) {
-        e.preventDefault();
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+    private _closeform() {
+        //e.preventDefault();
+        {if(this.props.customGridRequired){
+            let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+          window.open(winUrl, '_self');
+        }else{
+          let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+          window.open(winUrl, '_self');
+        }}
+        //let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
         // this.setState({
         //     ProjectID : '',
         //     ProjectName: '',
@@ -903,7 +926,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         //     focusedInput: '',
         //     FormDigestValue:''
         // });
-        window.open(winURL, '_self');
+        //window.open(winURL, '_self');
     }
     //function to load choice column values in the dropdown
     private _retrieveAllChoicesFromListField(siteColUrl: string, columnName: string): void {
