@@ -5,4 +5,5 @@ export interface IPmoListFormsProps {
   currentContext: WebPartContext;
   customGridRequired: string;
   listGUID:string;
+  exceptionLogGUID:string;
 }

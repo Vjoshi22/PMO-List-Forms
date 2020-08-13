@@ -512,7 +512,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
       },
       error: (xhr, status, error) => {
         //function to log error
-        _logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", xhr, _projectID );
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID ,_formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", xhr, _projectID );
         if (xhr.responseText.match('2130575169')) {
           alert("The Project Id you entered already exists, please try with a new Project Id")
         }
@@ -577,7 +577,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside reterive choice fields from SP List: errlog", "IssueInformation", "retrieveAllChoicesFromListField", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID ,_formdigest, "inside reterive choice fields from SP List: errlog", "IssueInformation", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {
@@ -622,7 +622,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
                 return false;
               }
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
               alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
               let winURL = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
@@ -660,7 +660,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside get access token: errlog", "IssueInformation", "getAccessToken", jqXHR, _projectID );
+        _logExceptionError(this.props.currentContext,this.props.exceptionLogGUID, _formdigest, "inside get access token: errlog", "IssueInformation", "getAccessToken", jqXHR, _projectID );
       }
     });
   }

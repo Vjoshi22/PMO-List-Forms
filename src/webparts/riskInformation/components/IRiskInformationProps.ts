@@ -6,4 +6,5 @@ export interface IRiskInformationProps {
   customGridRequired: string;
   listGUID:string;
   ProjectMasterGUID:string;
+  exceptionLogGUID:string;
 }

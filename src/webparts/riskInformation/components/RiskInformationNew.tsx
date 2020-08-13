@@ -355,7 +355,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
               window.open(winURL, '_self');
             }
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside _checkExistingProjectId RiskInfo New: errlog", "RiskInformation", "_checkExistingProjectId", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside _checkExistingProjectId RiskInfo New: errlog", "RiskInformation", "_checkExistingProjectId", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
               alert("Something went wrong. Please try after sometime Redirecting...");
               let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
@@ -548,7 +548,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
         
       },
       error: (xhr, status, error) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside createitem RiskInfo New: errlog", "RiskInformation", "createitem", xhr, _projectID );
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside createitem RiskInfo New: errlog", "RiskInformation", "createitem", xhr, _projectID );
         alert("Something went wrong, please try after sometime");
         console.log(xhr.responseText + " | " + error);
         let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
@@ -598,7 +598,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside setFormDigest RiskInfo New: errlog", "RiskInformation", "setFormDigest", jqXHR, _projectID );
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside setFormDigest RiskInfo New: errlog", "RiskInformation", "setFormDigest", jqXHR, _projectID );
       }
     });
   }
@@ -644,7 +644,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField RiskInfo New: errlog", "RiskInformation", "retrieveAllChoicesFromListField", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside retrieveAllChoicesFromListField RiskInfo New: errlog", "RiskInformation", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {

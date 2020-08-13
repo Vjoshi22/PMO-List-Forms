@@ -20,6 +20,7 @@ export interface IMilestoneWebPartProps {
   customGridRequired: string;
   listGUID:string;
   ProjectMasterGUID:string;
+  exceptionLogGUID:string;
 }
 
 export let allchoiceColumns: any[] = ["Phase", "MilestoneStatus"];
@@ -53,7 +54,8 @@ export default class MilestoneWebPart extends BaseClientSideWebPart <IMilestoneW
         currentContext: this.context,
         customGridRequired: this.properties.customGridRequired,
         listGUID:this.properties.listGUID,
-        ProjectMasterGUID: this.properties.ProjectMasterGUID
+        ProjectMasterGUID: this.properties.ProjectMasterGUID,
+        exceptionLogGUID: this.properties.exceptionLogGUID
       }
     );
     ReactDom.render(element, this.domElement);
@@ -90,6 +92,9 @@ export default class MilestoneWebPart extends BaseClientSideWebPart <IMilestoneW
                 }),
                 PropertyPaneTextField('ProjectMasterGUID', {
                   label: 'Enter the Project Master GUID'
+                }),
+                PropertyPaneTextField('exceptionLogGUID', {
+                  label: 'Exception Log List GUID'
                 })
               ]
             },

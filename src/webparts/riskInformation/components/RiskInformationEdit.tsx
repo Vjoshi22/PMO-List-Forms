@@ -517,7 +517,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
         }}
       },
       error: (xhr, status, error) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem RiskInfo Edit: errlog", "RiskInformation", "saveitem", xhr, _projectID );
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside saveitem RiskInfo Edit: errlog", "RiskInformation", "saveitem", xhr, _projectID );
         alert(JSON.stringify(xhr.responseText));
         {if(this.props.customGridRequired){
           let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
@@ -571,7 +571,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside setFormDigest RiskInfo Edit: errlog", "RiskInformation", "setFormDigest", jqXHR, _projectID );
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside setFormDigest RiskInfo Edit: errlog", "RiskInformation", "setFormDigest", jqXHR, _projectID );
       }
     });
   }
@@ -621,7 +621,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField RiskInfo Edit: errlog", "RiskInformation", "retrieveAllChoicesFromListField", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside retrieveAllChoicesFromListField RiskInfo Edit: errlog", "RiskInformation", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {

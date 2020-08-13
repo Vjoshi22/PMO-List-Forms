@@ -564,7 +564,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
 
                             });
                         }, (err: any): void => {
-                            _logExceptionError(this.props.currentContext, _formdigest, "inside PMOLIstEditForm: errlog", "PMOLisForm", "_checkExistingProjectId", err, _projectID);
+                            _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside PMOLIstEditForm: errlog", "PMOLisForm", "_checkExistingProjectId", err, _projectID);
                             console.warn(`Failed to fulfill Promise\r\n\t${err}`);
                         });
                 } else {
@@ -867,7 +867,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 // window.open(winURL, '_self');
             },
             error: (xhr, status, error) => {
-                _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem pmoeditform: errlog", "PmoListForm", "saveitem", xhr, _projectID);
+                _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside saveitem pmoeditform: errlog", "PmoListForm", "saveitem", xhr, _projectID);
                 alert(JSON.stringify(xhr.responseText));
                 {if(this.props.customGridRequired){
                     let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
@@ -905,7 +905,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 });
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                _logExceptionError(this.props.currentContext, _formdigest, "inside getaccesstoken Pmoeditform: errlog", "PmoListForm", "getaccesstoken", jqXHR, _projectID);
+                _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside getaccesstoken Pmoeditform: errlog", "PmoListForm", "getaccesstoken", jqXHR, _projectID);
             }
         });
     }
@@ -969,7 +969,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
                             });
                         }, (err: any): void => {
-                            _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField pmoeditform: errlog", "PMOListForm", "retrieveAllChoicesFromListField", err, _projectID);
+                            _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside retrieveAllChoicesFromListField pmoeditform: errlog", "PMOListForm", "retrieveAllChoicesFromListField", err, _projectID);
                             console.warn(`Failed to fulfill Promise\r\n\t${err}`);
                         });
                 } else {

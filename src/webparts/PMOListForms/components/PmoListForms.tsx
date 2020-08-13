@@ -483,7 +483,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               breakCondition = false;
             }
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside _checkExistingProjectId pmonewitemform: errlog", "PMOListForms", "_checkExistingProjectId", err, _projectID);
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside _checkExistingProjectId pmonewitemform: errlog", "PMOListForms", "_checkExistingProjectId", err, _projectID);
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {
@@ -722,7 +722,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         // window.open(winURL, '_self');
       },
       error: (xhr, status, error) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside createItem pmonewitemform: errlog", "PMOListForm", "createItems", xhr, _projectID);
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside createItem pmonewitemform: errlog", "PMOListForm", "createItems", xhr, _projectID);
         if (xhr.responseText.match('2130575169')) {
           alert("The Project Id you entered already exists, please try with a new Project Id")
         }
@@ -762,7 +762,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside getaccessToken pmonewitem form: errlog", "PMOListform", "getaccessToken", jqXHR, _projectID);
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside getaccessToken pmonewitem form: errlog", "PMOListform", "getaccessToken", jqXHR, _projectID);
       }
     });
   }
@@ -844,7 +844,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField pmonewitemform: errlog", "PMOListForm", "retrieveAllChoicesFromListField", err, _projectID);
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside retrieveAllChoicesFromListField pmonewitemform: errlog", "PMOListForm", "retrieveAllChoicesFromListField", err, _projectID);
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {

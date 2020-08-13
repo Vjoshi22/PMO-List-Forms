@@ -378,7 +378,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
         // window.open(winURL, '_self');
       },
       error: (xhr, status, error) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem Milestone Edit: errlog", "Milestone", "saveitem", xhr, _projectID );
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside saveitem Milestone Edit: errlog", "Milestone", "saveitem", xhr, _projectID );
         alert(JSON.stringify(xhr.responseText));
         console.log(xhr.responseText + " | " + error);
         {if(this.props.customGridRequired){
@@ -432,7 +432,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside setFormDigest Milestone Edit: errlog", "Milestone", "setFormDigest", jqXHR, _projectID );
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside setFormDigest Milestone Edit: errlog", "Milestone", "setFormDigest", jqXHR, _projectID );
       }
     });
   }
@@ -482,7 +482,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField Milestone Edit: errlog", "Milestone", "retrieveAllChoicesFromListField", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside retrieveAllChoicesFromListField Milestone Edit: errlog", "Milestone", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {

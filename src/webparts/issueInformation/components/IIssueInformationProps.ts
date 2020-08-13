@@ -6,4 +6,5 @@ export interface IIssueInformationProps {
   customGridRequired:string;
   listGUID: string;
   ProjectMasterGUID:string;
+  exceptionLogGUID:string;
 }

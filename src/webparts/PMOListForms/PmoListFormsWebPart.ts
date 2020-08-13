@@ -29,6 +29,7 @@ export interface IPmoListFormsWebPartProps {
   currentContext: WebPartContext;
   customGridRequired: string;
   listGUID: string;
+  exceptionLogGUID: string;
 }
 var renderPMOForm: any;
 
@@ -61,7 +62,8 @@ export default class PmoListFormsWebPart extends BaseClientSideWebPart<
         description: this.properties.description,
         currentContext: this.context,
         customGridRequired: this.properties.customGridRequired,
-        listGUID: this.properties.listGUID
+        listGUID: this.properties.listGUID,
+        exceptionLogGUID: this.properties.exceptionLogGUID
       }
     );
 
@@ -122,6 +124,9 @@ export default class PmoListFormsWebPart extends BaseClientSideWebPart<
                 }),
                 PropertyPaneTextField('listGUID', {
                   label: 'Enter the List GUID'
+                }),
+                PropertyPaneTextField('exceptionLogGUID', {
+                  label: 'Exception Log List GUID'
                 })
               ]
             },

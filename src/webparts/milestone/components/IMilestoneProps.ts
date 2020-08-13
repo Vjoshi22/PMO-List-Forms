@@ -6,4 +6,5 @@ export interface IMilestoneProps {
   customGridRequired: string;
   listGUID: string;
   ProjectMasterGUID:string;
+  exceptionLogGUID:string;
 }
