@@ -120,7 +120,7 @@ function GenerateTablefromJSON(data, currentContext) {
     '<tbody>';
 
   for (var i = 0; i < data.length; i++) {
-    let IssueDetails = currentContext.pageContext.web.absoluteUrl `/SitePages/Track-Issues.aspx?type=edit,id=` + data[i].Id 
+    let IssueDetails = currentContext.pageContext.web.absoluteUrl + `/SitePages/Track-Issues.aspx?type=edit,id=` + data[i].Id 
 
     tablecontent += '<tr id="' + data[i].Id + 'row">';
     tablecontent += "<td class='" + data[i].Id + "rowItem'><a id=IssueDetails" + data[i].Id +
