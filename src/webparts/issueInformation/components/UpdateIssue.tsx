@@ -630,7 +630,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
    private _checkExistingProjectId(siteColUrl, ProjectIDValue) {
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
-
+    if(this.props.ProjectMasterGUID){
     const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/items?Select=ID&$filter=ID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
@@ -675,6 +675,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
           window.open(winURL, '_self');
         }
       });
+    }
   }
   //validaton message for empty fields
   private _validationMessage(_id, _classname, _message) {

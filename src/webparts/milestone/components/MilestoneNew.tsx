@@ -240,6 +240,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
+    if(this.props.ProjectMasterGUID){
     const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.ProjectMasterGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
@@ -283,6 +284,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
             window.open(winURL, '_self');
         }
       });
+    }
   }
   private createItem(e) {
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function

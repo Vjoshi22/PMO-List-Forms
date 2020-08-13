@@ -325,6 +325,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
+    if(this.props.ProjectMasterGUID){
     const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.ProjectMasterGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
@@ -368,6 +369,7 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
             window.open(winURL, '_self');
         }
       });
+    }
   }
   private createItem(e) {
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
