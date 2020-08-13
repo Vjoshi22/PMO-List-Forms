@@ -33,6 +33,7 @@ export interface IRiskInformationList {
 }
 export interface IRisksGridWebPartProps {
   description: string;
+  listGUID: string;
 }
 
 export default class RisksGridWebPart extends BaseClientSideWebPart <IRisksGridWebPartProps> {
@@ -45,10 +46,10 @@ export default class RisksGridWebPart extends BaseClientSideWebPart <IRisksGridW
 
     let _ProjectId = this._getParameterValues('FilterValue1')
 
-    let url = `/_api/web/lists('${listGuid}')/items?$select=*&$filter=ProjectID eq '` + _ProjectId + `'&$orderby=Id desc`;
+    let url = `/_api/web/lists('${this.properties.listGUID}')/items?$select=*&$filter=ProjectID eq '` + _ProjectId + `'&$orderby=Id desc`;
     let currentContext = this.context;
     _getallItems(url, currentContext, currentContext.pageContext.web.absoluteUrl).then((results) => {
-      _populateGrid(results);
+      _populateGrid(results, currentContext);
       //_customStyle();
     });
   }
@@ -79,6 +80,9 @@ export default class RisksGridWebPart extends BaseClientSideWebPart <IRisksGridW
             groupFields: [
               PropertyPaneTextField('description', {
                 label: strings.DescriptionFieldLabel
+              }),
+              PropertyPaneTextField('listGUID', {
+                label: 'Enter the List GUID'
               })
             ]
           }

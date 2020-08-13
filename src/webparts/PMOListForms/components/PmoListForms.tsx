@@ -712,10 +712,10 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       success: (data, status, xhr) => {
         alert("Submitted successfully");
         {if(this.props.customGridRequired){
-          let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master-Grid.aspx";
+          let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master-Grid.aspx";
         window.open(winUrl, '_self');
       }else{
-        let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
         window.open(winUrl, '_self');
       }}
         // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
@@ -728,10 +728,10 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         }
         //alert(JSON.stringify(xhr.responseText));
         {if(this.props.customGridRequired){
-          let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master-Grid.aspx";
+          let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master-Grid.aspx";
         window.open(winUrl, '_self');
       }else{
-        let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
         window.open(winUrl, '_self');
       }}
         //let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
@@ -770,10 +770,10 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
   private closeform() {
     //e.preventDefault();
     {if(this.props.customGridRequired){
-      let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master-Grid.aspx";
+      let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
     window.open(winUrl, '_self');
   }else{
-    let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+    let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
     window.open(winUrl, '_self');
   }}
     //let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';

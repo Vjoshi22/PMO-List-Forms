@@ -578,7 +578,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         var itemId = _getParameterValues('id');
         if (itemId == "") {
             alert("Incorrect URL");
-            let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+            let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
             window.open(winURL, '_self');
         } else {
             const url = this.props.currentContext.pageContext.web.absoluteUrl + `/_api/web/lists('` + this.props.listGUID + `')/items(` + itemId + `)`;
@@ -857,10 +857,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             success: (data, status, xhr) => {
                 alert("Submitted successfully");
                 {if(this.props.customGridRequired){
-                    let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+                    let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
                   window.open(winUrl, '_self');
                 }else{
-                  let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                  let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
                   window.open(winUrl, '_self');
                 }}
                 // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
@@ -870,10 +870,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem pmoeditform: errlog", "PmoListForm", "saveitem", xhr, _projectID);
                 alert(JSON.stringify(xhr.responseText));
                 {if(this.props.customGridRequired){
-                    let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+                    let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
                   window.open(winUrl, '_self');
                 }else{
-                  let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                  let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
                   window.open(winUrl, '_self');
                 }}
                 // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
@@ -913,10 +913,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     private _closeform() {
         //e.preventDefault();
         {if(this.props.customGridRequired){
-            let winUrl = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+            let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
           window.open(winUrl, '_self');
         }else{
-          let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+          let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
           window.open(winUrl, '_self');
         }}
         //let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';

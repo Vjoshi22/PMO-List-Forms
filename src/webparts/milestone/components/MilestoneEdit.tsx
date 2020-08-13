@@ -210,7 +210,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
     var itemId = GetParameterValues('id');
     if (itemId == "") {
       alert("Incorrect URL");
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
       window.open(winURL, '_self');
     } else {
       const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items(${itemId})`;
@@ -368,10 +368,10 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
         console.log("Submitted successfully");
         alert("Submitted successfully");
         {if(this.props.customGridRequired){
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
           window.open(winURL, '_self');
         }else{
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
           window.open(winURL, '_self');
         }}
         // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
@@ -382,10 +382,10 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
         alert(JSON.stringify(xhr.responseText));
         console.log(xhr.responseText + " | " + error);
         {if(this.props.customGridRequired){
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
           window.open(winURL, '_self');
         }else{
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
           window.open(winURL, '_self');
         }}
       }
@@ -439,10 +439,10 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
 
   private closeform() {
     {if(this.props.customGridRequired){
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
       window.open(winURL, '_self');
     }else{
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
       window.open(winURL, '_self');
     }}
     //let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';

@@ -53,7 +53,7 @@ export default class TileNavigaitonPmoWebPart extends BaseClientSideWebPart<
         description: this.properties.description,
         currentContext: this.context,
         listGUID: this.properties.listGUID,
-        tileName: this.properties.tileName,
+        tileName: this.properties.tileName
       }
     );
 

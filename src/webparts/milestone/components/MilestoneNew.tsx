@@ -255,7 +255,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
                   }
                   else {
                     alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-                    let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                    let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
                     window.open(winURL, '_self');
                   }
                   // if(ProjectIDValue != item.ProjectID && breakCondition){
@@ -266,20 +266,20 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
               }
               else {
                 alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-                let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
                 window.open(winURL, '_self');
               }
             }, (err: any): void => {
               _logExceptionError(this.props.currentContext, _formdigest, "inside _checkExistingProjectId MilestoneNew: errlog", "Milestone", "_checkExistingProjectId", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
               alert("Something went wrong. Please try after sometime Redirecting...");
-              let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+              let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
               window.open(winURL, '_self');
             });
         } else {
           console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
             alert("Something went wrong. Please try after sometime Redirecting...");
-            let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+            let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
             window.open(winURL, '_self');
         }
       });
@@ -432,7 +432,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
         console.log("Submitted successfully");
         alert("Submitted successfully");
        
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
           window.open(winURL, '_self');
         
         
@@ -441,7 +441,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
         _logExceptionError(this.props.currentContext, _formdigest, "inside createItem Milestone New: errlog", "Milestone", "createItem", xhr, _projectID );
         alert("Something went wrong, please try after sometime");
         console.log(xhr.responseText + " | " + error);
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        let winURL = '/SitePages/Project-Master.aspx';
         window.open(winURL, '_self');
       }
     });
@@ -493,7 +493,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
   }
 
   private closeform() {
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
       window.open(winURL, '_self');
     
     this.state = {

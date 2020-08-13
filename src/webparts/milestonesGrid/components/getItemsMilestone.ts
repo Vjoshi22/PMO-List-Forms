@@ -40,8 +40,8 @@ export function _getallItems(url: string, currentContext: any, absoluteURL: any)
     }) as Promise<ISPMilestoneList[]>
 }
 
-export function _populateGrid(results) {
-  $('.dataGrid').append(GenerateTablefromJSON(results));
+export function _populateGrid(results, currentContext) {
+  $('.dataGrid').append(GenerateTablefromJSON(results, currentContext));
 
   table = $('#FilesTable').DataTable({
     "columnDefs": [{
@@ -99,7 +99,7 @@ export function _populateGrid(results) {
     });
   });
 }
-function GenerateTablefromJSON(data) {
+function GenerateTablefromJSON(data, currentContext) {
   var tablecontent =
     '<table id="FilesTable" class="table table-hover table-responsive cell-border" cellspacing="0" width="100%">' +
     '<thead><tr id="columnFilters">' +
@@ -119,7 +119,7 @@ function GenerateTablefromJSON(data) {
     '<tbody>';
 
   for (var i = 0; i < data.length; i++) {
-    let MilestoneDetails = `https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Track-Milestone.aspx?page=edit,id=` + data[i].Id 
+    let MilestoneDetails = currentContext.pageContext.web.absoluteUrl + `/SitePages/Track-Milestone.aspx?page=edit,id=` + data[i].Id 
 
     tablecontent += '<tr id="' + data[i].Id + 'row">';
     tablecontent += "<td class='" + data[i].Id + "rowItem'><a id=IssueDetails" + data[i].Id +

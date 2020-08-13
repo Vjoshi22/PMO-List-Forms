@@ -506,7 +506,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
       },
       success: (data, status, xhr) => {
         alert("Submitted successfully");
-       let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+       let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
         window.open(winURL, '_self');
         
       },
@@ -517,7 +517,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
           alert("The Project Id you entered already exists, please try with a new Project Id")
         }
         //alert(JSON.stringify(xhr.responseText));
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
         window.open(winURL,'_self');
       }
     });
@@ -541,7 +541,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
   //close the form on cancel button click
   private closeForm() {
     
-    let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+    let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
     window.open(winUrl, '_self');
     //clearing the fields
     this.setState({
@@ -606,7 +606,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
                     return true;
                   } else {
                     alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-                    let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+                    let winURL = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
                     window.open(winURL, '_self');
                   }
                   // if(ProjectIDValue != item.ProjectID && breakCondition){
@@ -617,7 +617,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               } else {
                 breakCondition = false;
                 alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-                let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+                let winURL = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
                 window.open(winURL, '_self');
                 return false;
               }
@@ -625,14 +625,14 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               _logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
               alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-              let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+              let winURL = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
               window.open(winURL, '_self');
             });
         } else {
           //_logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", err, _projectID );
           console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
           alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-          let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
           window.open(winURL, '_self');
         }
       });

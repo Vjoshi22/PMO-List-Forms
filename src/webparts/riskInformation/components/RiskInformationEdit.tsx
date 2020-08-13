@@ -332,7 +332,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     var itemId = GetParameterValues('id');
     if (itemId == "") {
       alert("Incorrect URL");
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
       window.open(winURL, '_self');
     } else {
       const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items(${itemId})`;
@@ -509,18 +509,23 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       success: (data, status, xhr) => {
         alert("Submitted successfully");
         {if(this.props.customGridRequired){
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
           window.open(winURL, '_self');
         }else{
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl +  '/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
           window.open(winURL, '_self');
         }}
       },
       error: (xhr, status, error) => {
         _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem RiskInfo Edit: errlog", "RiskInformation", "saveitem", xhr, _projectID );
         alert(JSON.stringify(xhr.responseText));
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
-        window.open(winURL, '_self');
+        {if(this.props.customGridRequired){
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+          window.open(winURL, '_self');
+        }else{
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl +  '/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
+          window.open(winURL, '_self');
+        }}
       }
     });
 
@@ -573,10 +578,10 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
 
   private closeform() {
     {if(this.props.customGridRequired){
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
       window.open(winURL, '_self');
     }else{
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
       window.open(winURL, '_self');
     }}
     this.state = {
