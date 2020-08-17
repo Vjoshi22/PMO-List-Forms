@@ -185,7 +185,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>IssuePriority</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" id="IssuePriority" as="select" name="IssuePriority" onChange={this.handleChange} value={this.state.IssuePriority}>
+              <Form.Control size="sm" id="IssuePriority"  as="select" name="IssuePriority" onChange={this.handleChange} value={this.state.IssuePriority}>
                 <option value="">Select an Option</option>
               </Form.Control>
             </FormGroup>
@@ -197,7 +197,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>Assigned Team</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="text" id="Assignedteam" name="Assignedteam" placeholder="Assigned Team" onChange={this.handleChange} value={this.state.Assignedteam} />
+              <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="Assignedteam" name="Assignedteam" placeholder="Assigned Team" onChange={this.handleChange} value={this.state.Assignedteam} />
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             {/*-----------Issue Priority------------- */}
@@ -205,7 +205,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>Assgined Person</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" id="Assginedperson" type="text" name="Assginedperson" onChange={this.handleChange} value={this.state.Assginedperson} />
+              <Form.Control size="sm" maxLength={inputfieldLength} id="Assginedperson" type="text" name="Assginedperson" onChange={this.handleChange} value={this.state.Assginedperson} />
             </FormGroup>
           </Form.Row>
           {/* ---------ROW 6---------------- */}
@@ -215,7 +215,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>Issue Reported On</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="date" id="IssueReportedOn" name="IssueReportedOn" onChange={this.handleChange} value={this.state.IssueReportedOn} />
+              <Form.Control size="sm" maxLength={inputfieldLength} type="date" id="IssueReportedOn" name="IssueReportedOn" onChange={this.handleChange} value={this.state.IssueReportedOn} />
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             {/*-----------Issue Priority------------- */}

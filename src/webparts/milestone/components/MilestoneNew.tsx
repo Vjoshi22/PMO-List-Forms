@@ -160,7 +160,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
               {/* <Form.Control size="sm" id="Phase" as="select" name="Phase" onChange={this.handleChange} value={this.state.Phase}>
                 <option value="">Select an Option</option>
               </Form.Control> */}
-              <Form.Control size="sm" type="text" id="Milestone" name="Milestone" placeholder="Milestone" onChange={this.handleChange} value={this.state.Milestone} />
+              <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="Milestone" name="Milestone" placeholder="Milestone" onChange={this.handleChange} value={this.state.Milestone} />
             </FormGroup>
           </Form.Row>
 

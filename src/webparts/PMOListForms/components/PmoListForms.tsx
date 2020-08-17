@@ -15,7 +15,7 @@ import { _logExceptionError } from '../../../ExceptionLogging';
 
 
 export var allchoiceColumns: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Status", "Project_x0020_Phase", "Region"];
-export var inputfieldLength = 100;
+export var inputfieldLength = 50;
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
@@ -88,6 +88,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     this._getdropdownValues = this._getdropdownValues.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this._getProjectManager = this._getProjectManager.bind(this);
+    this._getDeliveryManager = this._getDeliveryManager.bind(this);
     //this.loadItems = this.loadItems.bind(this);
     //this.isOutsideRange = this.isOutsideRange.bind(this);
   }
@@ -181,7 +182,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Id</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID} />
+              <Form.Control size="sm" maxLength={inputfieldLength} type="text" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID} />
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             {/*-----------Project Type------------- */}
@@ -201,7 +202,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Client Name</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="text" id="ClientName" name="ClientName" placeholder="Client Name" onChange={this.handleChange} value={this.state.ClientName} />
+              <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="ClientName" name="ClientName" placeholder="Client Name" onChange={this.handleChange} value={this.state.ClientName} />
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             {/* -----------Project Name---------------- */}
@@ -209,7 +210,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Name</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="text" id="ProjectName" name="ProjectName" placeholder="Ex: John Deer" onChange={this.handleChange} value={this.state.ProjectName} />
+              <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="ProjectName" name="ProjectName" placeholder="Ex: John Deer" onChange={this.handleChange} value={this.state.ProjectName} />
             </FormGroup>
           </Form.Row>
 
@@ -338,7 +339,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Budget as per SOW</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="number" id="BudgetSOW" name="ProjectBudget" placeholder="Project Budget" onChange={this.handleChange} value={this.state.ProjectBudget} />
+              <Form.Control size="sm" maxLength={inputfieldLength} type="number" id="BudgetSOW" name="ProjectBudget" placeholder="Project Budget" onChange={this.handleChange} value={this.state.ProjectBudget} />
             </FormGroup>
           </Form.Row>
           {/* <Form.Row className="mb-4">
@@ -712,7 +713,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       success: (data, status, xhr) => {
         alert("Submitted successfully");
         {if(this.props.customGridRequired){
-          let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master-Grid.aspx";
+          let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
         window.open(winUrl, '_self');
       }else{
         let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
@@ -728,7 +729,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         }
         //alert(JSON.stringify(xhr.responseText));
         {if(this.props.customGridRequired){
-          let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master-Grid.aspx";
+          let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
         window.open(winUrl, '_self');
       }else{
         let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';

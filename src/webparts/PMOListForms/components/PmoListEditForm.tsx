@@ -52,6 +52,12 @@ export interface IreactState {
     //Previous PM and Previous DM used for ms flow to chekc permssion
     Previous_PM:number;
     Previous_DM:number;
+    //to hold the previous ID of the people picker field
+    PreviousPM_old:number;
+    PreviousDM_old:number;
+    //check peoplepicker values changes or not
+    PMchange: boolean;
+    DMchange: boolean;
     //date
     startDate: any;
     disable_RMSID: boolean;
@@ -98,6 +104,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             DM:0,
             Previous_PM:0,
             Previous_DM:0,
+            PreviousPM_old:0,
+            PreviousDM_old:0,
+            PMchange:false,
+            DMchange:false,
             startDate: '',
             endDate: '',
             disable_RMSID: false,
@@ -108,6 +118,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         this._saveItem = this._saveItem.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this._getProjectManager = this._getProjectManager.bind(this);
+        this._getDeliveryManager = this._getDeliveryManager.bind(this);
         //this.loadItems = this.loadItems.bind(this);
         //this.isOutsideRange = this.isOutsideRange.bind(this);
     }
@@ -157,6 +168,16 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             $('.ProjectID').remove();
             $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Project Id cannot be 0</span>');
         }
+        if(e.target.name == "ProjectManager"){
+            this.setState({
+                PMchange: true
+            })
+        }
+        if(e.target.name == "DeliveryManager"){
+            this.setState({
+                DMchange: true
+            })
+        }
     }
     private _handleSubmit = (e) => {
         this._saveItem(e);
@@ -165,14 +186,16 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         console.log('Items:', items);
         this.setState({ 
             ProjectManager: items[0].text,
-            PM: items[0].id
+            PM: items[0].id,
+            PMchange: true
         });
     }
     private _getDeliveryManager = (items: any[]) => {
         console.log('Items:', items);
         this.setState({ 
             DeliveryManager: items[0].text,
-            DM: items[0].id
+            DM: items[0].id,
+            PMchange: true
         });
     }
 
@@ -373,7 +396,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                             <Form.Label className={styles.customlabel}>Revised Budget</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="number" id="RevisedBudget" name="RevisedBudget" placeholder="Revised Budget" onChange={this.handleChange} value={this.state.RevisedBudget} />
+                            <Form.Control size="sm" maxLength={inputfieldLength} type="number" id="RevisedBudget" name="RevisedBudget" placeholder="Revised Budget" onChange={this.handleChange} value={this.state.RevisedBudget} />
                         </FormGroup>
                         <FormGroup className="col-1"></FormGroup>
                         <FormGroup className="col-2">
@@ -390,7 +413,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                             <Form.Label className={styles.customlabel}>Invoiced Amount</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="number" id="InvoicedAmount" name="InvoicedAmount" placeholder="Invoiced Amount" onChange={this.handleChange} value={this.state.InvoicedAmount} />
+                            <Form.Control size="sm" maxLength={inputfieldLength} type="number" id="InvoicedAmount" name="InvoicedAmount" placeholder="Invoiced Amount" onChange={this.handleChange} value={this.state.InvoicedAmount} />
                         </FormGroup>
                         <FormGroup className="col-1"></FormGroup>
                         <FormGroup className="col-2">
@@ -407,7 +430,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                             <Form.Label className={styles.customlabel}>Total Cost</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="text" id="TotalCost" name="TotalCost" placeholder="Total Cost" onChange={this.handleChange} value={this.state.TotalCost} />
+                            <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="TotalCost" name="TotalCost" placeholder="Total Cost" onChange={this.handleChange} value={this.state.TotalCost} />
                         </FormGroup>
                         <FormGroup className="col-1"></FormGroup>
                         <FormGroup className="col-2">
@@ -581,7 +604,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
             window.open(winURL, '_self');
         } else {
-            const url = this.props.currentContext.pageContext.web.absoluteUrl + `/_api/web/lists('` + this.props.listGUID + `')/items(` + itemId + `)`;
+            const url = this.props.currentContext.pageContext.web.absoluteUrl + `/_api/web/lists('` + this.props.listGUID + `')/items(` + itemId + `)?$select=*,Previous_PM/Id,Previous_DM/Id&$expand=Previous_PM&$expand=Previous_DM`;
             return this.props.currentContext.spHttpClient.get(url, SPHttpClient.configurations.v1,
                 {
                     headers: {
@@ -617,8 +640,12 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         ProjectCost: item.Project_x0020_Cost,
                         ProjectProgress: item.Progress,
                         disable_RMSID: true,
-                        Previous_PM: item.PMId,
-                        Previous_DM: item.DMId
+                        PM: item.PMId,
+                        DM: item.DMId,
+                        PreviousPM_old: item.Previous_PM == undefined ? 0 : item.Previous_PM.Id,
+                        PreviousDM_old: item.Previous_DM == undefined ? 0 : item.Previous_DM.Id,
+                        Previous_PM: this.state.Previous_PM == 0 ? item.PMId : item.Previous_PM.Id,
+                        Previous_DM: this.state.Previous_DM == 0 ? item.DMId : item.Previous_DM.Id
 
                     })
                     //checking Status on Load
@@ -673,9 +700,9 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             Resource: this.state.ProjectResource,
             Project_x0020_Cost: this.state.ProjectCost,
             PMId: this.state.PM,
-            DMId: this.state.DM,
-            Previous_PMId: this.state.Previous_PM,
-            Previous_DMId: this.state.Previous_DM
+            DMId: this.state.DM,   
+            Previous_PMId: this.state.PMchange == true ? this.state.Previous_PM : this.state.PreviousPM_old,
+            Previous_DMId: this.state.PMchange == true ? this.state.Previous_DM : this.state.PreviousDM_old
 
         };
         //validation

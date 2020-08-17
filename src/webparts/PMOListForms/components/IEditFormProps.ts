@@ -24,6 +24,6 @@ export interface SPProjectListEditForm {
   Project_x0020_Cost: string;
   PMId:number;
   DMId:number;
-  Previous_PM:number;
-  Previous_DM:number;
+  Previous_PM:{"Id"};
+  Previous_DM:{"Id"};
 }
