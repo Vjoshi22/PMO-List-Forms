@@ -129,7 +129,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       this._checkExistingProjectId(this.props.currentContext.pageContext.web.absoluteUrl, e.target.value.trim().toLowerCase());
     } else if (e.target.name == "ProjectID" && (_value.trim().match(/^[a-zA-Z1-9][A-Za-z0-9_]*$/) == null || _value.trim() == "")) {
       $('.ProjectID').remove();
-      $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Cannot start with 0 or special charachters</span>');
+      $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Cannot start with 0 & no special characters allowed</span>');
     }
     this.validateDate(e);
     this._validateProgress(e);
@@ -523,7 +523,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     } else if ((requestData.ProjectID != "" || requestData.ProjectID != null) && this.state.ProjectID.match(/^[a-zA-Z1-9][A-Za-z0-9_]*$/) == null) {
       //$('.ProjectID').remove();
       $('#ProjectId').css('border', '1px solid red');
-      this._validationMessage("ProjectId", "ProjectID", "Cannot start with 0 or special charachters");
+      this._validationMessage("ProjectId", "ProjectID", "Cannot start with 0 & no special characters allowed");
       _validate++;
     } else if(breakCondition){
       $('#ProjectId').css('border', '1px solid red');
