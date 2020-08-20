@@ -144,7 +144,7 @@ function GenerateTablefromJSON(data, currentContext) {
     '<tbody>';
 
   for (var i = 0; i < data.length; i++) {
-    let projectUpdateLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/UpdateProject.aspx?page=edit,id=' + data[i].ID;
+    let projectUpdateLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/UpdateProject.aspx?page=edit&id=' + data[i].ID;
     let createIssuesLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/Track-Issues.aspx?type=new&ProjectID=' + data[i].ProjectID;
     let viewIssuesLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Issue-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
     let createRisksLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Track-Risks.aspx?type=new&ProjectID=' + data[i].ProjectID;
