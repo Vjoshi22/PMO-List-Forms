@@ -62,7 +62,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
    //loading function when page gets loaded
    public componentDidMount() {
     //Retrive Project ID
-    let itemId = _getParameterValues('id');
+    let itemId = _getParameterValues('itemId');
     let isNumber = parseInt(itemId);
 
     if (itemId == null || itemId == "" || isNaN(isNumber)) {
@@ -371,7 +371,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
   //load item
   private loadItems() {
 
-    var itemId = _getParameterValues('id');
+    var itemId = _getParameterValues('itemId');
     if (itemId == "") {
       alert("Incorrect URL");
       let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
@@ -385,7 +385,11 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
             'odata-version': ''
           }
         }).then((response: SPHttpClientResponse): Promise<SPUpdateIssueForm> => {
-          return response.json();
+            if(response.ok){
+              return response.json();
+            }else{
+              alert("You don't have permission to view/edit Issues");
+            }
         })
         .then((item: SPUpdateIssueForm): void => {
           this.setState({
@@ -409,7 +413,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    var itemId = _getParameterValues('id');
+    var itemId = _getParameterValues('itemId');
     let _validate = 0;
     e.preventDefault();
 
@@ -561,7 +565,11 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
        },
       error: (xhr, status, error) => {
         _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside update issue: errlog", "IssueInformation", "updateIssue", xhr, _projectID );
-        alert(JSON.stringify(xhr.responseText));
+        if (xhr.responseText.match('2147024891')) {
+          alert("You don't have permission to edit an existing Issue");
+        }else{
+          alert(JSON.stringify(xhr.responseText));
+        }
         {if(this.props.customGridRequired){
           let winURL = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Issue-Grid.aspx?FilterField1=ProjectID&FilterValue1=" + this.state.ProjectID;
           window.open(winURL, '_self');

@@ -515,8 +515,11 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
         _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID ,_formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", xhr, _projectID );
         if (xhr.responseText.match('2130575169')) {
           alert("The Project Id you entered already exists, please try with a new Project Id")
+        }else if (xhr.responseText.match('2147024891')) {
+          alert("You don't have permission to Create a new Issue");
+        }else{
+          alert(JSON.stringify(xhr.responseText));
         }
-        //alert(JSON.stringify(xhr.responseText));
         let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
         window.open(winURL,'_self');
       }
