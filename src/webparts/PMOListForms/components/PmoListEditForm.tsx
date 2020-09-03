@@ -598,7 +598,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     //fucntion to load items for particular item id on edit form
     private _loadItems() {
 
-        var itemId = _getParameterValues('itemId');
+        var itemId = _getParameterValues('id');
         if (itemId == "") {
             alert("Incorrect URL");
             let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
@@ -612,11 +612,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         'odata-version': ''
                     }
                 }).then((response: SPHttpClientResponse): Promise<SPProjectListEditForm> => {
-                    if(response.ok){
-                        return response.json();
-                    }else{
-                        alert("You don't have permission to view/edit this Project Details")
-                    }
+                    return response.json();
                 })
                 .then((item: SPProjectListEditForm): void => {
                     this.setState({
@@ -646,8 +642,8 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         disable_RMSID: true,
                         PM: item.PMId,
                         DM: item.DMId,
-                        PreviousPM_old: item.Previous_PM == undefined ? item.PMId : item.Previous_PM.Id,
-                        PreviousDM_old: item.Previous_DM == undefined ? item.DMId : item.Previous_DM.Id,
+                        PreviousPM_old: item.Previous_PM == undefined ? 0 : item.Previous_PM.Id,
+                        PreviousDM_old: item.Previous_DM == undefined ? 0 : item.Previous_DM.Id,
                         Previous_PM: this.state.Previous_PM == 0 ? item.PMId : item.Previous_PM.Id,
                         Previous_DM: this.state.Previous_DM == 0 ? item.DMId : item.Previous_DM.Id
 
@@ -672,7 +668,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 ActualEndDate: ""
             })
         }
-        var itemId = _getParameterValues('itemId');
+        var itemId = _getParameterValues('id');
         let _validate = 0;
         e.preventDefault();
 
@@ -899,11 +895,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             },
             error: (xhr, status, error) => {
                 _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside saveitem pmoeditform: errlog", "PmoListForm", "saveitem", xhr, _projectID);
-                if (xhr.responseText.match('2147024891')) {
-                    alert("You don't have permission to edit an existing project");
-                }else{
-                    alert(JSON.stringify(xhr.responseText));
-                }
+                alert(JSON.stringify(xhr.responseText));
                 {if(this.props.customGridRequired){
                     let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
                   window.open(winUrl, '_self');

@@ -2,7 +2,7 @@ import * as React from 'react';
 import styles from './PmoListForms.module.scss';
 import { IPmoListFormsProps } from './IPmoListFormsProps';
 import { escape } from '@microsoft/sp-lodash-subset';
-import { SPHttpClient,HttpClient, IHttpClientOptions, HttpClientResponse, ISPHttpClientOptions, SPHttpClientConfiguration, SPHttpClientResponse } from "@microsoft/sp-http";
+import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration, SPHttpClientResponse, HttpClientResponse } from "@microsoft/sp-http";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { _getParameterValues } from './getQueryString';
 import { Form, FormGroup, Button, FormControl } from "react-bootstrap";
@@ -12,15 +12,10 @@ import * as $ from "jquery";
 import { _getListEntityName, listType } from './getListEntityName';
 import { data } from 'jquery';
 import { _logExceptionError } from '../../../ExceptionLogging';
-//import json_RMSData from "../../../../data/data.json";
-import { sp } from "@pnp/sp";
-import "@pnp/sp/profiles";
 
 
 export var allchoiceColumns: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Status", "Project_x0020_Phase", "Region"];
 export var inputfieldLength = 50;
-var PM_userInfo;
-var DM_userInfo;
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
@@ -51,7 +46,6 @@ export interface IreactState {
   endDate: any;
   focusedInput: any;
   FormDigestValue: string;
-  RMSData:{};
 }
 
 var listGUID: any = "2c3ffd4e-1b73-4623-898d-8e3a1bb60b91";   //"47272d1e-57d9-447e-9cfd-4cff76241a93"; 
@@ -89,8 +83,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       disable_RMSID: false,
       disable_plannedCompletion: true,
       focusedInput: '',
-      FormDigestValue: '',
-      RMSData:{}
+      FormDigestValue: ''
     };
     this._getdropdownValues = this._getdropdownValues.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -189,7 +182,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Id</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" maxLength={inputfieldLength} type="text" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} onBlur={() => {this._getRMSData()}} value={this.state.ProjectID} />
+              <Form.Control size="sm" maxLength={inputfieldLength} type="text" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project ID" onChange={this.handleChange} value={this.state.ProjectID} />
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             {/*-----------Project Type------------- */}
@@ -381,120 +374,6 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         </Form>
       </div>);
   }
-  //load data form RMS
-  private async _getRMSData(): Promise<void>{
-
-    var apiURL = "https://rms.yash.com/rms/projects/projectAttributePMO?find=PMOProjectAttribute&projectId=" + this.state.ProjectID;   
-    const myOptions: IHttpClientOptions = {
-      headers: new Headers({
-        'Authorization': 'Basic YWRtaW46YWRtaW4xMjM0NQ=='
-      }),
-      method: 'GET'
-    };  
-    return this.props.currentContext.httpClient.get(apiURL, HttpClient.configurations.v1, myOptions)
-          .then((apiResponse: HttpClientResponse) => {
-            console.log(apiResponse);
-            return apiResponse.json();
-          }).then(json_RMSData => {
-
-
-    if(json_RMSData.status && this.state.ProjectID == json_RMSData.data.projectId){
-      this.setState({
-        ProjectManager: json_RMSData.data.manager,
-        DeliveryManager: json_RMSData.data.deliveryManager,
-        ClientName: json_RMSData.data.clientName,
-        ProjectName: json_RMSData.data.projectName,
-        PlannedStart: json_RMSData.data.projectStartDate,
-        PlannedCompletion: json_RMSData.data.projectEndDate,
-        startDate: json_RMSData.data.projectStartDate,
-        endDate: json_RMSData.data.projectEndDate,
-        ProjectMode: json_RMSData.data.projectMode,
-        ProjectLocation: json_RMSData.data.region
-      });
-      this._getProjectManagerProperties(json_RMSData.data.manager);
-      this._getDeliveryManagerProperties(json_RMSData.data.deliveryManager);
-
-    }else if(this.state.ProjectID!="" || this.state.ProjectID != json_RMSData.data.projectId){
-      this.setState({
-        ProjectID:'',
-        ProjectManager:'',
-        DeliveryManager:'',
-        ClientName:'',
-        ProjectName: '',
-        PlannedStart: '',
-        PlannedCompletion: '',
-        startDate:'',
-        endDate:'',
-        ProjectMode: '',
-        ProjectLocation: ''
-      })
-      $('#ProjectId').css('border', '1px solid red');
-      this._validationMessage("ProjectId", "ProjectID", "Incorrect RMS Project ID");
-    }    
-  });
-  }
-  //get the userProfile Properties
-  private _getProjectManagerProperties(userName){
-       /// username should be passed as 'domain\username'
-        /// change this prefix according to the environment. 
-        /// In below sample, windows authentication is considered.
-        var prefix = "i:0#.f|membership|";
-        /// get the site url
-        var siteUrl = this.props.currentContext.pageContext.web.absoluteUrl;
-        /// add prefix, this needs to be changed based on scenario
-        var accountName = prefix + userName;
-
-        /// make an ajax call to get the site user
-        $.ajax({
-            url: siteUrl + "/_api/web/siteusers(@v)?@v='" + 
-                encodeURIComponent(accountName) + "'",
-            method: "GET",
-            headers: { "Accept": "application/json; odata=verbose" },
-            success: function (data) {
-              //user id received from the site 
-              PM_userInfo = data.d;
-            },
-            error: function (data) {
-                console.log(JSON.stringify(data));
-            }
-        }).then(p => {
-          this.setState({
-            PM: PM_userInfo.Id,
-            ProjectManager: PM_userInfo.Title
-          })
-        });
-  }
-  //get the userProfile Properties
-  private _getDeliveryManagerProperties(userName){
-    /// username should be passed as 'domain\username'
-     /// change this prefix according to the environment. 
-     /// In below sample, windows authentication is considered.
-     var prefix = "i:0#.f|membership|";
-     /// get the site url
-     var siteUrl = this.props.currentContext.pageContext.web.absoluteUrl;
-     /// add prefix, this needs to be changed based on scenario
-     var accountName = prefix + userName;
-
-     /// make an ajax call to get the site user
-     $.ajax({
-         url: siteUrl + "/_api/web/siteusers(@v)?@v='" + 
-             encodeURIComponent(accountName) + "'",
-         method: "GET",
-         headers: { "Accept": "application/json; odata=verbose" },
-         success: function (data) {
-           //user id received from the site 
-           DM_userInfo = data.d;
-         },
-         error: function (data) {
-             console.log(JSON.stringify(data));
-         }
-     }).then(p => {
-       this.setState({
-         DM: DM_userInfo.Id,
-         DeliveryManager: DM_userInfo.Title
-       })
-     });
-}
   //function to validate the date, end date should not be less than start date
   private validateDate(e) {
     let newState = {};
@@ -538,6 +417,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       }
     }//validation for date ending
   }
+
   //Validate  Progress
   //function to validate progress
   private _validateProgress(e) {
@@ -612,6 +492,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         }
       });
   }
+
   //fucntion to save the new entry in the list
   private createItem(e) {
 
@@ -636,8 +517,6 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       Project_x0020_Phase: this.state.ProjectPhase,
       PlannedStart: this.state.PlannedStart,
       Planned_x0020_End: this.state.PlannedCompletion,
-      Actual_x0020_Start: this.state.startDate,
-      Actual_x0020_End: this.state.endDate,
       Project_x0020_Description: this.state.ProjectDescription,
       Region: this.state.ProjectLocation,
       Project_x0020_Budget: this.state.ProjectBudget,
@@ -847,11 +726,8 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside createItem pmonewitemform: errlog", "PMOListForm", "createItems", xhr, _projectID);
         if (xhr.responseText.match('2130575169')) {
           alert("The Project Id you entered already exists, please try with a new Project Id")
-        }else if (xhr.responseText.match('2147024891')) {
-          alert("You don't have permission to Create a new Project");
-        }else{
-          alert(JSON.stringify(xhr.responseText));
         }
+        //alert(JSON.stringify(xhr.responseText));
         {if(this.props.customGridRequired){
           let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
         window.open(winUrl, '_self');
@@ -869,7 +745,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
     $('.' + _classname).remove();
     $('#' + _id).closest('div').append('<span class="' + _classname + '" style="color:red;font-size:9pt">' + _message + '</span>');
   }
-  //function to keep the request digest token active
+  //   //function to keep the request digest token active
   private getAccessToken() {
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function

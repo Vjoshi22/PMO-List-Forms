@@ -19,7 +19,7 @@ export function _logExceptionError(_currentContext, exceptionLoggingListGUID, _f
         ResponseCode: err.responseJSON.error.code,
         ResponseText: err.responseText,
         DetailedError: '',
-        ItemID: _getParameterValues('itemId'),
+        ItemID: _getParameterValues('id'),
         ProjectID: _projectId
   
     } as SPExceptionLoggingProps
