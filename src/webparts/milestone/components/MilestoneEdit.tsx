@@ -207,7 +207,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
 
   private loadItems() {
 
-    var itemId = GetParameterValues('id');
+    var itemId = GetParameterValues('itemId');
     if (itemId == "") {
       alert("Incorrect URL");
       let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
@@ -221,7 +221,11 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
             'odata-version': ''
           }
         }).then((response: SPHttpClientResponse): Promise<ISPMilestoneFields> => {
-          return response.json();
+          if(response.ok){
+            return response.json();
+          }else{
+            alert("You don't have permission to view/edit Milestones");
+          }
         })
         .then((item: ISPMilestoneFields): void => {
           this.setState({
@@ -245,7 +249,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    var itemId = GetParameterValues('id');
+    var itemId = GetParameterValues('itemId');
     let _validate = 0;
     e.preventDefault();
 
@@ -379,7 +383,11 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
       },
       error: (xhr, status, error) => {
         _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside saveitem Milestone Edit: errlog", "Milestone", "saveitem", xhr, _projectID );
-        alert(JSON.stringify(xhr.responseText));
+        if (xhr.responseText.match('2147024891')) {
+          alert("You don't have permission to edit an existing Milestone");
+        }else{
+          alert(JSON.stringify(xhr.responseText));
+        }
         console.log(xhr.responseText + " | " + error);
         {if(this.props.customGridRequired){
           let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;

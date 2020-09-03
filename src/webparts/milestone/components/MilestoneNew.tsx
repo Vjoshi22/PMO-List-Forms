@@ -441,9 +441,13 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
       },
       error: (xhr, status, error) => {
         _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside createItem Milestone New: errlog", "Milestone", "createItem", xhr, _projectID );
-        alert("Something went wrong, please try after sometime");
+        if (xhr.responseText.match('2147024891')) {
+          alert("You don't have permission to create a new Milestone");
+        }else{
+          alert("Something went wrong, please try after sometime");
+        }
         console.log(xhr.responseText + " | " + error);
-        let winURL = '/SitePages/Project-Master.aspx';
+        let winURL = this.props.currentContext.pageContext.web.absoluteUrl +  '/SitePages/Project-Master.aspx';
         window.open(winURL, '_self');
       }
     });
