@@ -68,7 +68,7 @@ export default class ProjectsGridWebPart extends BaseClientSideWebPart<IProjects
     let listGuid = '2c3ffd4e-1b73-4623-898d-8e3a1bb60b91';
     this.domElement.innerHTML = `<div class="dataGrid"></div>`;
 
-    let url = `/_api/web/lists('${this.properties.listGUID}')/items?$select=*&$orderby=Id desc`;
+    let url = `/_api/web/lists('${this.properties.listGUID}')/items?$select=*&$orderby=ID desc`;
     let currentContext = this.context;
     _getallItems(url, currentContext, currentContext.pageContext.web.absoluteUrl).then((results) => {
       _populateGrid(results, currentContext);

@@ -646,8 +646,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         disable_RMSID: true,
                         PM: item.PMId,
                         DM: item.DMId,
-                        PreviousPM_old: item.Previous_PM == undefined ? item.PMId : item.Previous_PM.Id,
-                        PreviousDM_old: item.Previous_DM == undefined ? item.DMId : item.Previous_DM.Id,
+                        PreviousPM_old: item.PMId,
+                        PreviousDM_old: item.DMId,
+                        // PreviousPM_old: item.Previous_PM == undefined ? item.PMId : item.Previous_PM.Id,
+                        // PreviousDM_old: item.Previous_DM == undefined ? item.DMId : item.Previous_DM.Id,
                         Previous_PM: this.state.Previous_PM == 0 ? item.PMId : item.Previous_PM.Id,
                         Previous_DM: this.state.Previous_DM == 0 ? item.DMId : item.Previous_DM.Id
 
@@ -704,9 +706,11 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             Resource: this.state.ProjectResource,
             Project_x0020_Cost: this.state.ProjectCost,
             PMId: this.state.PM,
-            DMId: this.state.DM,   
-            Previous_PMId: this.state.PMchange == true ? this.state.Previous_PM : this.state.PreviousPM_old,
-            Previous_DMId: this.state.PMchange == true ? this.state.Previous_DM : this.state.PreviousDM_old
+            DMId: this.state.DM,
+            Previous_PMId: this.state.PreviousPM_old,
+            Previous_DMId: this.state.PreviousDM_old
+            // Previous_PMId: this.state.PMchange == true ? this.state.Previous_PM : this.state.PreviousPM_old,
+            // Previous_DMId: this.state.PMchange == true ? this.state.Previous_DM : this.state.PreviousDM_old
 
         };
         //validation

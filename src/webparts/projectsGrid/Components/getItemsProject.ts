@@ -59,7 +59,7 @@ export function _populateGrid(results, currentContext) {
     //"dom": 'lftrip',//(l)ength,(f)iltering,(t)able,(i)nformation,(p)aging, P(r)ocessing
     "dom": "<<t>ip>",
     //"lengthChange": false,   
-    "order": [[0, "desc"]],
+    // "order": [[0, "desc"]],
     "fixedHeader": {
       header:true
     }

@@ -40,6 +40,7 @@ export interface IreactState {
   ProjectBudget: number;
   ProjectStatus: string;
   ProjectProgress: number;
+  TotalCost: number;
   //peoplepicker
   DeliveryManager: string;
   PM:number;
@@ -80,6 +81,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       ProjectLocation: '',
       ProjectBudget: 0,
       ProjectProgress: 0,
+      TotalCost:0,
       ProjectStatus: '',
       DeliveryManager: '',
       PM:0,
@@ -409,12 +411,13 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         startDate: json_RMSData.data.projectStartDate,
         endDate: json_RMSData.data.projectEndDate,
         ProjectMode: json_RMSData.data.projectMode,
-        ProjectLocation: json_RMSData.data.region
+        ProjectLocation: json_RMSData.data.region,
+        TotalCost: json_RMSData.data.totalCost
       });
       this._getProjectManagerProperties(json_RMSData.data.manager);
       this._getDeliveryManagerProperties(json_RMSData.data.deliveryManager);
 
-    }else if(this.state.ProjectID!="" || this.state.ProjectID != json_RMSData.data.projectId){
+    }else if((this.state.ProjectID!="" || this.state.ProjectID != json_RMSData.data.projectId) && json_RMSData.status){
       this.setState({
         ProjectID:'',
         ProjectManager:'',
@@ -426,11 +429,14 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         startDate:'',
         endDate:'',
         ProjectMode: '',
-        ProjectLocation: ''
+        ProjectLocation: '',
+        TotalCost:0
       })
       $('#ProjectId').css('border', '1px solid red');
       this._validationMessage("ProjectId", "ProjectID", "Incorrect RMS Project ID");
-    }    
+    }else if(!json_RMSData.status){
+      alert("RMS System is down, Please wait for sometime");
+    }
   });
   }
   //get the userProfile Properties
@@ -640,6 +646,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       Actual_x0020_End: this.state.endDate,
       Project_x0020_Description: this.state.ProjectDescription,
       Region: this.state.ProjectLocation,
+      Total_x0020_Cost: this.state.TotalCost,
       Project_x0020_Budget: this.state.ProjectBudget,
       Status: this.state.ProjectStatus,
       Progress: this.state.ProjectProgress,
@@ -947,7 +954,8 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       startDate: '',
       endDate: '',
       focusedInput: '',
-      FormDigestValue: ''
+      FormDigestValue: '',
+      TotalCost:0
     });
     console.log(this.state.ProjectID);
   }
