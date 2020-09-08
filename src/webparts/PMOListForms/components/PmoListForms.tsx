@@ -12,9 +12,10 @@ import * as $ from "jquery";
 import { _getListEntityName, listType } from './getListEntityName';
 import { data } from 'jquery';
 import { _logExceptionError } from '../../../ExceptionLogging';
-//import json_RMSData from "../../../../data/data.json";
+//import json_RMSData1 from "../../../../data/data.json";
 import { sp } from "@pnp/sp";
 import "@pnp/sp/profiles";
+import { Field } from 'sp-pnp-js';
 
 
 export var allchoiceColumns: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Status", "Project_x0020_Phase", "Region"];
@@ -211,7 +212,8 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Client Name</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="ClientName" name="ClientName" placeholder="Client Name" onChange={this.handleChange} value={this.state.ClientName} />
+              {/* <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="ClientName" name="ClientName" placeholder="Client Name" onChange={this.handleChange} value={this.state.ClientName} /> */}
+              <Form.Label>{this.state.ClientName}</Form.Label>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             {/* -----------Project Name---------------- */}
@@ -219,7 +221,8 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Name</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="ProjectName" name="ProjectName" placeholder="Ex: John Deer" onChange={this.handleChange} value={this.state.ProjectName} />
+              {/* <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="ProjectName" name="ProjectName" placeholder="Ex: John Deer" onChange={this.handleChange} value={this.state.ProjectName} /> */}
+              <Form.Label>{this.state.ProjectName}</Form.Label>
             </FormGroup>
           </Form.Row>
 
@@ -236,7 +239,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
                   groupName={""} // Leave this blank in case you want to filter from all users    
                   showtooltip={true}
                   isRequired={true}
-                  disabled={false}
+                  disabled={true}
                   ensureUser={true}
                   selectedItems={this._getDeliveryManager}
                   defaultSelectedUsers={[this.state.DeliveryManager]}
@@ -258,7 +261,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
                   groupName={""} // Leave this blank in case you want to filter from all users    
                   showtooltip={true}
                   isRequired={true}
-                  disabled={false}
+                  disabled={true}
                   ensureUser={true}
                   selectedItems={this._getProjectManager}
                   defaultSelectedUsers={[this.state.ProjectManager]}
@@ -273,9 +276,10 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Mode</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" id="ProjectMode" as="select" name="ProjectMode" onChange={this.handleChange} value={this.state.ProjectMode}>
+              {/* <Form.Control size="sm" id="ProjectMode" as="select" name="ProjectMode" onChange={this.handleChange} value={this.state.ProjectMode}>
                 <option value="">Select an Option</option>
-              </Form.Control>
+              </Form.Control> */}
+              <Form.Label>{this.state.ProjectMode}</Form.Label>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             <FormGroup className="col-2">
@@ -305,9 +309,10 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel}>Region</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" as="select" id="Region" name="ProjectLocation" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}>
+              {/* <Form.Control size="sm" as="select" id="Region" name="ProjectLocation" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}>
                 <option value="">Select an Option</option>
-              </Form.Control>
+              </Form.Control> */}
+              <Form.Label>{this.state.ProjectLocation}</Form.Label>
             </FormGroup>
           </Form.Row>
           <Form.Row>
@@ -315,15 +320,17 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Planned Start Date</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="date" id="PlannedStart" name="PlannedStart" placeholder="Planned Start Date" onChange={this.handleChange} value={this.state.PlannedStart} />
+              {/* <Form.Control size="sm" type="date" id="PlannedStart" name="PlannedStart" placeholder="Planned Start Date" onChange={this.handleChange} value={this.state.PlannedStart} /> */}
               {/* <DatePicker selected={this.state.PlannedStart}  onChange={this.handleChange} />; */}
+            <Form.Label>{this.state.PlannedStart}</Form.Label>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Planned End Date</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="date" disabled={this.state.disable_plannedCompletion} id="PlannedCompletion" name="PlannedCompletion" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.PlannedCompletion} />
+              {/* <Form.Control size="sm" type="date" disabled={this.state.disable_plannedCompletion} id="PlannedCompletion" name="PlannedCompletion" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.PlannedCompletion} /> */}
+              <Form.Label>{this.state.PlannedCompletion}</Form.Label>
             </FormGroup>
           </Form.Row>
           {/* Project Description */}
@@ -417,7 +424,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       this._getProjectManagerProperties(json_RMSData.data.manager);
       this._getDeliveryManagerProperties(json_RMSData.data.deliveryManager);
 
-    }else if((this.state.ProjectID!="" || this.state.ProjectID != json_RMSData.data.projectId) && json_RMSData.status){
+    }else if((this.state.ProjectID!="" || this.state.ProjectID != json_RMSData.data.projectId) && !json_RMSData.status){
       this.setState({
         ProjectID:'',
         ProjectManager:'',
@@ -433,10 +440,11 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
         TotalCost:0
       })
       $('#ProjectId').css('border', '1px solid red');
-      this._validationMessage("ProjectId", "ProjectID", "Incorrect RMS Project ID");
-    }else if(!json_RMSData.status){
-      alert("RMS System is down, Please wait for sometime");
+      this._validationMessage("ProjectId", "ProjectID", json_RMSData.message);
     }
+    // else if(!json_RMSData.status){
+    //   alert("RMS System is down, Please wait for sometime");
+    // }
   });
   }
   //get the userProfile Properties
@@ -673,22 +681,22 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       $('.ProjectID').remove();
       $('#ProjectId').css('border', '1px solid #ced4da')
     }
-    if (requestData.Client_x0020_Name.length < 1 || requestData.Client_x0020_Name == null || requestData.Client_x0020_Name == "") {
-      this._validationMessage("ClientName", "ClientName", "Client Name cannot be empty");
-      $('#ClientName').css('border', '1px solid red');
-      _validate++;
-    } else {
-      $('.ClientName').remove();
-      $('#ClientName').css('border', '1px solid #ced4da')
-    }
-    if (requestData.Project_x0020_Name.length < 1) {
-      this._validationMessage("ProjectName", "ProjectName", "Project Name cannot be empty");
-      $('#ProjectName').css('border', '1px solid red');
-      _validate++;
-    } else {
-      $('.ProjectName').remove();
-      $('#ProjectName').css('border', '1px solid #ced4da');
-    }
+    // if (requestData.Client_x0020_Name.length < 1 || requestData.Client_x0020_Name == null || requestData.Client_x0020_Name == "") {
+    //   this._validationMessage("ClientName", "ClientName", "Client Name cannot be empty");
+    //   $('#ClientName').css('border', '1px solid red');
+    //   _validate++;
+    // } else {
+    //   $('.ClientName').remove();
+    //   $('#ClientName').css('border', '1px solid #ced4da')
+    // }
+    // if (requestData.Project_x0020_Name.length < 1) {
+    //   this._validationMessage("ProjectName", "ProjectName", "Project Name cannot be empty");
+    //   $('#ProjectName').css('border', '1px solid red');
+    //   _validate++;
+    // } else {
+    //   $('.ProjectName').remove();
+    //   $('#ProjectName').css('border', '1px solid #ced4da');
+    // }
     if (requestData.Delivery_x0020_Manager.length < 1) {
       this._validationMessage("DeliveryManager", "DeliveryManager", "Delivery Manager cannot be empty");
       $('#DeliveryManager input').css('border', '1px solid red');
@@ -713,30 +721,30 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       $('.ProjectType').remove();
       $('#ProjectType').css('border', '1px solid #ced4da')
     }
-    if (requestData.PlannedStart.length < 1 || requestData.PlannedStart == null || requestData.PlannedStart == "") {
-      this._validationMessage("PlannedStart", "PlannedStart", "Planned Start Date cannot be empty");
-      $('#PlannedStart').css('border', '1px solid red');
-      _validate++;
-    } else {
-      $('.PlannedStart').remove();
-      $('#PlannedStart').css('border', '1px solid #ced4da');
-    }
-    if (requestData.Planned_x0020_End.length < 1 || requestData.Planned_x0020_End == null || requestData.Planned_x0020_End == "") {
-      this._validationMessage("PlannedCompletion", "PlannedCompletion", "Planned End Date cannot be empty");
-      $('#PlannedCompletion').css('border', '1px solid red');
-      _validate++;
-    } else {
-      $('.PlannedCompletion').remove();
-      $('#PlannedCompletion').css('border', '1px solid #ced4da');
-    }
-    if (requestData.Project_x0020_Mode.length < 1 || requestData.Project_x0020_Mode == null || requestData.Project_x0020_Mode == "") {
-      this._validationMessage("ProjectMode", "ProjectMode", "Project Mode cannot be empty");
-      $('#ProjectMode').css('border', '1px solid red');
-      _validate++;
-    } else {
-      $('.ProjectMode').remove();
-      $('#ProjectMode').css('border', '1px solid #ced4da')
-    }
+    // if (requestData.PlannedStart.length < 1 || requestData.PlannedStart == null || requestData.PlannedStart == "") {
+    //   this._validationMessage("PlannedStart", "PlannedStart", "Planned Start Date cannot be empty");
+    //   $('#PlannedStart').css('border', '1px solid red');
+    //   _validate++;
+    // } else {
+    //   $('.PlannedStart').remove();
+    //   $('#PlannedStart').css('border', '1px solid #ced4da');
+    // }
+    // if (requestData.Planned_x0020_End.length < 1 || requestData.Planned_x0020_End == null || requestData.Planned_x0020_End == "") {
+    //   this._validationMessage("PlannedCompletion", "PlannedCompletion", "Planned End Date cannot be empty");
+    //   $('#PlannedCompletion').css('border', '1px solid red');
+    //   _validate++;
+    // } else {
+    //   $('.PlannedCompletion').remove();
+    //   $('#PlannedCompletion').css('border', '1px solid #ced4da');
+    // }
+    // if (requestData.Project_x0020_Mode.length < 1 || requestData.Project_x0020_Mode == null || requestData.Project_x0020_Mode == "") {
+    //   this._validationMessage("ProjectMode", "ProjectMode", "Project Mode cannot be empty");
+    //   $('#ProjectMode').css('border', '1px solid red');
+    //   _validate++;
+    // } else {
+    //   $('.ProjectMode').remove();
+    //   $('#ProjectMode').css('border', '1px solid #ced4da')
+    // }
     //Project Status
     if (requestData.Status.length < 1 || requestData.Status == null || requestData.Status == "") {
       this._validationMessage("Status", "Status", "Project Status cannot be empty");
@@ -759,14 +767,14 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       $('#ProjectPhase').css('border', '1px solid #ced4da')
     }
     //Project Region
-    if (requestData.Region.length < 1 || requestData.Region == null || requestData.Region == "") {
-      this._validationMessage("Region", "Region", "Project Region cannot be empty");
-      $('#Region').css('border', '1px solid red');
-      _validate++;
-    } else {
-      $('.Region').remove();
-      $('#Region').css('border', '1px solid #ced4da')
-    }
+    // if (requestData.Region.length < 1 || requestData.Region == null || requestData.Region == "") {
+    //   this._validationMessage("Region", "Region", "Project Region cannot be empty");
+    //   $('#Region').css('border', '1px solid red');
+    //   _validate++;
+    // } else {
+    //   $('.Region').remove();
+    //   $('#Region').css('border', '1px solid #ced4da')
+    // }
     // if (requestData.Delivery_x0020_Manager.length < 1 || requestData.Delivery_x0020_Manager == null || requestData.Delivery_x0020_Manager =="") {
     //   $('#DeliveryManager').css('border','2px solid red');
     //   _validate++;

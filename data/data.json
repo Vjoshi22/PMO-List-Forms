@@ -1,16 +1,4 @@
 {
-    "data": {
-        "manager": "aakash.jain@yash.com",
-        "clientName": "John Deere World HQ",
-        "projectStartDate": "2020-06-02",
-        "projectEndDate": "2020-12-31",
-        "description": "",
-        "projectMode": "Fixed",
-        "projectName": "TeamsitemTest server",
-        "region": "Africa",
-        "projectId": "YTIBU4CUST000116",
-        "totalCost": 12343443616058322,
-        "deliveryManager": "shivpal.singh@yash.com"
-    },
-    "status": true
+    "message": "Could not open connection",
+    "status": false
 }

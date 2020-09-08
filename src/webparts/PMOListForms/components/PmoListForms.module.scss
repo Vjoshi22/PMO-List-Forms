@@ -5,6 +5,9 @@
   padding-top: 6px;
   font-weight: 700;
 }
+._disabledFieldsNewForm{
+  background-color: red;
+}
 .disabledValue{
   //background-color: lightgray;
   padding-top: 6px;
@@ -49,7 +52,6 @@
 .heading form div{
   justify-content: center;
 }
-
 //for spinner
 #loading{
   position: absolute;
