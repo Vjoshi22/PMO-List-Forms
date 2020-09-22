@@ -290,10 +290,10 @@ export default class RiskInformationNew extends React.Component<IRiskInformation
 
           <Form.Row>
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Remarks</Form.Label>
+              <Form.Label className={styles.customlabel + " " + styles.required}>Mitigation Plan</Form.Label>
             </FormGroup>
             <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
+              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={3} type="text" id="Remarks" name="Remarks" placeholder="Mitigation Plan" onChange={this.handleChange} value={this.state.Remarks} />
             </FormGroup>
           </Form.Row>
 

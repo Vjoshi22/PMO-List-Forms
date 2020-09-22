@@ -117,7 +117,7 @@ function GenerateTablefromJSON(data, currentContext) {
     '<th class="search">Risk Impact</th>' +
     '<th class="search">Risk Probability</th>' +
     '<th class="search">Risk Rank</th>' +
-    '<th class="dropdown">Remarks</th>' +
+    '<th class="dropdown">Mitigation Plan</th>' +
     '</tr></thead>' +
     '<tbody>';
 

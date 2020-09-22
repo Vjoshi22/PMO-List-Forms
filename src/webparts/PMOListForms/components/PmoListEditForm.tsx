@@ -2,7 +2,12 @@ import * as React from 'react';
 import styles from './PmoListForms.module.scss';
 import { IPmoListFormsProps } from './IPmoListFormsProps';
 import { escape } from '@microsoft/sp-lodash-subset';
-import { SPHttpClient, ISPHttpClientOptions, SPHttpClientConfiguration, SPHttpClientResponse, HttpClientResponse } from "@microsoft/sp-http";
+import {
+    SPHttpClient, HttpClient, IHttpClientOptions,
+    HttpClientResponse, ISPHttpClientOptions,
+    SPHttpClientConfiguration,
+    SPHttpClientResponse
+} from "@microsoft/sp-http";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { _getParameterValues } from './getQueryString';
 import { Form, FormGroup, Button, FormControl } from "react-bootstrap";
@@ -19,7 +24,9 @@ import { inputfieldLength } from "../components/PmoListForms";
 require('./PmoListForms.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
 
-var allchoiceColumnsEditForm: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Project_x0020_Cost", "Project_x0020_Phase","Status", "Scope", "Resource", "Schedule"];
+var allchoiceColumnsEditForm: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Project_x0020_Cost", "Project_x0020_Phase", "Status", "Scope", "Resource", "Schedule"];
+var PM_userInfo;
+var DM_userInfo;
 
 export interface IreactState {
     ProjectID: string,
@@ -47,22 +54,22 @@ export interface IreactState {
     //peoplepicker
     ProjectManager: string;
     DeliveryManager: string;
-    PM:number;
-    DM:number;
+    PM: number;
+    DM: number;
     //Previous PM and Previous DM used for ms flow to chekc permssion
-    Previous_PM:number;
-    Previous_DM:number;
+    Previous_PM: number;
+    Previous_DM: number;
     //to hold the previous ID of the people picker field
-    PreviousPM_old:number;
-    PreviousDM_old:number;
+    PreviousPM_old: number;
+    PreviousDM_old: number;
     //check peoplepicker values changes or not
     PMchange: boolean;
     DMchange: boolean;
     //date
-    startDate: any;
+    //startDate: any;
     disable_RMSID: boolean;
     disable_plannedCompletion: boolean;
-    endDate: any;
+    //endDate: any;
     focusedInput: any;
     FormDigestValue: string;
 }
@@ -100,16 +107,14 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             ProjectResource: '',
             ProjectCost: '',
             DeliveryManager: '',
-            PM:0,
-            DM:0,
-            Previous_PM:0,
-            Previous_DM:0,
-            PreviousPM_old:0,
-            PreviousDM_old:0,
-            PMchange:false,
-            DMchange:false,
-            startDate: '',
-            endDate: '',
+            PM: 0,
+            DM: 0,
+            Previous_PM: 0,
+            Previous_DM: 0,
+            PreviousPM_old: 0,
+            PreviousDM_old: 0,
+            PMchange: false,
+            DMchange: false,
             disable_RMSID: false,
             disable_plannedCompletion: true,
             focusedInput: '',
@@ -168,12 +173,12 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             $('.ProjectID').remove();
             $('#ProjectId').closest('div').append('<span class="ProjectID" style="color:red;font-size:9pt">Project Id cannot be 0</span>');
         }
-        if(e.target.name == "ProjectManager"){
+        if (e.target.name == "ProjectManager") {
             this.setState({
                 PMchange: true
             })
         }
-        if(e.target.name == "DeliveryManager"){
+        if (e.target.name == "DeliveryManager") {
             this.setState({
                 DMchange: true
             })
@@ -184,7 +189,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     }
     private _getProjectManager = (items: any[]) => {
         console.log('Items:', items);
-        this.setState({ 
+        this.setState({
             ProjectManager: items[0].text,
             PM: items[0].id,
             PMchange: true
@@ -192,7 +197,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     }
     private _getDeliveryManager = (items: any[]) => {
         console.log('Items:', items);
-        this.setState({ 
+        this.setState({
             DeliveryManager: items[0].text,
             DM: items[0].id,
             PMchange: true
@@ -200,7 +205,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
     }
 
     public render(): React.ReactElement<IPmoListFormsProps> {
-
+        SPComponentLoader.loadCss('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
         return (
             <div id="newItemDiv" className={styles["_main-div"]} >
                 <div id="heading" className={styles.heading}><h3>Project Details</h3></div>
@@ -214,8 +219,13 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                             {/* Please check: --- disable RMS id to be removed */}
                             {/* <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project Id" onChange={this.handleChange} value={this.state.ProjectID}/> */}
                             <Form.Label>{this.state.ProjectID}</Form.Label>
+                            <div>
+                               <i className={styles.refreshIcon + " fa fa-refresh fa-lg"} title="Refresh RMS Data" onClick={() => { this._getRMSData() }} aria-hidden="true"></i>
+                            </div>
                         </FormGroup>
-                        <FormGroup className="col-1"></FormGroup>
+                        <FormGroup className="col-1">
+                            {/* <i className={styles.refreshIcon + " fa fa-refresh"} title="Refresh RMS Data" onClick={() => { this._getRMSData() }} aria-hidden="true"></i> */}
+                        </FormGroup>
                         {/*-----------Project Type------------- */}
                         <FormGroup className="col-2">
                             <Form.Label className={styles.customlabel}>Project Type</Form.Label>
@@ -262,7 +272,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                                     groupName={""} // Leave this blank in case you want to filter from all users    
                                     showtooltip={true}
                                     isRequired={true}
-                                    disabled={false}
+                                    disabled={true}
                                     ensureUser={true}
                                     selectedItems={this._getDeliveryManager}
                                     defaultSelectedUsers={[this.state.DeliveryManager]}
@@ -284,7 +294,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                                     groupName={""} // Leave this blank in case you want to filter from all users    
                                     showtooltip={true}
                                     isRequired={true}
-                                    disabled={false}
+                                    disabled={true}
                                     ensureUser={true}
                                     selectedItems={this._getProjectManager}
                                     defaultSelectedUsers={[this.state.ProjectManager]}
@@ -355,7 +365,8 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                             <Form.Label className={styles.customlabel + " " + styles.required}>Actual Start Date</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="date" id="ActualStartDate" name="ActualStartDate" placeholder="Actual Start Date" onChange={this.handleChange} value={this.state.ActualStartDate} />
+                            {/* <Form.Control size="sm" type="date" id="ActualStartDate" name="ActualStartDate" placeholder="Actual Start Date" onChange={this.handleChange} value={this.state.ActualStartDate} /> */}
+                            <Form.Label>{this.state.ActualStartDate}</Form.Label>
                             {/* <DatePicker selected={this.state.PlannedStart}  onChange={this.handleChange} />; */}
                         </FormGroup>
                         <FormGroup className="col-1"></FormGroup>
@@ -363,7 +374,8 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                             <Form.Label className={styles.customlabel}>Actual End Date</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
-                            <Form.Control size="sm" type="date" data-toggle="tooltip" data-placement="right" title="End Date can be added when Status is Completed" disabled={this.state.disable_plannedCompletion} id="ActualEndDate" name="ActualEndDate" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.ActualEndDate} />
+                            {/* <Form.Control size="sm" type="date" data-toggle="tooltip" data-placement="right" title="End Date can be added when Status is Completed" disabled={this.state.disable_plannedCompletion} id="ActualEndDate" name="ActualEndDate" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.ActualEndDate} /> */}
+                            <Form.Label>{this.state.ActualEndDate}</Form.Label>
                         </FormGroup>
                     </Form.Row>
                     {/* Project Description */}
@@ -392,7 +404,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         </FormGroup>
                     </Form.Row> */}
                     <Form.Row>
-                    <FormGroup className="col-2">
+                        <FormGroup className="col-2">
                             <Form.Label className={styles.customlabel}>Revised Budget</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
@@ -443,7 +455,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         </FormGroup>
                     </Form.Row>
                     <Form.Row className="mb-4">
-                    <FormGroup className="col-2">
+                        <FormGroup className="col-2">
                             <Form.Label className={styles.customlabel}>Project Progress</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-3">
@@ -468,7 +480,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         </div>
                         <FormGroup className="col-.5"></FormGroup>
                         <div>
-                            <Button id="cancel" size="sm" variant="primary"  onClick={() => { this._closeform() }}>
+                            <Button id="cancel" size="sm" variant="primary" onClick={() => { this._closeform() }}>
                                 Cancel
                 </Button>
                         </div>
@@ -482,6 +494,154 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             </div>);
     }
 
+    //load data form RMS
+    private async _getRMSData(): Promise<void> {
+        this.setState({
+            ProjectManager: '',
+            DeliveryManager: '',
+            ClientName: '',
+            ProjectName: '',
+            // PlannedStart: '',
+            // PlannedCompletion: '',
+            ActualStartDate: '',
+            ActualEndDate: '',
+            ProjectMode: '',
+            ProjectLocation: '',
+            TotalCost: 0
+        });
+        var apiURL = "https://rms.yash.com/rms/projects/projectAttributePMO?find=PMOProjectAttribute&projectId=" + this.state.ProjectID;
+        const myOptions: IHttpClientOptions = {
+            headers: new Headers({
+                'Authorization': 'Basic YWRtaW46YWRtaW4xMjM0NQ=='
+            }),
+            method: 'GET'
+        };
+        return this.props.currentContext.httpClient.get(apiURL, HttpClient.configurations.v1, myOptions)
+            .then((apiResponse: HttpClientResponse) => {
+                if (apiResponse.status == 200) {
+                    console.log(apiResponse);
+                    return apiResponse.json();
+                } else if (apiResponse.status == 404) {
+                    this.setState({
+                        ProjectManager: '',
+                        DeliveryManager: '',
+                        ClientName: '',
+                        ProjectName: '',
+                        // PlannedStart: '',
+                        // PlannedCompletion: '',
+                        ActualStartDate: '',
+                        ActualEndDate: '',
+                        ProjectMode: '',
+                        ProjectLocation: '',
+                        TotalCost: 0
+                    })
+                    $('#ProjectId').css('border', '1px solid red');
+                    this._validationMessage("ProjectId", "ProjectID", "Incorrect Project Id");
+                }
+            }).then(json_RMSData => {
+
+
+                if (json_RMSData.status && this.state.ProjectID == json_RMSData.data.projectId) {
+                    this.setState({
+                        ProjectManager: json_RMSData.data.manager,
+                        DeliveryManager: json_RMSData.data.deliveryManager,
+                        ClientName: json_RMSData.data.clientName,
+                        ProjectName: json_RMSData.data.projectName,
+                        // PlannedStart: json_RMSData.data.projectStartDate,
+                        // PlannedCompletion: json_RMSData.data.projectEndDate,
+                        ActualStartDate: json_RMSData.data.projectStartDate,
+                        ActualEndDate: json_RMSData.data.projectEndDate,
+                        ProjectMode: json_RMSData.data.projectMode,
+                        ProjectLocation: json_RMSData.data.region,
+                        TotalCost: json_RMSData.data.totalCost
+                    });
+                    this._getProjectManagerProperties(json_RMSData.data.manager);
+                    this._getDeliveryManagerProperties(json_RMSData.data.deliveryManager);
+
+                } else if ((this.state.ProjectID != "" || this.state.ProjectID != json_RMSData.data.projectId) && !json_RMSData.status) {
+                    this.setState({
+                        ProjectID: '',
+                        ProjectManager: '',
+                        DeliveryManager: '',
+                        ClientName: '',
+                        ProjectName: '',
+                        // PlannedStart: '',
+                        // PlannedCompletion: '',
+                        ActualStartDate: '',
+                        ActualEndDate: '',
+                        ProjectMode: '',
+                        ProjectLocation: '',
+                        TotalCost: 0
+                    })
+                    alert("RMS System is down, Please wait for sometime");
+                }
+                // else if(!json_RMSData.status){
+                //   alert("RMS System is down, Please wait for sometime");
+                // }
+            });
+    }
+    //get the userProfile Properties
+    private _getProjectManagerProperties(userName) {
+        /// username should be passed as 'domain\username'
+        /// change this prefix according to the environment. 
+        /// In below sample, windows authentication is considered.
+        var prefix = "i:0#.f|membership|";
+        /// get the site url
+        var siteUrl = this.props.currentContext.pageContext.web.absoluteUrl;
+        /// add prefix, this needs to be changed based on scenario
+        var accountName = prefix + userName;
+
+        /// make an ajax call to get the site user
+        $.ajax({
+            url: siteUrl + "/_api/web/siteusers(@v)?@v='" +
+                encodeURIComponent(accountName) + "'",
+            method: "GET",
+            headers: { "Accept": "application/json; odata=verbose" },
+            success: function (data) {
+                //user id received from the site 
+                PM_userInfo = data.d;
+            },
+            error: function (data) {
+                console.log(JSON.stringify(data));
+            }
+        }).then(p => {
+            this.setState({
+                PM: PM_userInfo.Id,
+                ProjectManager: PM_userInfo.Title
+            })
+        });
+    }
+    //get the userProfile Properties
+    private _getDeliveryManagerProperties(userName) {
+        /// username should be passed as 'domain\username'
+        /// change this prefix according to the environment. 
+        /// In below sample, windows authentication is considered.
+        var prefix = "i:0#.f|membership|";
+        /// get the site url
+        var siteUrl = this.props.currentContext.pageContext.web.absoluteUrl;
+        /// add prefix, this needs to be changed based on scenario
+        var accountName = prefix + userName;
+
+        /// make an ajax call to get the site user
+        $.ajax({
+            url: siteUrl + "/_api/web/siteusers(@v)?@v='" +
+                encodeURIComponent(accountName) + "'",
+            method: "GET",
+            headers: { "Accept": "application/json; odata=verbose" },
+            success: function (data) {
+                //user id received from the site 
+                DM_userInfo = data.d;
+            },
+            error: function (data) {
+                console.log(JSON.stringify(data));
+            }
+        }).then(p => {
+            this.setState({
+                DM: DM_userInfo.Id,
+                DeliveryManager: DM_userInfo.Title
+            })
+        });
+    }
     //function to validate the date, not allowing the user to enter end date lesser than start date
     private _validateDate(e) {
         let newState = {};
@@ -540,7 +700,6 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         } else if (e.target.name == "ProjectProgress" && e.target.value != 100) {
             this.setState({
                 disable_plannedCompletion: true,
-                ActualEndDate: ''
                 //ProjectStatus: (this.state.stat)
             })
         }
@@ -553,7 +712,6 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         } else if (e.target.name == "ProjectStatus" && e.target.value != "Completed") {
             this.setState({
                 ProjectProgress: (this.state.ProjectProgress == 100 ? 0 : this.state.ProjectProgress),
-                ActualEndDate: '',
                 disable_plannedCompletion: true
             })
         }
@@ -587,7 +745,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
 
                             });
                         }, (err: any): void => {
-                            _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside PMOLIstEditForm: errlog", "PMOLisForm", "_checkExistingProjectId", err, _projectID);
+                            _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside PMOLIstEditForm: errlog", "PMOLisForm", "_checkExistingProjectId", err, _projectID);
                             console.warn(`Failed to fulfill Promise\r\n\t${err}`);
                         });
                 } else {
@@ -612,9 +770,9 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         'odata-version': ''
                     }
                 }).then((response: SPHttpClientResponse): Promise<SPProjectListEditForm> => {
-                    if(response.ok){
+                    if (response.ok) {
                         return response.json();
-                    }else{
+                    } else {
                         alert("You don't have permission to view/edit this Project Details")
                     }
                 })
@@ -630,8 +788,8 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         ProjectPhase: item.Project_x0020_Phase,
                         PlannedStart: item.PlannedStart,
                         PlannedCompletion: item.Planned_x0020_End,
-                        ActualStartDate: item.Actual_x0020_Start,
-                        ActualEndDate: item.Actual_x0020_End,
+                        ActualStartDate: item.Actual_x0020_Start == null ? '': item.Actual_x0020_Start,
+                        ActualEndDate: item.Actual_x0020_End == null ? '':item.Actual_x0020_End,
                         ProjectDescription: item.Project_x0020_Description,
                         ProjectLocation: item.Region,
                         RevisedBudget: item.Revised_x0020_Budget,
@@ -655,7 +813,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
 
                     })
                     //checking Status on Load
-                    if(item.Status == "Completed" && item.Progress == 100){
+                    if (item.Status == "Completed" && item.Progress == 100) {
                         this.setState({
                             disable_plannedCompletion: false
                         })
@@ -669,11 +827,11 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         let _formdigest = this.state.FormDigestValue; //variable for errorlog function
         let _projectID = this.state.ProjectID; //variable for errorlog function
 
-        if (this.state.disable_plannedCompletion) {
-            this.setState({
-                ActualEndDate: ""
-            })
-        }
+        // if (this.state.disable_plannedCompletion) {
+        //     this.setState({
+        //         ActualEndDate: ""
+        //     })
+        // }
         var itemId = _getParameterValues('itemId');
         let _validate = 0;
         e.preventDefault();
@@ -715,23 +873,23 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         };
         //validation
         //delivery manager 
-        if (requestData.Delivery_x0020_Manager == null || requestData.Delivery_x0020_Manager == "") {
-            this._validationMessage("DeliveryManager", "DeliveryManager", "Delivery Manager cannot be empty");
-            $('#DeliveryManager input').css('border', '1px solid red');
-            _validate++;
-        } else {
-            $('.DeliveryManager').remove();
-            $('#DeliveryManager input').css('border', '1px solid #ced4da');
-        }
-        //project manager
-        if (requestData.Project_x0020_Manager == null || requestData.Project_x0020_Manager == "") {
-            this._validationMessage("ProjectManager", "ProjectManager", "Project Manager cannot be empty");
-            $('#ProjectManager input').css('border', '1px solid red');
-            _validate++;
-        } else {
-            $('.ProjectManager').remove();
-            $('#ProjectManager input').css('border', '1px solid #ced4da');
-        }
+        // if (requestData.Delivery_x0020_Manager == null || requestData.Delivery_x0020_Manager == "") {
+        //     this._validationMessage("DeliveryManager", "DeliveryManager", "Delivery Manager cannot be empty");
+        //     $('#DeliveryManager input').css('border', '1px solid red');
+        //     _validate++;
+        // } else {
+        //     $('.DeliveryManager').remove();
+        //     $('#DeliveryManager input').css('border', '1px solid #ced4da');
+        // }
+        // //project manager
+        // if (requestData.Project_x0020_Manager == null || requestData.Project_x0020_Manager == "") {
+        //     this._validationMessage("ProjectManager", "ProjectManager", "Project Manager cannot be empty");
+        //     $('#ProjectManager input').css('border', '1px solid red');
+        //     _validate++;
+        // } else {
+        //     $('.ProjectManager').remove();
+        //     $('#ProjectManager input').css('border', '1px solid #ced4da');
+        // }
         //   //revised project
         // if ((requestData.Revised_x0020_Budget == null || requestData.Revised_x0020_Budget=="")) {
         //     this._validationMessage("RevisedBudget", "RevisedBudget", "Revised Budget cannot be empty");
@@ -747,10 +905,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         //     this._validationMessage("RevisedBudget", "RevisedBudget", "Revised Budget cannot be 0");
         //     _validate++;
         // } else 
-        if(requestData.Revised_x0020_Budget != null && requestData.Revised_x0020_Budget < 0){
+        if (requestData.Revised_x0020_Budget != null && requestData.Revised_x0020_Budget < 0) {
             this._validationMessage("RevisedBudget", "RevisedBudget", "Revised Budget cannot be less than 0");
             _validate++;
-        }else{
+        } else {
             $('.RevisedBudget').remove();
             $('#RevisedBudget').css('border', '1px solid #ced4da')
         }
@@ -775,22 +933,31 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             $('#InvoicedAmount').css('border', '1px solid #ced4da')
         }
         //actual start
-        if (requestData.Actual_x0020_Start == null || requestData.Actual_x0020_Start == "") {
-            this._validationMessage("ActualStartDate", "ActualStartDate", "Actual Start Date cannot be empty");
-            $('#ActualStartDate').css('border', '1px solid red');
-            _validate++;
-        } else {
-            $('.ActualStartDate').remove();
-            $('#ActualStartDate').css('border', '1px solid #ced4da');
-        }
-        if (requestData.Status == "Completed" && requestData.Progress == 100 && (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "")) {
-            this._validationMessage("ActualEndDate", "ActualEndDate", "Actual End Date cannot be empty");
-            $('#ActualEndDate').css('border', '1px solid red');
-            _validate++;
-        } else {
-            $('.ActualEndDate').remove();
-            $('#ActualEndDate').css('border', '1px solid #ced4da');
-        }
+        // if (requestData.Actual_x0020_Start == null || requestData.Actual_x0020_Start == "") {
+        //     this._validationMessage("ActualStartDate", "ActualStartDate", "Actual Start Date cannot be empty");
+        //     $('#ActualStartDate').css('border', '1px solid red');
+        //     _validate++;
+        // } else {
+        //     $('.ActualStartDate').remove();
+        //     $('#ActualStartDate').css('border', '1px solid #ced4da');
+        // }
+        //checking actual end insync with Status and Progress
+        // if (requestData.Status == "Completed" && requestData.Progress == 100 && (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "")) {
+        //     // alert("Project Status cannot be Completed without End Date. Update Data in RMS")
+        //     this._validationMessage("Status", "Status", "Status cannot be Complete if End date is empty");
+        //     $('#Status').css('border', '1px solid red');
+        //     this._validationMessage("ProjectProgress", "ProjectProgress", "ProjectProgress cannot be 100 if End date is empty");
+        //     $('#ProjectProgress').css('border', '1px solid red');
+        //     _validate++;
+        // } 
+        // else if((requestData.Status != "Completed" || requestData.Progress != 100) && (requestData.Actual_x0020_End != "")){
+        //     // alert("End Date is not blank, Please update Project Status and ");
+        //     this._validationMessage("Status", "Status", "End date is not empty Status should be Complete");
+        //     $('#Status').css('border', '1px solid red');
+        //     this._validationMessage("ProjectProgress", "ProjectProgress", "End date is not empty ProjectProgress should be 100");
+        //     $('#ProjectProgress').css('border', '1px solid red');
+        //     _validate++;
+        // }
         //Project Phase
         if (requestData.Project_x0020_Phase == null || requestData.Project_x0020_Phase == "") {
             this._validationMessage("ProjectPhase", "ProjectPhase", "Project Phase cannot be empty");
@@ -814,31 +981,49 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             this._validationMessage("Status", "Status", "Project Status cannot be empty");
             $('#Status').css('border', '1px solid red');
             _validate++;
-        }else if ((requestData.Progress != null) && requestData.Progress < 100 && requestData.Status == "Completed") {
+        } else if ((requestData.Progress != null) && requestData.Progress < 100 && requestData.Status == "Completed") {
             this._validationMessage("Status", "Status", "Status cannot be Completed, if Project Progress is less than 100");
             _validate++;
-          } else {
+        } else if (requestData.Status == "Completed"&& (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "")) {
+            // alert("Project Status cannot be Completed without End Date. Update Data in RMS")
+            this._validationMessage("Status", "Status", "Status cannot be Complete if End date is empty");
+            $('#Status').css('border', '1px solid red');
+            this._validationMessage("ProjectProgress", "ProjectProgress", "ProjectProgress cannot be 100 if End date is empty");
+            $('#ProjectProgress').css('border', '1px solid red');
+            _validate++;
+        } else if ((requestData.Progress != null) && requestData.Progress < 100 && requestData.Status == "Completed") {
+
+            this._validationMessage("Status", "Status", "Status cannot be Completed, if Project Progress is less than 100");
+            _validate++;
+        } else {
             $('.Status').remove();
             $('#Status').css('border', '1px solid #ced4da')
-          }
+        }
         //project progress in sync with status
         if ((requestData.Progress != null) && requestData.Progress < 0) {
             //$('.ProjectID').remove();
             $('#ProjectProgress').css('border', '1px solid red');
             this._validationMessage("ProjectProgress", "ProjectProgress", "Project Progress cannot be less than 0");
             _validate++;
-        } else{
+        } else if (requestData.Progress == 100 && (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "")) {
+            // alert("Project Status cannot be Completed without End Date. Update Data in RMS")
+            this._validationMessage("Status", "Status", "Status cannot be Complete if End date is empty");
+            $('#Status').css('border', '1px solid red');
+            this._validationMessage("ProjectProgress", "ProjectProgress", "ProjectProgress cannot be 100 if End date is empty");
+            $('#ProjectProgress').css('border', '1px solid red');
+            _validate++;
+        } else {
             $('.ProjectProgress').remove();
             $('#ProjectProgress').css('border', '1px solid #ced4da')
-        } 
-        if ((requestData.Progress != null) && requestData.Progress <100 && requestData.Status == "Completed") {
-           
-            this._validationMessage("Status","Status","Status cannot be Completed, if Project Progress is less than 100");
-            _validate++;
-           }else{
-            $('.Status').remove();
-            $('#Status').css('border', '1px solid #ced4da')
         }
+        // if ((requestData.Progress != null) && requestData.Progress < 100 && requestData.Status == "Completed") {
+
+        //     this._validationMessage("Status", "Status", "Status cannot be Completed, if Project Progress is less than 100");
+        //     _validate++;
+        // } else {
+        //     $('.Status').remove();
+        //     $('#Status').css('border', '1px solid #ced4da')
+        // }
         //schedule
         if (requestData.Schedule == null || requestData.Schedule == "") {
             this._validationMessage("Schedule", "Schedule", "Project Schedule cannot be empty");
@@ -891,30 +1076,34 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             },
             success: (data, status, xhr) => {
                 alert("Submitted successfully");
-                {if(this.props.customGridRequired){
-                    let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
-                  window.open(winUrl, '_self');
-                }else{
-                  let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
-                  window.open(winUrl, '_self');
-                }}
+                {
+                    if (this.props.customGridRequired) {
+                        let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
+                        window.open(winUrl, '_self');
+                    } else {
+                        let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
+                        window.open(winUrl, '_self');
+                    }
+                }
                 // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
                 // window.open(winURL, '_self');
             },
             error: (xhr, status, error) => {
-                _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside saveitem pmoeditform: errlog", "PmoListForm", "saveitem", xhr, _projectID);
+                _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside saveitem pmoeditform: errlog", "PmoListForm", "saveitem", xhr, _projectID);
                 if (xhr.responseText.match('2147024891')) {
-                    alert("You don't have permission to edit an existing project");
-                }else{
+                    alert("You don't have permission to modify this Project");
+                } else {
                     alert(JSON.stringify(xhr.responseText));
                 }
-                {if(this.props.customGridRequired){
-                    let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
-                  window.open(winUrl, '_self');
-                }else{
-                  let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
-                  window.open(winUrl, '_self');
-                }}
+                {
+                    if (this.props.customGridRequired) {
+                        let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
+                        window.open(winUrl, '_self');
+                    } else {
+                        let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
+                        window.open(winUrl, '_self');
+                    }
+                }
                 // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
                 // window.open(winURL, '_self');
             }
@@ -944,20 +1133,22 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                 });
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside getaccesstoken Pmoeditform: errlog", "PmoListForm", "getaccesstoken", jqXHR, _projectID);
+                _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside getaccesstoken Pmoeditform: errlog", "PmoListForm", "getaccesstoken", jqXHR, _projectID);
             }
         });
     }
     //function to close the form and redirect to the Grid page
     private _closeform() {
         //e.preventDefault();
-        {if(this.props.customGridRequired){
-            let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
-          window.open(winUrl, '_self');
-        }else{
-          let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
-          window.open(winUrl, '_self');
-        }}
+        {
+            if (this.props.customGridRequired) {
+                let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
+                window.open(winUrl, '_self');
+            } else {
+                let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
+                window.open(winUrl, '_self');
+            }
+        }
         //let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
         // this.setState({
         //     ProjectID : '',
