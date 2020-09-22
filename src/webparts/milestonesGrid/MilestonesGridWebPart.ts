@@ -30,6 +30,7 @@ export interface ISPMilestoneList{
 
 export interface IMilestonesGridWebPartProps {
   description: string;
+  listGUID:string;
 }
 
 export default class MilestonesGridWebPart extends BaseClientSideWebPart <IMilestonesGridWebPartProps> {
@@ -43,10 +44,10 @@ export default class MilestonesGridWebPart extends BaseClientSideWebPart <IMiles
 
     let _ProjectId = this._getParameterValues('FilterValue1')
 
-    let url = `/_api/web/lists('${listGuid}')/items?$select=*&$filter=ProjectID eq '` + _ProjectId + `'&$orderby=Id desc`;
+    let url = `/_api/web/lists('${this.properties.listGUID}')/items?$select=*&$filter=ProjectID eq '` + _ProjectId + `'&$orderby=Id desc`;
     let currentContext = this.context;
     _getallItems(url, currentContext, currentContext.pageContext.web.absoluteUrl).then((results) => {
-      _populateGrid(results);
+      _populateGrid(results, currentContext);
       //_customStyle();
     });
   }
@@ -77,6 +78,9 @@ export default class MilestonesGridWebPart extends BaseClientSideWebPart <IMiles
             groupFields: [
               PropertyPaneTextField('description', {
                 label: strings.DescriptionFieldLabel
+              }),
+              PropertyPaneTextField('listGUID', {
+                label: 'Enter the List GUID'
               })
             ]
           }

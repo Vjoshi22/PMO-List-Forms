@@ -57,7 +57,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
     });
 
-    getListEntityName(this.props.currentContext, listGUID);
+    getListEntityName(this.props.currentContext, this.props.listGUID);
     // this.loadItems();
     setTimeout(() =>this.loadItems(), 1000);
 
@@ -296,10 +296,10 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
 
           <Form.Row>
             <FormGroup className="col-2">
-              <Form.Label className={styles.customlabel + " " + styles.required}>Remarks</Form.Label>
+              <Form.Label className={styles.customlabel + " " + styles.required}>Mitigation Plan</Form.Label>
             </FormGroup>
             <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
+              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={3} type="text" id="Remarks" name="Remarks" placeholder="Mitigation Plan" onChange={this.handleChange} value={this.state.Remarks} />
             </FormGroup>
           </Form.Row>
 
@@ -329,13 +329,13 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
 
   private loadItems() {
 
-    var itemId = GetParameterValues('id');
+    var itemId = GetParameterValues('itemId');
     if (itemId == "") {
       alert("Incorrect URL");
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
       window.open(winURL, '_self');
     } else {
-      const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items(${itemId})`;
+      const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items(${itemId})`;
       return this.props.currentContext.spHttpClient.get(url, SPHttpClient.configurations.v1,
         {
           headers: {
@@ -343,7 +343,11 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
             'odata-version': ''
           }
         }).then((response: SPHttpClientResponse): Promise<ISPRiskInformationFields> => {
-          return response.json();
+          if(response.ok){
+            return response.json();
+          }else{
+            alert("You don't have permission to view/edit Risks");
+          }
         })
         .then((item: ISPRiskInformationFields): void => {
           this.setState({
@@ -370,7 +374,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    var itemId = GetParameterValues('id');
+    var itemId = GetParameterValues('itemId');
     let _validate = 0;
     e.preventDefault();
 
@@ -495,7 +499,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     }
 
     $.ajax({
-      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items(${itemId})`,
+      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items(${itemId})`,
       type: "POST",
       data: JSON.stringify(requestData),
       headers:
@@ -509,18 +513,27 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
       success: (data, status, xhr) => {
         alert("Submitted successfully");
         {if(this.props.customGridRequired){
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
           window.open(winURL, '_self');
         }else{
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl +  '/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
           window.open(winURL, '_self');
         }}
       },
       error: (xhr, status, error) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem RiskInfo Edit: errlog", "RiskInformation", "saveitem", xhr, _projectID );
-        alert(JSON.stringify(xhr.responseText));
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
-        window.open(winURL, '_self');
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside saveitem RiskInfo Edit: errlog", "RiskInformation", "saveitem", xhr, _projectID );
+        if (xhr.responseText.match('2147024891')) {
+          alert("You don't have permission to edit an existing Risk");
+        }else{
+          alert(JSON.stringify(xhr.responseText));
+        }
+        {if(this.props.customGridRequired){
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+          window.open(winURL, '_self');
+        }else{
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl +  '/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
+          window.open(winURL, '_self');
+        }}
       }
     });
 
@@ -566,17 +579,17 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside setFormDigest RiskInfo Edit: errlog", "RiskInformation", "setFormDigest", jqXHR, _projectID );
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside setFormDigest RiskInfo Edit: errlog", "RiskInformation", "setFormDigest", jqXHR, _projectID );
       }
     });
   }
 
   private closeform() {
     {if(this.props.customGridRequired){
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
       window.open(winURL, '_self');
     }else{
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/Lists/RiskInformation/AllItems.aspx?FilterField1=ProjectID&FilterValue1='+ this.state.ProjectID +'&FilterType1=Number&viewid=7ff3e65c%2Dd1a0%2D4177%2Dabf5%2D23ae28400236';
       window.open(winURL, '_self');
     }}
     this.state = {
@@ -603,7 +616,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {
@@ -616,7 +629,7 @@ export default class RiskInformationEdit extends React.Component<IRiskInformatio
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField RiskInfo Edit: errlog", "RiskInformation", "retrieveAllChoicesFromListField", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside retrieveAllChoicesFromListField RiskInfo Edit: errlog", "RiskInformation", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {

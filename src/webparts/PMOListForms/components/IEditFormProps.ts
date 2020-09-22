@@ -22,4 +22,8 @@ export interface SPProjectListEditForm {
   Schedule: string;
   Resource: string;
   Project_x0020_Cost: string;
+  PMId:number;
+  DMId:number;
+  Previous_PM:{"Id"};
+  Previous_DM:{"Id"};
 }

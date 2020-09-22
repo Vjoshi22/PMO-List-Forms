@@ -3,6 +3,6 @@ import { WebPartContext } from "@microsoft/sp-webpart-base";
 export interface ITileNavigaitonPmoProps {
   description: string;
   currentContext:  WebPartContext;
-  lists: string | string[];
+  listGUID: string;
   tileName: string;
 }

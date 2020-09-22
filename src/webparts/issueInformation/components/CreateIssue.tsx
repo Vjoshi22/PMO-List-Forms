@@ -78,7 +78,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
       allchoiceColumns.forEach(elem => {
         this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
       });
-      _getListEntityName(this.props.currentContext, listGUID);
+      _getListEntityName(this.props.currentContext, this.props.listGUID);
       // $('.pickerText_4fe0caaf').css('border','0px');
       // $('.pickerInput_4fe0caaf').addClass('form-control');
       $('.form-row').css('justify-content', 'center');
@@ -185,7 +185,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>IssuePriority</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" id="IssuePriority" as="select" name="IssuePriority" onChange={this.handleChange} value={this.state.IssuePriority}>
+              <Form.Control size="sm" id="IssuePriority"  as="select" name="IssuePriority" onChange={this.handleChange} value={this.state.IssuePriority}>
                 <option value="">Select an Option</option>
               </Form.Control>
             </FormGroup>
@@ -197,7 +197,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>Assigned Team</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="text" id="Assignedteam" name="Assignedteam" placeholder="Assigned Team" onChange={this.handleChange} value={this.state.Assignedteam} />
+              <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="Assignedteam" name="Assignedteam" placeholder="Assigned Team" onChange={this.handleChange} value={this.state.Assignedteam} />
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             {/*-----------Issue Priority------------- */}
@@ -205,7 +205,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>Assgined Person</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" id="Assginedperson" type="text" name="Assginedperson" onChange={this.handleChange} value={this.state.Assginedperson} />
+              <Form.Control size="sm" maxLength={inputfieldLength} id="Assginedperson" type="text" name="Assginedperson" onChange={this.handleChange} value={this.state.Assginedperson} />
             </FormGroup>
           </Form.Row>
           {/* ---------ROW 6---------------- */}
@@ -215,7 +215,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>Issue Reported On</Form.Label>
             </FormGroup>
             <FormGroup className="col-3">
-              <Form.Control size="sm" type="date" id="IssueReportedOn" name="IssueReportedOn" onChange={this.handleChange} value={this.state.IssueReportedOn} />
+              <Form.Control size="sm" maxLength={inputfieldLength} type="date" id="IssueReportedOn" name="IssueReportedOn" onChange={this.handleChange} value={this.state.IssueReportedOn} />
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             {/*-----------Issue Priority------------- */}
@@ -493,7 +493,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
     $.ajax({
-      url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/web/lists('" + listGUID + "')/items",
+      url: this.props.currentContext.pageContext.web.absoluteUrl + "/_api/web/lists('" + this.props.listGUID + "')/items",
       type: "POST",
       data: JSON.stringify(requestData),
       headers:
@@ -506,18 +506,21 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
       },
       success: (data, status, xhr) => {
         alert("Submitted successfully");
-       let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+       let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
         window.open(winURL, '_self');
         
       },
       error: (xhr, status, error) => {
         //function to log error
-        _logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", xhr, _projectID );
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID ,_formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", xhr, _projectID );
         if (xhr.responseText.match('2130575169')) {
           alert("The Project Id you entered already exists, please try with a new Project Id")
+        }else if (xhr.responseText.match('2147024891')) {
+          alert("You don't have permission to Create a new Issue");
+        }else{
+          alert(JSON.stringify(xhr.responseText));
         }
-        //alert(JSON.stringify(xhr.responseText));
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
         window.open(winURL,'_self');
       }
     });
@@ -541,7 +544,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
   //close the form on cancel button click
   private closeForm() {
     
-    let winUrl = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+    let winUrl = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
     window.open(winUrl, '_self');
     //clearing the fields
     this.setState({
@@ -565,7 +568,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {
         if (response.ok) {
@@ -577,7 +580,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside reterive choice fields from SP List: errlog", "IssueInformation", "retrieveAllChoicesFromListField", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID ,_formdigest, "inside reterive choice fields from SP List: errlog", "IssueInformation", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {
@@ -590,8 +593,8 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
   private _checkExistingProjectId(siteColUrl, ProjectIDValue) {
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
-
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + ProjectMasterListGuid + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
+    if(this.props.ProjectMasterGUID){
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.ProjectMasterGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -606,7 +609,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
                     return true;
                   } else {
                     alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-                    let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+                    let winURL = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
                     window.open(winURL, '_self');
                   }
                   // if(ProjectIDValue != item.ProjectID && breakCondition){
@@ -617,25 +620,26 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
               } else {
                 breakCondition = false;
                 alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-                let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+                let winURL = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
                 window.open(winURL, '_self');
                 return false;
               }
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
               alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-              let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+              let winURL = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
               window.open(winURL, '_self');
             });
         } else {
           //_logExceptionError(this.props.currentContext, _formdigest, "inside saveIssue: errlog", "IssueInformation", "saveIssue", err, _projectID );
           console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
           alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-          let winURL = "https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx";
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + "/SitePages/Project-Master.aspx";
           window.open(winURL, '_self');
         }
       });
+    }
   }
   //validaton message for empty fields
   private _validationMessage(_id, _classname, _message) {
@@ -660,7 +664,7 @@ export default class CreateIssue extends React.Component<IIssueInformationProps,
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside get access token: errlog", "IssueInformation", "getAccessToken", jqXHR, _projectID );
+        _logExceptionError(this.props.currentContext,this.props.exceptionLogGUID, _formdigest, "inside get access token: errlog", "IssueInformation", "getAccessToken", jqXHR, _projectID );
       }
     });
   }

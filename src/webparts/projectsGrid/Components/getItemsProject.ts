@@ -43,8 +43,8 @@ export function _getallItems(url: string, currentContext: any, absoluteURL: any)
     }) as Promise<ISPProjectsList[]>
 }
 
-export function _populateGrid(results) {
-  $('.dataGrid').append(GenerateTablefromJSON(results));
+export function _populateGrid(results, currentContext) {
+  $('.dataGrid').append(GenerateTablefromJSON(results, currentContext));
 
   table = $('#FilesTable').DataTable({
     "columnDefs": [{
@@ -59,7 +59,7 @@ export function _populateGrid(results) {
     //"dom": 'lftrip',//(l)ength,(f)iltering,(t)able,(i)nformation,(p)aging, P(r)ocessing
     "dom": "<<t>ip>",
     //"lengthChange": false,   
-    "order": [[0, "desc"]],
+    // "order": [[0, "desc"]],
     "fixedHeader": {
       header:true
     }
@@ -105,7 +105,7 @@ export function _populateGrid(results) {
     });
   });
 }
-function GenerateTablefromJSON(data) {
+function GenerateTablefromJSON(data, currentContext) {
   var tablecontent =
     '<table id="FilesTable" class="table table-hover table-responsive cell-border" cellspacing="0" width="100%">' +
     '<thead><tr id="columnFilters">' +
@@ -144,13 +144,13 @@ function GenerateTablefromJSON(data) {
     '<tbody>';
 
   for (var i = 0; i < data.length; i++) {
-    let projectUpdateLink = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/UpdateProject.aspx?page=edit,id=' + data[i].ID;
-    let createIssuesLink = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Track-Issues.aspx?type=new&ProjectID=' + data[i].ProjectID;
-    let viewIssuesLink = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Issue-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
-    let createRisksLink = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Track-Risks.aspx?type=new&ProjectID=' + data[i].ProjectID;
-    let viewRisksLink = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
-    let creatMlestoneLink = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Track-Milestone.aspx?type=new&ProjectID=' + data[i].ProjectID;
-    let viewMilestoneLink = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
+    let projectUpdateLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/UpdateProject.aspx?page=edit&itemId=' + data[i].ID;
+    let createIssuesLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/Track-Issues.aspx?type=new&ProjectID=' + data[i].ProjectID;
+    let viewIssuesLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Issue-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
+    let createRisksLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Track-Risks.aspx?type=new&ProjectID=' + data[i].ProjectID;
+    let viewRisksLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
+    let creatMlestoneLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Track-Milestone.aspx?type=new&ProjectID=' + data[i].ProjectID;
+    let viewMilestoneLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
 
     tablecontent += '<tr id="' + data[i].ID + 'row">';
     tablecontent += '<td class="' + data[i].ProjectID + 'rowItem">' + data[i].ProjectID + "</td>";

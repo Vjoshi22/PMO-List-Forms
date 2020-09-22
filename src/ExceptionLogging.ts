@@ -5,9 +5,9 @@ import { SPExceptionLoggingProps } from "./IExceptionLoggingProps";
 import { _getParameterValues } from './webparts/PMOListForms/components/getQueryString';
 import { IPmoListFormsProps } from "./webparts/PMOListForms/components/IPmoListFormsProps";
 
-var exceptionLoggingListGUID: any = "c3f39dde-1797-4f26-a8ce-f8e0429c26e5";
+//var exceptionLoggingListGUID: any = "c3f39dde-1797-4f26-a8ce-f8e0429c26e5";
 
-export function _logExceptionError(_currentContext, _formdigest, _title, _webpartName, _fnName, err, _projectId){
+export function _logExceptionError(_currentContext, exceptionLoggingListGUID, _formdigest, _title, _webpartName, _fnName, err, _projectId){
     let requestData = {
         __metadata:
         {
@@ -19,7 +19,7 @@ export function _logExceptionError(_currentContext, _formdigest, _title, _webpar
         ResponseCode: err.responseJSON.error.code,
         ResponseText: err.responseText,
         DetailedError: '',
-        ItemID: _getParameterValues('id'),
+        ItemID: _getParameterValues('itemId'),
         ProjectID: _projectId
   
     } as SPExceptionLoggingProps

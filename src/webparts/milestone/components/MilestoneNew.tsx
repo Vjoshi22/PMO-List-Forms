@@ -67,7 +67,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
         this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
       });
 
-      getListEntityName(this.props.currentContext, listGUID);
+      getListEntityName(this.props.currentContext, this.props.listGUID);
       this.setFormDigest();
       timerID = setInterval(
         () => this.setFormDigest(), 300000);
@@ -160,7 +160,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
               {/* <Form.Control size="sm" id="Phase" as="select" name="Phase" onChange={this.handleChange} value={this.state.Phase}>
                 <option value="">Select an Option</option>
               </Form.Control> */}
-              <Form.Control size="sm" type="text" id="Milestone" name="Milestone" placeholder="Milestone" onChange={this.handleChange} value={this.state.Milestone} />
+              <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="Milestone" name="Milestone" placeholder="Milestone" onChange={this.handleChange} value={this.state.Milestone} />
             </FormGroup>
           </Form.Row>
 
@@ -240,7 +240,8 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + projectListGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
+    if(this.props.ProjectMasterGUID){
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.ProjectMasterGUID + `')/items?Select=ID&$filter=ProjectID eq '${ProjectIDValue}'`;
     let breakCondition = false;
     $('.ProjectID').remove();
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
@@ -255,7 +256,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
                   }
                   else {
                     alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-                    let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                    let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
                     window.open(winURL, '_self');
                   }
                   // if(ProjectIDValue != item.ProjectID && breakCondition){
@@ -266,23 +267,24 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
               }
               else {
                 alert("Invalid Project ID. Please make sure there is no change in URL. Redirecting...");
-                let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+                let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
                 window.open(winURL, '_self');
               }
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside _checkExistingProjectId MilestoneNew: errlog", "Milestone", "_checkExistingProjectId", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside _checkExistingProjectId MilestoneNew: errlog", "Milestone", "_checkExistingProjectId", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
               alert("Something went wrong. Please try after sometime Redirecting...");
-              let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+              let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
               window.open(winURL, '_self');
             });
         } else {
           console.warn(`List Field interrogation failed; likely to do with interrogation of the incorrect listdata.svc end-point.`);
             alert("Something went wrong. Please try after sometime Redirecting...");
-            let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+            let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
             window.open(winURL, '_self');
         }
       });
+    }
   }
   private createItem(e) {
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
@@ -417,7 +419,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     }
 
     $.ajax({
-      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items`,
+      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items`,
       type: "POST",
       data: JSON.stringify(requestData),
       headers:
@@ -432,16 +434,20 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
         console.log("Submitted successfully");
         alert("Submitted successfully");
        
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
           window.open(winURL, '_self');
         
         
       },
       error: (xhr, status, error) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside createItem Milestone New: errlog", "Milestone", "createItem", xhr, _projectID );
-        alert("Something went wrong, please try after sometime");
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside createItem Milestone New: errlog", "Milestone", "createItem", xhr, _projectID );
+        if (xhr.responseText.match('2147024891')) {
+          alert("You don't have permission to create a new Milestone");
+        }else{
+          alert("Something went wrong, please try after sometime");
+        }
         console.log(xhr.responseText + " | " + error);
-        let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+        let winURL = this.props.currentContext.pageContext.web.absoluteUrl +  '/SitePages/Project-Master.aspx';
         window.open(winURL, '_self');
       }
     });
@@ -487,13 +493,13 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside setFormDigest Milestone New: errlog", "Milestone", "setFormDigest", jqXHR, _projectID );
+        _logExceptionError(this.props.currentContext,this.props.exceptionLogGUID,  _formdigest, "inside setFormDigest Milestone New: errlog", "Milestone", "setFormDigest", jqXHR, _projectID );
       }
     });
   }
 
   private closeform() {
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
       window.open(winURL, '_self');
     
     this.state = {
@@ -518,7 +524,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {
@@ -531,7 +537,7 @@ export default class MilestoneNew extends React.Component<IMilestoneProps, IMile
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField Milestone New: errlog", "Milestone", "retrieveAllChoicesFromListField", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID, _formdigest, "inside retrieveAllChoicesFromListField Milestone New: errlog", "Milestone", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {

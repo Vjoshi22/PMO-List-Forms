@@ -52,7 +52,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
       this.retrieveAllChoicesFromListField(this.props.currentContext.pageContext.web.absoluteUrl, elem);
     });
 
-    getListEntityName(this.props.currentContext, listGUID);
+    getListEntityName(this.props.currentContext, this.props.listGUID);
     // this.loadItems();
     setTimeout(() => this.loadItems(), 1000);
 
@@ -207,13 +207,13 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
 
   private loadItems() {
 
-    var itemId = GetParameterValues('id');
+    var itemId = GetParameterValues('itemId');
     if (itemId == "") {
       alert("Incorrect URL");
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Project-Master.aspx';
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Project-Master.aspx';
       window.open(winURL, '_self');
     } else {
-      const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items(${itemId})`;
+      const url = `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items(${itemId})`;
       return this.props.currentContext.spHttpClient.get(url, SPHttpClient.configurations.v1,
         {
           headers: {
@@ -221,7 +221,11 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
             'odata-version': ''
           }
         }).then((response: SPHttpClientResponse): Promise<ISPMilestoneFields> => {
-          return response.json();
+          if(response.ok){
+            return response.json();
+          }else{
+            alert("You don't have permission to view/edit Milestones");
+          }
         })
         .then((item: ISPMilestoneFields): void => {
           this.setState({
@@ -245,7 +249,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    var itemId = GetParameterValues('id');
+    var itemId = GetParameterValues('itemId');
     let _validate = 0;
     e.preventDefault();
 
@@ -353,7 +357,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
     }
 
     $.ajax({
-      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${listGUID}')/items(${itemId})`,
+      url: `${this.props.currentContext.pageContext.web.absoluteUrl}/_api/web/lists('${this.props.listGUID}')/items(${itemId})`,
       type: "POST",
       data: JSON.stringify(requestData),
       headers:
@@ -368,24 +372,28 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
         console.log("Submitted successfully");
         alert("Submitted successfully");
         {if(this.props.customGridRequired){
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
           window.open(winURL, '_self');
         }else{
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
           window.open(winURL, '_self');
         }}
         // let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
         // window.open(winURL, '_self');
       },
       error: (xhr, status, error) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside saveitem Milestone Edit: errlog", "Milestone", "saveitem", xhr, _projectID );
-        alert(JSON.stringify(xhr.responseText));
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside saveitem Milestone Edit: errlog", "Milestone", "saveitem", xhr, _projectID );
+        if (xhr.responseText.match('2147024891')) {
+          alert("You don't have permission to edit an existing Milestone");
+        }else{
+          alert(JSON.stringify(xhr.responseText));
+        }
         console.log(xhr.responseText + " | " + error);
         {if(this.props.customGridRequired){
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
           window.open(winURL, '_self');
         }else{
-          let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+          let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
           window.open(winURL, '_self');
         }}
       }
@@ -432,17 +440,17 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
         });
       },
       error: (jqXHR, textStatus, errorThrown) => {
-        _logExceptionError(this.props.currentContext, _formdigest, "inside setFormDigest Milestone Edit: errlog", "Milestone", "setFormDigest", jqXHR, _projectID );
+        _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside setFormDigest Milestone Edit: errlog", "Milestone", "setFormDigest", jqXHR, _projectID );
       }
     });
   }
 
   private closeform() {
     {if(this.props.customGridRequired){
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID;
       window.open(winURL, '_self');
     }else{
-      let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
+      let winURL = this.props.currentContext.pageContext.web.absoluteUrl + '/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
       window.open(winURL, '_self');
     }}
     //let winURL = 'https://ytpl.sharepoint.com/sites/YASHPMO/Lists/Milestones/AllItems.aspx?FilterField1=ProjectID&FilterValue1=' + this.state.ProjectID + '&FilterType1=Number&viewid=81200a51-c410-419a-bc04-a8bdebf24ae0';
@@ -469,7 +477,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
     let _formdigest = this.state.FormDigestValue; //variable for errorlog function
     let _projectID = this.state.ProjectID; //variable for errorlog function
 
-    const endPoint: string = `${siteColUrl}/_api/web/lists('` + listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
+    const endPoint: string = `${siteColUrl}/_api/web/lists('` + this.props.listGUID + `')/fields?$filter=EntityPropertyName eq '` + columnName + `'`;
 
     this.props.currentContext.spHttpClient.get(endPoint, SPHttpClient.configurations.v1)
       .then((response: HttpClientResponse) => {
@@ -482,7 +490,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
                 $('#' + dropdownId).append('<option value="' + dropdownValue + '">' + dropdownValue + '</option>');
               });
             }, (err: any): void => {
-              _logExceptionError(this.props.currentContext, _formdigest, "inside retrieveAllChoicesFromListField Milestone Edit: errlog", "Milestone", "retrieveAllChoicesFromListField", err, _projectID );
+              _logExceptionError(this.props.currentContext, this.props.exceptionLogGUID,  _formdigest, "inside retrieveAllChoicesFromListField Milestone Edit: errlog", "Milestone", "retrieveAllChoicesFromListField", err, _projectID );
               console.warn(`Failed to fulfill Promise\r\n\t${err}`);
             });
         } else {
