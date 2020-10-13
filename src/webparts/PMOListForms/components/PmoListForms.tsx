@@ -20,6 +20,7 @@ import { Field } from 'sp-pnp-js';
 
 export var allchoiceColumns: any[] = ["Project_x0020_Type", "Project_x0020_Mode", "Status", "Project_x0020_Phase", "Region"];
 export var inputfieldLength = 50;
+export var multiLineFieldLength = 300;
 var PM_userInfo;
 var DM_userInfo;
 require('./PmoListForms.module.scss');
@@ -339,7 +340,7 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Description</Form.Label>
             </FormGroup>
             <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription} />
+              <Form.Control size="sm" as="textarea" maxLength={multiLineFieldLength} rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription} />
             </FormGroup>
           </Form.Row>
           {/* Next Row */}

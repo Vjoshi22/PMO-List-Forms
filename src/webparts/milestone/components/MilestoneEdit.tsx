@@ -12,7 +12,7 @@ import { getListEntityName, listType } from './getListEntityName';
 import { ISPMilestoneFields } from './IMilestoneFields';
 import { IMilestoneState } from './IMilestoneState';
 import { _logExceptionError } from '../../../ExceptionLogging';
-import { inputfieldLength } from "../../PMOListForms/components/PmoListForms";
+import { inputfieldLength, multiLineFieldLength } from "../../PMOListForms/components/PmoListForms";
 
 require('./Milestone.module.scss');
 SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css");
@@ -149,7 +149,7 @@ export default class MilestoneEdit extends React.Component<IMilestoneProps, IMil
               <Form.Label className={styles.customlabel}>Remarks</Form.Label>
             </FormGroup>
             <FormGroup className="col-9 mb-3">
-              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
+              <Form.Control size="sm" as="textarea" maxLength={multiLineFieldLength} rows={3} type="text" id="Remarks" name="Remarks" placeholder="Remarks" onChange={this.handleChange} value={this.state.Remarks} />
             </FormGroup>
           </Form.Row>
 

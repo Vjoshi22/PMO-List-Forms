@@ -18,7 +18,7 @@ import { _getListEntityName, listType } from './getListEntityName';
 import { data } from 'jquery';
 import { _logExceptionError } from '../../../ExceptionLogging';
 //import variable for max lenth
-import { inputfieldLength } from "../components/PmoListForms";
+import { inputfieldLength, multiLineFieldLength} from "../components/PmoListForms";
 
 
 require('./PmoListForms.module.scss');
@@ -384,7 +384,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                             <Form.Label className={styles.customlabel + " " + styles.required}>Project Description</Form.Label>
                         </FormGroup>
                         <FormGroup className="col-9 mb-3">
-                            <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription} />
+                            <Form.Control size="sm" as="textarea" maxLength={multiLineFieldLength} rows={4} type="text" id="ProjectDescription" name="ProjectDescription" placeholder="Project Description" onChange={this.handleChange} value={this.state.ProjectDescription} />
                         </FormGroup>
                     </Form.Row>
                     {/* Next Row */}

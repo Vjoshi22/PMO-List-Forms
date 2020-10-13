@@ -12,7 +12,7 @@ import { SPUpdateIssueForm } from "./IUpdateIssueColumnFields";
 import * as $ from "jquery";
 import { _getListEntityName, listType } from '../../PMOListForms/components/getListEntityName';
 import { _logExceptionError } from '../../../ExceptionLogging';
-import { inputfieldLength } from '../../PMOListForms/components/PmoListForms';
+import { inputfieldLength, multiLineFieldLength } from '../../PMOListForms/components/PmoListForms';
 
 //declaring state
 export interface IUpdateIssueState {
@@ -172,7 +172,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>Issue Description</Form.Label>
             </FormGroup>
             <FormGroup className="col-9">
-              <Form.Control size="sm" as="textarea" maxLength={inputfieldLength} rows={4} id="IssueDescription" name="IssueDescription" placeholder="Description about the Issue" onChange={this.handleChange} value={this.state.IssueDescription} />
+              <Form.Control size="sm" as="textarea" maxLength={multiLineFieldLength} rows={4} id="IssueDescription" name="IssueDescription" placeholder="Description about the Issue" onChange={this.handleChange} value={this.state.IssueDescription} />
             </FormGroup>
           </Form.Row>
           {/* ---------ROW 4---------------- */}
@@ -256,7 +256,7 @@ export default class UpdateIssue extends React.Component<IIssueInformationProps,
               <Form.Label className={styles.customlabel + " " + styles.required}>Next Steps Or Resolutions</Form.Label>
             </FormGroup>
             <FormGroup className="col-9">
-              <Form.Control size="sm" id="NextStepsOrResolution" maxLength={inputfieldLength} as="textarea" rows={4} name="NextStepsOrResolution" placeholder="Next Steps and Resolutions for the Issue" onChange={this.handleChange} value={this.state.NextStepsOrResolution} />
+              <Form.Control size="sm" id="NextStepsOrResolution" maxLength={multiLineFieldLength} as="textarea" rows={4} name="NextStepsOrResolution" placeholder="Next Steps and Resolutions for the Issue" onChange={this.handleChange} value={this.state.NextStepsOrResolution} />
             </FormGroup>
           </Form.Row>
           <Form.Row className={styles.buttonCLass}>
