@@ -55,6 +55,8 @@ export interface IreactState {
   focusedInput: any;
   FormDigestValue: string;
   RMSData: {};
+  totalPlannedHours: string;
+  totalApprovedBilledHours: string;
 }
 
 var listGUID: any = "2c3ffd4e-1b73-4623-898d-8e3a1bb60b91";   //"47272d1e-57d9-447e-9cfd-4cff76241a93"; 
@@ -94,7 +96,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       disable_plannedCompletion: true,
       focusedInput: '',
       FormDigestValue: '',
-      RMSData: {}
+      RMSData: {},
+      totalPlannedHours: '',
+      totalApprovedBilledHours: ''
     };
     this._getdropdownValues = this._getdropdownValues.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -212,18 +216,18 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Client Name</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
+            <FormGroup className={styles.disabledValue + " col-3"}>
               {/* <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="ClientName" name="ClientName" placeholder="Client Name" onChange={this.handleChange} value={this.state.ClientName} /> */}
-              <Form.Label>{this.state.ClientName}</Form.Label>
+              <Form.Label >{this.state.ClientName}</Form.Label>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             {/* -----------Project Name---------------- */}
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Name</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
+            <FormGroup className={styles.disabledValue + " col-3"}>
               {/* <Form.Control size="sm" maxLength={inputfieldLength} type="text" id="ProjectName" name="ProjectName" placeholder="Ex: John Deer" onChange={this.handleChange} value={this.state.ProjectName} /> */}
-              <Form.Label>{this.state.ProjectName}</Form.Label>
+              <Form.Label >{this.state.ProjectName}</Form.Label>
             </FormGroup>
           </Form.Row>
 
@@ -276,11 +280,11 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Project Mode</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
+            <FormGroup className={styles.disabledValue + " col-3"}>
               {/* <Form.Control size="sm" id="ProjectMode" as="select" name="ProjectMode" onChange={this.handleChange} value={this.state.ProjectMode}>
                 <option value="">Select an Option</option>
               </Form.Control> */}
-              <Form.Label>{this.state.ProjectMode}</Form.Label>
+              <Form.Label >{this.state.ProjectMode}</Form.Label>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             <FormGroup className="col-2">
@@ -309,29 +313,29 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel}>Region</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
-              {/* <Form.Control size="sm" as="select" id="Region" name="ProjectLocation" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}>
+            <FormGroup className={styles.disabledValue + " col-3"}>
+              <Form.Control size="sm" as="select" id="Region" name="ProjectLocation" placeholder="Project Location" onChange={this.handleChange} value={this.state.ProjectLocation}>
                 <option value="">Select an Option</option>
-              </Form.Control> */}
-              <Form.Label>{this.state.ProjectLocation}</Form.Label>
+              </Form.Control>
+              {/* <Form.Label >{this.state.ProjectLocation}</Form.Label> */}
             </FormGroup>
           </Form.Row>
           <Form.Row>
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Planned Start Date</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
+            <FormGroup className={styles.disabledValue + " col-3"}>
               {/* <Form.Control size="sm" type="date" id="PlannedStart" name="PlannedStart" placeholder="Planned Start Date" onChange={this.handleChange} value={this.state.PlannedStart} /> */}
               {/* <DatePicker selected={this.state.PlannedStart}  onChange={this.handleChange} />; */}
-              <Form.Label>{this.state.PlannedStart}</Form.Label>
+              <Form.Label >{this.state.PlannedStart}</Form.Label>
             </FormGroup>
             <FormGroup className="col-1"></FormGroup>
             <FormGroup className="col-2">
               <Form.Label className={styles.customlabel + " " + styles.required}>Planned End Date</Form.Label>
             </FormGroup>
-            <FormGroup className="col-3">
+            <FormGroup className={styles.disabledValue + " col-3"}>
               <Form.Control size="sm" type="date" disabled={this.state.disable_plannedCompletion} id="PlannedCompletion" name="PlannedCompletion" placeholder="Planned Completion Date" onChange={this.handleChange} value={this.state.PlannedCompletion} />
-              {/* <Form.Label>{this.state.PlannedCompletion}</Form.Label> */}
+              {/* <Form.Label >{this.state.PlannedCompletion}</Form.Label> */}
             </FormGroup>
           </Form.Row>
           {/* Project Description */}
@@ -369,6 +373,21 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
           <FormGroup className="col-6">
           </FormGroup>
         </Form.Row> */}
+          <Form.Row>
+            <FormGroup className="col-2">
+              <Form.Label className={styles.customlabel + " " + styles.required}>Total Planned Hours</Form.Label>
+            </FormGroup>
+            <FormGroup className={styles.disabledValue + " col-3"}>
+              <Form.Label >{this.state.totalPlannedHours}</Form.Label>
+            </FormGroup>
+            <FormGroup className="col-1"></FormGroup>
+            <FormGroup className="col-2">
+              <Form.Label className={styles.customlabel + " " + styles.required}>Total Approved Billed Hours</Form.Label>
+            </FormGroup>
+            <FormGroup className={styles.disabledValue + " col-3"}>
+              <Form.Label >{this.state.totalApprovedBilledHours}</Form.Label>
+            </FormGroup>
+          </Form.Row>
           <Form.Row className={styles.buttonCLass}>
             <FormGroup></FormGroup>
             <div>
@@ -418,8 +437,10 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             ActualEndDate: '',
             ProjectMode: '',
             ProjectLocation: '',
-            ProjectDescription:'',
-            TotalCost: 0
+            ProjectDescription: '',
+            TotalCost: 0,
+            totalPlannedHours: '',
+            totalApprovedBilledHours: ''
           })
           $('#ProjectId').css('border', '1px solid red');
           this._validationMessage("ProjectId", "ProjectID", "Incorrect Project Id");
@@ -438,7 +459,10 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             ProjectMode: json_RMSData.data.projectMode,
             ProjectLocation: json_RMSData.data.region,
             ProjectDescription: json_RMSData.data.description,
-            TotalCost: json_RMSData.data.totalCost
+            TotalCost: json_RMSData.data.totalCost,
+            totalPlannedHours: json_RMSData.data.totalPlannedHours,
+            totalApprovedBilledHours: json_RMSData.data.totalApprovedBilledHours
+
           });
           this._getProjectManagerProperties(json_RMSData.data.manager);
           this._getDeliveryManagerProperties(json_RMSData.data.deliveryManager);
@@ -455,9 +479,11 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
             ActualEndDate: '',
             ProjectMode: '',
             ProjectLocation: '',
-            TotalCost: 0
+            TotalCost: 0,
+            totalPlannedHours: '',
+            totalApprovedBilledHours: ''
           })
-           alert("RMS System is down, Please wait for sometime");
+          alert("RMS System is down, Please wait for sometime");
           // $('#ProjectId').css('border', '1px solid red');
           // this._validationMessage("ProjectId", "ProjectID", json_RMSData.message);
         }
@@ -678,7 +704,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       Status: this.state.ProjectStatus,
       Progress: this.state.ProjectProgress,
       PMId: this.state.PM,
-      DMId: this.state.DM
+      DMId: this.state.DM,
+      totalPlannedHours: this.state.totalPlannedHours.toString(),
+      totalApprovedBilledHours: this.state.totalApprovedBilledHours.toString()
     };
 
     //validation
@@ -787,20 +815,20 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       $('#ProjectPhase').css('border', '1px solid #ced4da')
     }
     //Project Region
-    // if (requestData.Region.length < 1 || requestData.Region == null || requestData.Region == "") {
-    //   this._validationMessage("Region", "Region", "Project Region cannot be empty");
-    //   $('#Region').css('border', '1px solid red');
-    //   _validate++;
-    // } else {
-    //   $('.Region').remove();
-    //   $('#Region').css('border', '1px solid #ced4da')
-    // }
-    // if (requestData.Delivery_x0020_Manager.length < 1 || requestData.Delivery_x0020_Manager == null || requestData.Delivery_x0020_Manager =="") {
-    //   $('#DeliveryManager').css('border','2px solid red');
-    //   _validate++;
-    // }else{
-    //   $('#DeliveryManager').css('border','1px solid #ced4da')
-    // }
+    if (requestData.Region.length < 1 || requestData.Region == null || requestData.Region == "") {
+      this._validationMessage("Region", "Region", "Project Region cannot be empty");
+      $('#Region').css('border', '1px solid red');
+      _validate++;
+    } else {
+      $('.Region').remove();
+      $('#Region').css('border', '1px solid #ced4da')
+    }
+    if (requestData.Delivery_x0020_Manager.length < 1 || requestData.Delivery_x0020_Manager == null || requestData.Delivery_x0020_Manager =="") {
+      $('#DeliveryManager').css('border','2px solid red');
+      _validate++;
+    }else{
+      $('#DeliveryManager').css('border','1px solid #ced4da')
+    }
     if (this.state.ProjectBudget.toLocaleString().length == 0) {
       this._validationMessage("BudgetSOW", "BudgetSOW", "Project Budget cannot be empty");
       $('#BudgetSOW').css('border', '1px solid red');
@@ -989,7 +1017,9 @@ export default class PmoListForms extends React.Component<IPmoListFormsProps, Ir
       ActualEndDate: '',
       focusedInput: '',
       FormDigestValue: '',
-      TotalCost: 0
+      TotalCost: 0,
+      totalPlannedHours: '',
+      totalApprovedBilledHours: ''
     });
     console.log(this.state.ProjectID);
   }

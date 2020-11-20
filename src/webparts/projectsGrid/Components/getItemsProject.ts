@@ -60,10 +60,15 @@ export function _populateGrid(results, currentContext) {
     "dom": "<<t>ip>",
     //"lengthChange": false,   
     // "order": [[0, "desc"]],
-    "fixedHeader": {
-      header:true
-    }
+    // "fixedHeader": {
+    //   header: true
+    // },
+    //fixedHeader:true
+    //searchDelay: 600
   });
+  // new $.fn.dataTable.FixedHeader(table, {
+  //   header: true
+  // });
 
   $('#FilesTable th.search').css({ 'min-width': '130px' });
   $('#FilesTable th.actionLink').css({ 'min-width': '130px' });
@@ -76,15 +81,16 @@ export function _populateGrid(results, currentContext) {
 
   $('#FilesTable thead tr:eq(1) th.search').each(function (i) {
     var title = $(this).text();
-    $(this).html('<input type="text" class="colSearchInputs" id="' + title + '" placeholder="Search ' + title + '" />');
-    $('.colSearchInputs').on('keyup change', function () {
-      if (table.column(i).search() !== (<any>(this)).value) {
-        table
-          .column($(this).closest('th').index())
-          .search((<any>(this)).value)
+    //$(this).html('<input type="text" class="colSearchInputs" id="' + title + '" placeholder="Search ' + title + '" />');
+    //$('.colSearchInputs').on('keyup', function () {
+    var tbColumn = table.column($(this).index());
+    var inputTextbox = $('<input type="text" class="colSearchInputs" id="' + title + i + '" placeholder="Search ' + title + '" />')
+      .appendTo($(this).empty())
+      .on('change', function () {
+        tbColumn
+          .search($(this).val())
           .draw();
-      }
-    });
+      });
   });
   $('#FilesTable thead tr:eq(1) th.actionLink').each(function (index, th) {
     $(this).text("");
@@ -140,17 +146,19 @@ function GenerateTablefromJSON(data, currentContext) {
     '<th class="dropdown">Schedule</th>' +
     '<th class="dropdown">Resource</th>' +
     '<th class="dropdown">Project Cost</th>' +
+    '<th class="search">Total Planned Hours</th>' +
+    '<th class="search">Total Approved Billed Hours</th>' +
     '</tr></thead>' +
     '<tbody>';
 
   for (var i = 0; i < data.length; i++) {
     let projectUpdateLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/UpdateProject.aspx?page=edit&itemId=' + data[i].ID;
     let createIssuesLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/Track-Issues.aspx?type=new&ProjectID=' + data[i].ProjectID;
-    let viewIssuesLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Issue-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
-    let createRisksLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Track-Risks.aspx?type=new&ProjectID=' + data[i].ProjectID;
-    let viewRisksLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
-    let creatMlestoneLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Track-Milestone.aspx?type=new&ProjectID=' + data[i].ProjectID;
-    let viewMilestoneLink = currentContext.pageContext.web.absoluteUrl  + '/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
+    let viewIssuesLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/Issue-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
+    let createRisksLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/Track-Risks.aspx?type=new&ProjectID=' + data[i].ProjectID;
+    let viewRisksLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/Risk-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
+    let creatMlestoneLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/Track-Milestone.aspx?type=new&ProjectID=' + data[i].ProjectID;
+    let viewMilestoneLink = currentContext.pageContext.web.absoluteUrl + '/SitePages/Milestone-Grid.aspx?FilterField1=ProjectID&FilterValue1=' + data[i].ProjectID;
 
     tablecontent += '<tr id="' + data[i].ID + 'row">';
     tablecontent += '<td class="' + data[i].ProjectID + 'rowItem">' + data[i].ProjectID + "</td>";
@@ -207,6 +215,8 @@ function GenerateTablefromJSON(data, currentContext) {
     tablecontent += '<td class="' + data[i].ProjectID + 'rowItem">' + data[i].Schedule + "</td>";
     tablecontent += '<td class="' + data[i].ProjectID + 'rowItem">' + data[i].Resource + "</td>";
     tablecontent += '<td class="' + data[i].ProjectID + 'rowItem">' + data[i].Project_x0020_Cost + "</td>";
+    tablecontent += '<td class="' + data[i].ProjectID + 'rowItem">' + data[i].totalPlannedHours + "</td>";
+    tablecontent += '<td class="' + data[i].ProjectID + 'rowItem">' + data[i].totalApprovedBilledHours + "</td>";
     tablecontent += '</tr>';
   }
   tablecontent += '</tbody></table>';

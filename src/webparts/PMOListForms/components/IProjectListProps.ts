@@ -19,4 +19,6 @@ export interface SPProjectList{
     DMId:string;
     Previous_PM:string;
     Previous_DM:string;
+    totalPlannedHours:string;
+    totalApprovedBilledHours:string;
   }

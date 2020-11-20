@@ -91,13 +91,13 @@
     "RiskInformationWebPartStrings": "lib/webparts/riskInformation/loc/{locale}.js",
     "IssueInformationWebPartStrings": "lib/webparts/issueInformation/loc/{locale}.js",
     "MilestoneWebPartStrings": "lib/webparts/milestone/loc/{locale}.js",
-    "HomePageWebPartStrings": "lib/webparts/homePage/loc/{locale}.js",
+    
     "TileNavigaitonPmoWebPartStrings": "lib/webparts/tileNavigaitonPmo/loc/{locale}.js",
     "ProjectsGridWebPartStrings": "lib/webparts/projectsGrid/loc/{locale}.js",
     "IssuesGridWebPartStrings": "lib/webparts/issuesGrid/loc/{locale}.js",
     "RisksGridWebPartStrings": "lib/webparts/risksGrid/loc/{locale}.js",
     "MilestonesGridWebPartStrings": "lib/webparts/milestonesGrid/loc/{locale}.js",
-    "WelcomePageWpWebPartStrings": "lib/webparts/welcomePageWp/loc/{locale}.js",
+    
     "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js"
   }
 }

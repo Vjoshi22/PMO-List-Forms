@@ -18,7 +18,7 @@ import { _getListEntityName, listType } from './getListEntityName';
 import { data } from 'jquery';
 import { _logExceptionError } from '../../../ExceptionLogging';
 //import variable for max lenth
-import { inputfieldLength, multiLineFieldLength} from "../components/PmoListForms";
+import { inputfieldLength, multiLineFieldLength } from "../components/PmoListForms";
 
 
 require('./PmoListForms.module.scss');
@@ -72,6 +72,8 @@ export interface IreactState {
     //endDate: any;
     focusedInput: any;
     FormDigestValue: string;
+    totalPlannedHours: string,
+    totalApprovedBilledHours: string
 }
 
 var listGUID; //any = "2c3ffd4e-1b73-4623-898d-8e3a1bb60b91";   //"47272d1e-57d9-447e-9cfd-4cff76241a93"; 
@@ -118,7 +120,9 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             disable_RMSID: false,
             disable_plannedCompletion: true,
             focusedInput: '',
-            FormDigestValue: ''
+            FormDigestValue: '',
+            totalPlannedHours: '',
+            totalApprovedBilledHours: ''
         };
         this._saveItem = this._saveItem.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -220,7 +224,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                             {/* <Form.Control size="sm" type="text" disabled={this.state.disable_RMSID} id="ProjectId" name="ProjectID" placeholder="Project Id" onChange={this.handleChange} value={this.state.ProjectID}/> */}
                             <Form.Label>{this.state.ProjectID}</Form.Label>
                             <div>
-                               <i className={styles.refreshIcon + " fa fa-refresh fa-lg"} title="Refresh RMS Data" onClick={() => { this._getRMSData() }} aria-hidden="true"></i>
+                                <i className={styles.refreshIcon + " fa fa-refresh fa-lg"} title="Refresh RMS Data" onClick={() => { this._getRMSData() }} aria-hidden="true"></i>
                             </div>
                         </FormGroup>
                         <FormGroup className="col-1">
@@ -471,6 +475,21 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                             </Form.Control>
                         </FormGroup>
                     </Form.Row>
+                    <Form.Row>
+                        <FormGroup className="col-2">
+                            <Form.Label className={styles.customlabel + " " + styles.required}>Total Planned Hours</Form.Label>
+                        </FormGroup>
+                        <FormGroup className={styles.disabledValue + " col-3"}>
+                            <Form.Label>{this.state.totalPlannedHours}</Form.Label>
+                        </FormGroup>
+                        <FormGroup className="col-1"></FormGroup>
+                        <FormGroup className="col-2">
+                            <Form.Label className={styles.customlabel + " " + styles.required}>Total Approved Billed Hours</Form.Label>
+                        </FormGroup>
+                        <FormGroup className={styles.disabledValue + " col-3"}>
+                            <Form.Label>{this.state.totalApprovedBilledHours}</Form.Label>
+                        </FormGroup>
+                    </Form.Row>
                     <Form.Row className={styles.buttonCLass}>
                         <FormGroup></FormGroup>
                         <div>
@@ -506,8 +525,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             ActualStartDate: '',
             ActualEndDate: '',
             ProjectMode: '',
-            ProjectLocation: '',
-            TotalCost: 0
+            //ProjectLocation: '',
+            TotalCost: 0,
+            totalPlannedHours: '',
+            totalApprovedBilledHours: ''
         });
         var apiURL = "https://rms.yash.com/rms/projects/projectAttributePMO?find=PMOProjectAttribute&projectId=" + this.state.ProjectID;
         const myOptions: IHttpClientOptions = {
@@ -532,8 +553,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         ActualStartDate: '',
                         ActualEndDate: '',
                         ProjectMode: '',
-                        ProjectLocation: '',
-                        TotalCost: 0
+                        //ProjectLocation: '',
+                        TotalCost: 0,
+                        totalPlannedHours: '',
+                        totalApprovedBilledHours: ''
                     })
                     $('#ProjectId').css('border', '1px solid red');
                     this._validationMessage("ProjectId", "ProjectID", "Incorrect Project Id");
@@ -552,8 +575,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         ActualStartDate: json_RMSData.data.projectStartDate,
                         ActualEndDate: json_RMSData.data.projectEndDate,
                         ProjectMode: json_RMSData.data.projectMode,
-                        ProjectLocation: json_RMSData.data.region,
-                        TotalCost: json_RMSData.data.totalCost
+                        //ProjectLocation: json_RMSData.data.region,
+                        TotalCost: json_RMSData.data.totalCost,
+                        totalPlannedHours: json_RMSData.data.totalPlannedHours.toString(),
+                        totalApprovedBilledHours: json_RMSData.data.totalApprovedBilledHours.toString()
                     });
                     this._getProjectManagerProperties(json_RMSData.data.manager);
                     this._getDeliveryManagerProperties(json_RMSData.data.deliveryManager);
@@ -570,8 +595,10 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         ActualStartDate: '',
                         ActualEndDate: '',
                         ProjectMode: '',
-                        ProjectLocation: '',
-                        TotalCost: 0
+                        //ProjectLocation: '',
+                        TotalCost: 0,
+                        totalPlannedHours: '',
+                        totalApprovedBilledHours: ''
                     })
                     alert("RMS System is down, Please wait for sometime");
                 }
@@ -593,8 +620,9 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
 
         /// make an ajax call to get the site user
         $.ajax({
-            url: siteUrl + "/_api/web/siteusers(@v)?@v='" +
-                encodeURIComponent(accountName) + "'",
+            // url: siteUrl + "/_api/web/siteusers(@v)?@v='" +
+            //     encodeURIComponent(accountName) + "'",
+            url: siteUrl + "/_api/web/siteusers/getByEmail(@v)?@v='" + userName + "'",            
             method: "GET",
             headers: { "Accept": "application/json; odata=verbose" },
             success: function (data) {
@@ -624,8 +652,9 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
 
         /// make an ajax call to get the site user
         $.ajax({
-            url: siteUrl + "/_api/web/siteusers(@v)?@v='" +
-                encodeURIComponent(accountName) + "'",
+            // url: siteUrl + "/_api/web/siteusers(@v)?@v='" +
+            //     encodeURIComponent(accountName) + "'",
+            url: siteUrl + "/_api/web/siteusers/getByEmail(@v)?@v='" + userName + "'",
             method: "GET",
             headers: { "Accept": "application/json; odata=verbose" },
             success: function (data) {
@@ -788,8 +817,8 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         ProjectPhase: item.Project_x0020_Phase,
                         PlannedStart: item.PlannedStart,
                         PlannedCompletion: item.Planned_x0020_End,
-                        ActualStartDate: item.Actual_x0020_Start == null ? '': item.Actual_x0020_Start,
-                        ActualEndDate: item.Actual_x0020_End == null ? '':item.Actual_x0020_End,
+                        ActualStartDate: item.Actual_x0020_Start == null ? '' : item.Actual_x0020_Start,
+                        ActualEndDate: item.Actual_x0020_End == null ? '' : item.Actual_x0020_End,
                         ProjectDescription: item.Project_x0020_Description,
                         ProjectLocation: item.Region,
                         RevisedBudget: item.Revised_x0020_Budget,
@@ -809,7 +838,9 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
                         // PreviousPM_old: item.Previous_PM == undefined ? item.PMId : item.Previous_PM.Id,
                         // PreviousDM_old: item.Previous_DM == undefined ? item.DMId : item.Previous_DM.Id,
                         Previous_PM: this.state.Previous_PM == 0 ? item.PMId : item.Previous_PM.Id,
-                        Previous_DM: this.state.Previous_DM == 0 ? item.DMId : item.Previous_DM.Id
+                        Previous_DM: this.state.Previous_DM == 0 ? item.DMId : item.Previous_DM.Id,
+                        totalPlannedHours : item.totalPlannedHours,
+                        totalApprovedBilledHours : item.totalApprovedBilledHours
 
                     })
                     //checking Status on Load
@@ -866,10 +897,11 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
             PMId: this.state.PM,
             DMId: this.state.DM,
             Previous_PMId: this.state.PreviousPM_old,
-            Previous_DMId: this.state.PreviousDM_old
+            Previous_DMId: this.state.PreviousDM_old,
             // Previous_PMId: this.state.PMchange == true ? this.state.Previous_PM : this.state.PreviousPM_old,
             // Previous_DMId: this.state.PMchange == true ? this.state.Previous_DM : this.state.PreviousDM_old
-
+            totalPlannedHours : this.state.totalPlannedHours,
+            totalApprovedBilledHours : this.state.totalApprovedBilledHours
         };
         //validation
         //delivery manager 
@@ -984,7 +1016,7 @@ export default class PmoListEditForm extends React.Component<IPmoListFormsProps,
         } else if ((requestData.Progress != null) && requestData.Progress < 100 && requestData.Status == "Completed") {
             this._validationMessage("Status", "Status", "Status cannot be Completed, if Project Progress is less than 100");
             _validate++;
-        } else if (requestData.Status == "Completed"&& (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "")) {
+        } else if (requestData.Status == "Completed" && (requestData.Actual_x0020_End == null || requestData.Actual_x0020_End == "")) {
             // alert("Project Status cannot be Completed without End Date. Update Data in RMS")
             this._validationMessage("Status", "Status", "Status cannot be Complete if End date is empty");
             $('#Status').css('border', '1px solid red');

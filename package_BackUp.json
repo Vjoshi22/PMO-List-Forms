@@ -1,0 +1,74 @@
+{
+  "name": "PMO-List-Forms",
+  "version": "1.0.0",
+  "description": "This is where you include your WebPart documentation.",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "@microsoft/sp-core-library": "1.10.0",
+    "@microsoft/sp-lodash-subset": "1.10.0",
+    "@microsoft/sp-office-ui-fabric-core": "1.10.0",
+    "@microsoft/sp-property-pane": "1.10.0",
+    "@microsoft/sp-webpart-base": "1.10.0",
+    "@pnp/polyfill-ie11": "^2.0.2",
+    "@pnp/sp": "^2.0.8",
+    "@pnp/spfx-controls-react": "^1.19.0",
+    "@pnp/spfx-property-controls": "1.19.0",
+    "@types/bootstrap": "^4.5.0",
+    "@types/datatables.net": "^1.10.19",
+    "@types/es6-promise": "0.0.33",
+    "@types/jquery": "^3.5.0",
+    "@types/jqueryui": "^1.12.13",
+    "@types/react": "16.8.8",
+    "@types/react-dom": "16.8.3",
+    "@types/webpack-env": "1.13.1",
+    "bootstrap": "^4.5.0",
+    "datatables.net": "^1.10.21",
+    "datatables.net-dt": "^1.10.21",
+    "datatables.net-fixedheader": "^3.1.7",
+    "datatables.net-fixedheader-dt": "^3.1.7",
+    "datatables.net-jqui": "^1.10.21",
+    "datatables.net-responsive": "^2.2.5",
+    "fixed-header-table": "^1.3.0",
+    "jquery": "^3.5.1",
+    "jqueryui": "^1.11.1",
+    "moment": "^2.27.0",
+    "ng2-smart-table": "^1.6.0",
+    "office-ui-fabric-react": "6.189.2",
+    "react": "16.8.5",
+    "react-app-polyfill": "^1.0.6",
+    "react-bootstrap": "^1.0.1",
+    "react-datepicker": "^3.0.0",
+    "react-dom": "16.8.5",
+    "sp-pnp-js": "^3.0.10"
+  },
+  "resolutions": {
+    "@types/react": "16.8.8"
+  },
+  "devDependencies": {
+    "@microsoft/rush-stack-compiler-3.3": "0.3.5",
+    "@microsoft/sp-build-web": "1.10.0",
+    "@microsoft/sp-module-interfaces": "1.10.0",
+    "@microsoft/sp-tslint-rules": "1.10.0",
+    "@microsoft/sp-webpart-workbench": "1.10.0",
+    "@types/chai": "3.4.34",
+    "@types/datatables.net-fixedheader": "^3.1.4",
+    "@types/jquery": "^3.5.0",
+    "@types/mocha": "2.2.38",
+    "ajv": "~5.2.2",
+    "gulp": "~3.9.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vjoshi22/PMO-List-Forms.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vjoshi22/PMO-List-Forms/issues"
+  },
+  "homepage": "https://github.com/Vjoshi22/PMO-List-Forms#readme"
+}
